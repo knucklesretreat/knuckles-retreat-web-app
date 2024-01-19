@@ -6,7 +6,7 @@ import BgContour from "~/media/contour-lines-1.svg?jsx";
 export default component$(() => {
     return (
         <section id="explore" class={styles.explore}>
-            <BgPattern alt="flower pattern" class={styles.bg_img} />
+            <BgPattern alt="flower pattern" class={[styles.bg_img, styles.top_img]} />
             <BgContour class={[styles.bg_img, styles.bottom_img]} />
             <div class={styles.main_content}>
                 <div class={styles.txt_content}>

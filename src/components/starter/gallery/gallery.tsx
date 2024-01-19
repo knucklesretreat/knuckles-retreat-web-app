@@ -5,7 +5,7 @@ import BgPattern from "~/media/pattern1.webp?jsx";
 export default component$(() => {
     return (
         <section id="gallery" class={styles.gallery}>
-            <BgPattern alt="flower pattern" class={styles.bg_img} />
+            <BgPattern alt="flower pattern" class={[styles.bg_img, styles.top_img]} />
             <BgPattern alt="flower pattern" class={[styles.bg_img, styles.bottom_img]} />
             <div class={styles.gallery_grid}>
                 <div class={styles.text_content}>

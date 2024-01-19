@@ -38,7 +38,7 @@ export default component$(() => {
         activeIndex.value = index;
         setTimeout(() => {
             handleSlideActive(true);
-        }, 100)
+        }, 350)
     });
 
     // eslint-disable-next-line qwik/no-use-visible-task

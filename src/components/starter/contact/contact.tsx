@@ -7,7 +7,7 @@ import LogoSymbol from "~/media/Logo-Symbol.svg?jsx";
 export default component$(() => {
     return (
         <section id="contact" class={styles.contact}>
-            <BgContour1 class={styles.bg_img} />
+            <BgContour1 class={[styles.bg_img, styles.top_img]} />
             <BgContour2 class={[styles.bg_img, styles.bottom_img]} />
             <h2>Contact Us</h2>
             <div class={styles.main_content}>
