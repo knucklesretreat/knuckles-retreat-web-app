@@ -1,0 +1,111 @@
+.intro {
+    background-color: #181818;
+    position: relative;
+    overflow: hidden;
+
+    img {
+        position: absolute;
+        height: 600px;
+        width: 600px;
+        top: -300px;
+        left: -300px;
+        opacity: 0.7;
+        transition: 0.3s ease;
+    }
+
+    .right_img {
+        top: auto;
+        left: auto;
+        bottom: -300px;
+        right: -300px;
+    }
+}
+
+.intro_header {
+    position: relative;
+    margin: 0 200px;
+    padding: 38px 0;
+    z-index: 111;
+
+    h1 {
+        text-align: center;
+        color: #ffffff;
+        font-size: 2em;
+        max-width: 480px;
+        margin: auto;
+        font-family: "Nunito Sans", sans-serif;
+        transition: 0.3s ease;
+    }
+
+    h2 {
+        text-align: center;
+        font-style: italic;
+        color: #ffffff;
+        font-size: 1.8em;
+        max-width: 490px;
+        margin: auto;
+        padding: 30px 20px 10px;
+        font-family: "Kaushan Script", cursive;
+        transition: 0.3s ease;
+    }
+
+    p {
+        font-size: 1em;
+        text-align: center;
+        color: #ffffff;
+        opacity: 1;
+        background: none;
+        box-shadow: none;
+        backdrop-filter: none;
+        border: none;
+        transform: none;
+        max-width: 800px;
+        margin: auto;
+        line-height: 1.6em;
+        font-family: "Nunito Sans", sans-serif;
+        transition: 0.3s ease;
+    }
+}
+
+/*======= Media queries (max-width: 1100px) =======*/
+@media screen and (max-width: 1100px) {
+    .intro_header {
+        margin: 0 50px;
+    }
+}
+
+/*======= Media queries (max-width: 785px) =======*/
+@media screen and (max-width: 785px) {
+    .intro {
+        img {
+            height: 500px;
+            width: 500px;
+            top: -250px;
+            left: -250px;
+            opacity: 0.5;
+        }
+
+        .right_img {
+            bottom: -250px;
+            right: -250px;
+        }
+    }
+
+    .intro_header {
+        margin: 0 20px;
+
+        h1 {
+            font-size: 1.8em;
+            line-height: 1em;
+        }
+
+        h2 {
+            font-size: 1.6em;
+        }
+
+        p {
+            font-size: 0.8em;
+            line-height: normal;
+        }
+    }
+}
