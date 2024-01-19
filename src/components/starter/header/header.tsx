@@ -1,42 +1,62 @@
-import { component$ } from "@builder.io/qwik";
-import { QwikLogo } from "../icons/qwik";
+import { component$, useVisibleTask$, $ } from "@builder.io/qwik";
 import styles from "./header.module.css";
+import { MatBlurOnOutlined, MatCloseOutlined, MatExploreOutlined, MatHomeOutlined, MatPhotoLibraryOutlined, MatMailOutlined } from "@qwikest/icons/material";
+import LogoSymbol from "~/media/Logo-Symbol.svg?jsx";
+import { useNavigate } from "@builder.io/qwik-city";
 
 export default component$(() => {
+  const nav = useNavigate();
+  const handleScroll = $(() => {
+    const header = document.querySelector('header');
+    if (header) {
+      header.classList.toggle(styles.sticky, window.scrollY > 0);
+      header.classList.toggle(styles.logo_only, window.scrollY > 0);
+    }
+  });
+
+  // eslint-disable-next-line qwik/no-use-visible-task
+  useVisibleTask$(({ cleanup }) => {
+    if (typeof window === "undefined") return;
+    // Navigation bar effects on scroll
+    window.addEventListener('scroll', handleScroll);
+
+    // Clean up the event listener when the component is unmounted
+    cleanup(() => window.removeEventListener('scroll', handleScroll));
+  });
+
+  const handleMenuToggle = $(() => {
+    const navigation = document.querySelector(`.${styles.navigation}`);
+    if (navigation) {
+      navigation.classList.add(styles.active);
+    }
+  });
+
+  const handleCloseBtnClick = $(() => {
+    const navigation = document.querySelector(`.${styles.navigation}`);
+    if (navigation) {
+      navigation.classList.remove(styles.active);
+    }
+  });
+
   return (
     <header class={styles.header}>
-      <div class={["container", styles.wrapper]}>
-        <div class={styles.logo}>
-          <a href="/" title="qwik">
-            <QwikLogo height={50} width={143} />
-          </a>
+      <div class={styles.logo_wrapper} onClick$={() => nav('/')}>
+        <LogoSymbol class={styles.logo_symbol} />
+        <h4>Knuckles Retreat</h4>
+        <h5>-RECONNECT WITH NATURE-</h5>
+      </div>
+      <div class={styles.nav_bar}>
+        <div></div>
+        <div class={["navigation", styles.navigation]}>
+          <div class={styles.nav_items}>
+            <i class={styles.nav_close_btn} onClick$={handleCloseBtnClick}><MatCloseOutlined /></i>
+            <a href="/#home"><i><MatHomeOutlined /></i>Home</a>
+            <a href="/#gallery"><i><MatPhotoLibraryOutlined /></i>Gallery</a>
+            <a href="/#explore"><i><MatExploreOutlined /></i>Explore</a>
+            <a href="/#contact"><i><MatMailOutlined /></i>Contact</a>
+          </div>
         </div>
-        <ul>
-          <li>
-            <a
-              href="https://qwik.builder.io/docs/components/overview/"
-              target="_blank"
-            >
-              Docs
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://qwik.builder.io/examples/introduction/hello-world/"
-              target="_blank"
-            >
-              Examples
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://qwik.builder.io/tutorial/welcome/overview/"
-              target="_blank"
-            >
-              Tutorials
-            </a>
-          </li>
-        </ul>
+        <i class={styles.nav_menu_btn} onClick$={handleMenuToggle}><MatBlurOnOutlined /></i>
       </div>
     </header>
   );
