@@ -11,7 +11,7 @@ export default component$(() => {
         <div class={styles.footer_content}>
           <div class={[styles.sec, styles.about]}>
             <div class={styles.logo}>
-              <LogoSymbol class={styles.logo_symbol} />
+              <LogoSymbol alt="knuckles retreat logo" class={styles.logo_symbol} />
               <h2>Knuckles Retreat</h2>
               <h3>-RECONNECT WITH NATURE-</h3>
             </div>
@@ -34,9 +34,9 @@ export default component$(() => {
           <div class={[styles.sec, styles.quicklinks]}>
             <h2>Navigate</h2>
             <ul>
-              <li><a href="">Home</a></li>
-              <li><a href="">Gallery</a></li>
-              <li><a href="">Explore</a></li>
+              <li><a href="/#home">Home</a></li>
+              <li><a href="/#gallery">Gallery</a></li>
+              <li><a href="/#explore">Explore</a></li>
             </ul>
           </div>
 
