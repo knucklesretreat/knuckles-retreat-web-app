@@ -1,0 +1,188 @@
+.explore {
+    background-color: #181818;
+    position: relative;
+    overflow: hidden;
+
+    .bg_img {
+        position: absolute;
+        height: 600px;
+        width: 600px;
+        top: -300px;
+        right: 50%;
+        opacity: 0.7;
+        transition: 0.3s ease;
+    }
+
+    .bottom_img {
+        width: 1000px;
+        height: 1000px;
+        top: auto;
+        bottom: -500px;
+        right: -500px;
+    }
+}
+
+.main_content {
+    position: relative;
+    margin: 0 200px 80px;
+    z-index: 111;
+    display: flex;
+    align-items: center;
+
+    .txt_content {
+        padding-right: 6px;
+        h2 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2em;
+            margin: auto;
+            font-family: "Nunito Sans", sans-serif;
+            transition: 0.3s ease;
+            margin-top: 40px;
+        }
+
+        p {
+            text-align: center;
+            color: #ffffff;
+            font-size: 1em;
+            opacity: 1;
+            background: none;
+            box-shadow: none;
+            backdrop-filter: none;
+            border: none;
+            transform: none;
+            margin: 0 auto;
+            font-family: "Nunito Sans", sans-serif;
+            transition: 0.3s ease;
+        }
+    }
+
+    .img_grid {
+        width: calc(50vw * 4);
+        margin-top: 60px;
+        padding-left: 6px;
+
+        .grid_container {
+            margin: auto;
+            width: 100%;
+            height: 85vh;
+            height: 85dvh;
+            height: calc(50vw - 200px);
+            display: grid;
+            grid-auto-columns: 1fr;
+            gap: 0.3em;
+            grid-template-areas:
+                "one two"
+                "three four";
+            transition: 1s ease;
+        }
+
+        .grid_item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-size: cover;
+            background-position: center;
+            transition: 1s ease;
+        }
+
+        .grid_item:hover {
+            transform: scale(1.01);
+        }
+
+        .grid_item:nth-child(1) {
+            grid-area: one;
+            background-image: url("/src/media/explore/img1.webp");
+        }
+
+        .grid_item:nth-child(2) {
+            grid-area: two;
+            background-image: url("/src/media/explore/img2.webp");
+        }
+
+        .grid_item:nth-child(3) {
+            grid-area: three;
+            background-image: url("/src/media/explore/img3.webp");
+        }
+
+        .grid_item:nth-child(4) {
+            grid-area: four;
+            background-image: url("/src/media/explore/img4.webp");
+        }
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    .main_content {
+        margin: 0 50px 60px;
+
+        .img_grid {
+            width: calc(50vw * 5);
+
+            .grid_container {
+                height: calc(50vw - 100px);
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 785px) {
+    .explore {
+        img {
+            height: 500px;
+            width: 500px;
+            top: -250px;
+        }
+
+        .bottom_img {
+            width: 800px;
+            height: 800px;
+            top: auto;
+            bottom: -400px;
+            right: -400px;
+        }
+    }
+
+    .main_content {
+        margin: 0 20px 20px;
+        flex-direction: column;
+
+        .txt_content {
+            padding: 0;
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            p {
+                font-size: 0.9em;
+                line-height: normal;
+            }
+        }
+
+        .img_grid {
+            width: 100%;
+            margin: 20px 0 40px;
+            padding: 0;
+
+            .grid_container {
+                height: calc(70vw - 40px);
+            }
+        }
+    }
+}
+
+@media (max-width: 460px) {
+    .main_content {
+        .img_grid {
+            .grid_container {
+                height: calc(200px * 4);
+                grid-template-areas:
+                    "one"
+                    "two"
+                    "three"
+                    "four";
+            }
+        }
+    }
+}

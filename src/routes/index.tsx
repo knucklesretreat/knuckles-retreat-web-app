@@ -1,5 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
+import Explore from "~/components/starter/explore/explore";
 import Gallery from "~/components/starter/gallery/gallery";
 import Home from "~/components/starter/home/home";
 import Intro from "~/components/starter/intro/intro";
@@ -10,6 +11,7 @@ export default component$(() => {
       <Home />
       <Intro />
       <Gallery />
+      <Explore />
     </>
   );
 });
