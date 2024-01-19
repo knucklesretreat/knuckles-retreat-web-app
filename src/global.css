@@ -1,80 +1,86 @@
-/**
- * WHAT IS THIS FILE?
- *
- * Globally applied styles. No matter which components are in the page or matching route,
- * the styles in here will be applied to the Document, without any sort of CSS scoping.
- *
- */
+@import url("https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Montserrat:wght@400;500;600&family=Nunito+Sans:ital,opsz,wght@0,6..12,200;0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;0,6..12,800;0,6..12,900;1,6..12,200;1,6..12,300;1,6..12,500;1,6..12,600;1,6..12,800;1,6..12,900&family=Source+Sans+3:wght@400;500;600&display=swap");
 
+/*======= CSS variables =======*/
 :root {
-  --qwik-dark-blue: #006ce9;
-  --qwik-light-blue: #18b6f6;
-  --qwik-light-purple: #ac7ff4;
-  --qwik-dark-purple: #713fc2;
-  --qwik-dirty-black: #1d2033;
-  --qwik-dark-background: #151934;
-  --qwik-dark-text: #ffffff;
+  --white-color: #ffffff;
+  --dark-color: #222;
+  --body-bg-color: #fff;
+  --section-bg-color: #202834;
+  --navigation-item-hover-color: #3b5378;
+
+  --text-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+  --box-shadow: 0 5px 25px rgb(0 0 0 / 20%);
+
+  --scroll-bar-color: #fff;
+  --scroll-thumb-color: #282f4e;
+  --scroll-thumb-hover-color: #454f6b;
 }
 
-html {
-  line-height: 1;
-  -webkit-text-size-adjust: 100%;
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
-  tab-size: 4;
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    "Helvetica Neue",
-    Arial,
-    "Noto Sans",
-    sans-serif,
-    "Apple Color Emoji",
-    "Segoe UI Emoji",
-    "Segoe UI Symbol",
-    "Noto Color Emoji";
+::-webkit-scrollbar {
+  width: 5px;
 }
 
-body {
-  padding: 0;
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scroll-thumb-color);
+}
+
+/*======= Main CSS =======*/
+* {
   margin: 0;
-  line-height: inherit;
-}
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  scroll-behavior: smooth;
 
-/**
- * WHAT IS THIS FILE?
- *
- * Globally applied styles. No matter which components are in the page or matching route,
- * the styles in here will be applied to the Document, without any sort of CSS scoping.
- *
- */
-html {
-  -webkit-text-size-adjust: 100%;
-  -moz-tab-size: 4;
-  -o-tab-size: 4;
-  tab-size: 4;
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    "Helvetica Neue",
-    Arial,
-    "Noto Sans",
-    sans-serif,
-    "Apple Color Emoji",
-    "Segoe UI Emoji",
-    "Segoe UI Symbol",
-    "Noto Color Emoji";
+  /* font-family: "Kaushan Script", cursive;
+  font-family: "Montserrat", sans-serif;
+  font-family: "Nunito Sans", sans-serif;
+  font-family: "Source Sans 3", sans-serif; */
 }
 
 body {
-  padding: 0;
-  line-height: inherit;
+  background: var(--body-bg-color);
+}
+
+section {
+  position: relative;
+}
+
+.section {
+  color: var(--white-color);
+  background: var(--section-bg-color);
+  padding: 35px 200px;
+  transition: 0.3s ease;
+}
+
+.loading-overlay {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  background-image: url("./media/spinner.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 70px;
+}
+
+@media screen and (max-width: 785px) {
+  .g-recaptcha {
+    transform: scale(0.8);
+    transform-origin: 0 0;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .g-recaptcha {
+    transform: scale(0.65);
+    transform-origin: 0 0;
+  }
 }
