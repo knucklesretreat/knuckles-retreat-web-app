@@ -1,0 +1,217 @@
+.inquiry_sec {
+    position: relative;
+    min-height: 80vh;
+    min-height: 80dvh;
+    background: rgba(39, 78, 19, 0.25);
+    background-blend-mode: multiply;
+}
+
+.inquiry_content {
+    position: relative;
+    margin: 0 200px;
+    padding: 150px 0 40px;
+
+    .header_content {
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            font-weight: 700;
+            font-family: "Nunito Sans", sans-serif;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        p {
+            text-align: center;
+            font-size: 1em;
+            font-family: "Nunito Sans", sans-serif;
+            padding: 0 20px;
+            margin-bottom: 40px;
+        }
+    }
+
+    .form_sec {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(39, 78, 19, 0.25);
+        border-radius: 6px;
+        padding: 20px;
+
+        h2 {
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: 700;
+            font-family: "Nunito Sans", sans-serif;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        form {
+            width: 100%;
+        }
+
+        label {
+            font-size: 0.9em;
+            font-family: "Nunito Sans", sans-serif;
+
+            span {
+                color: red;
+            }
+        }
+
+        input,
+        select,
+        textarea {
+            font-size: 0.9em;
+            font-weight: 600;
+            font-family: "Nunito Sans", sans-serif;
+            padding: 10px;
+            max-height: 42px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            outline: none;
+        }
+
+        select {
+            border-right: 16px solid transparent;
+        }
+
+        textarea {
+            height: 200px;
+            max-height: none;
+        }
+
+        .form_row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+
+            .salutation,
+            .fname,
+            .country,
+            .telephone,
+            .arrival,
+            .departure,
+            .email,
+            .guests,
+            .otherinfo {
+                display: flex;
+                flex-direction: column;
+                font-family: "Nunito Sans", sans-serif;
+                width: 70%;
+            }
+
+            .arrival,
+            .departure,
+            .email,
+            .guests {
+                width: 48%;
+            }
+
+            .salutation,
+            .country {
+                width: 26%;
+            }
+
+            .otherinfo {
+                width: 100%;
+            }
+        }
+
+        .error_txt {
+            font-size: 0.9em;
+            font-weight: 600;
+            font-family: "Nunito Sans", sans-serif;
+            color: red;
+            margin-bottom: 16px;
+        }
+
+        .submit_btn {
+            font-size: 0.9em;
+            font-weight: 600;
+            font-family: "Nunito Sans", sans-serif;
+            padding: 0 20px;
+            height: 32px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            outline: none;
+            cursor: pointer;
+        }
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    .inquiry_content {
+        margin: 0 50px;
+        /* padding: 150px 0 40px; */
+    }
+}
+
+@media screen and (max-width: 785px) {
+    .inquiry_content {
+        margin: 0 20px;
+        padding: 120px 0 40px;
+
+        .header_content {
+            h1 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+
+            p {
+                font-size: 0.9em;
+                padding: 0 16px;
+                margin-bottom: 30px;
+            }
+        }
+
+        .form_sec {
+            padding: 16px;
+
+            h2 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+
+            label {
+                font-size: 0.8em;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+
+            input,
+            select,
+            textarea {
+                font-size: 0.8em;
+            }
+
+            .error_txt {
+                font-size: 0.8em;
+            }
+
+            .submit_btn {
+                font-size: 0.8em;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 336px) {
+    .inquiry_content {
+        .form_sec {
+            .form_row {
+                .fname,
+                .telephone {
+                    width: 60%;
+                }
+
+                .salutation,
+                .country {
+                    width: 36%;
+                }
+            }
+        }
+    }
+}
