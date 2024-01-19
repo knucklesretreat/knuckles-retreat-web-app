@@ -7,6 +7,8 @@ import {
 import { RouterHead } from "./components/router-head/router-head";
 
 import "./global.css";
+import { QwikPartytown } from "./components/partytown/partytown";
+import { Schema } from "./components/schema/schema";
 
 export default component$(() => {
   /**
@@ -20,6 +22,9 @@ export default component$(() => {
     <QwikCityProvider>
       <head>
         <meta charSet="utf-8" />
+        <QwikPartytown forward={['dataLayer.push']} />
+        <Schema />
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <link rel="manifest" href="/manifest.json" />
         <RouterHead />
         <ServiceWorkerRegister />
