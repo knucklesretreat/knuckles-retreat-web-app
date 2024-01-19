@@ -41,7 +41,7 @@ export default component$(() => {
   return (
     <header class={styles.header}>
       <div class={styles.logo_wrapper} onClick$={() => nav('/')}>
-        <LogoSymbol alt="knuckles retreat logo" class={styles.logo_symbol} />
+        <LogoSymbol class={styles.logo_symbol} />
         <h4>Knuckles Retreat</h4>
         <h5>-RECONNECT WITH NATURE-</h5>
       </div>

@@ -7,8 +7,8 @@ import LogoSymbol from "~/media/Logo-Symbol.svg?jsx";
 export default component$(() => {
     return (
         <section id="contact" class={styles.contact}>
-            <BgContour1 alt="contour line pattern" class={styles.bg_img} />
-            <BgContour2 alt="contour line pattern" class={[styles.bg_img, styles.bottom_img]} />
+            <BgContour1 class={styles.bg_img} />
+            <BgContour2 class={[styles.bg_img, styles.bottom_img]} />
             <h2>Contact Us</h2>
             <div class={styles.main_content}>
                 <div class={styles.map}>
@@ -16,7 +16,7 @@ export default component$(() => {
                 </div>
                 <div class={styles.info}>
                     <div class={styles.logo}>
-                        <LogoSymbol alt="knuckles retreat logo" class={styles.logo_symbol}></LogoSymbol>
+                        <LogoSymbol class={styles.logo_symbol}></LogoSymbol>
                         <h3>Knuckles Retreat</h3>
                         <h4>-RECONNECT WITH NATURE-</h4>
                     </div>

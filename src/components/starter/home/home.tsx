@@ -143,10 +143,18 @@ export default component$(() => {
 
             <div class={styles.bg_slider_thumbs}>
                 <div class={styles.thumbs_container}>
-                    <BgImage1 alt="picture of knuckles retreat sri lanka" onClick$={() => setActiveSlide(0)} class={[styles.thumb_img, activeIndex.value === 0 ? styles.thumb_active : '']} />
-                    <BgImage2 alt="picture of forest at knuckles sri lanka" onClick$={() => setActiveSlide(1)} class={[styles.thumb_img, activeIndex.value === 1 ? styles.thumb_active : '']} />
-                    <BgImage3 alt="picture of a stream at knuckles sri lanka" onClick$={() => setActiveSlide(2)} class={[styles.thumb_img, activeIndex.value === 2 ? styles.thumb_active : '']} />
-                    <BgImage4 alt="picture of sunset at knuckles sri lanka" onClick$={() => setActiveSlide(3)} class={[styles.thumb_img, activeIndex.value === 3 ? styles.thumb_active : '']} />
+                    <div onClick$={() => setActiveSlide(0)}>
+                        <BgImage1 alt="picture of knuckles retreat sri lanka" class={[styles.thumb_img, activeIndex.value === 0 ? styles.thumb_active : '']} />
+                    </div>
+                    <div onClick$={() => setActiveSlide(1)}>
+                        <BgImage2 alt="picture of forest at knuckles sri lanka" class={[styles.thumb_img, activeIndex.value === 1 ? styles.thumb_active : '']} />
+                    </div>
+                    <div onClick$={() => setActiveSlide(2)}>
+                        <BgImage3 alt="picture of a stream at knuckles sri lanka" class={[styles.thumb_img, activeIndex.value === 2 ? styles.thumb_active : '']} />
+                    </div>
+                    <div onClick$={() => setActiveSlide(3)}>
+                        <BgImage4 alt="picture of sunset at knuckles sri lanka" class={[styles.thumb_img, activeIndex.value === 3 ? styles.thumb_active : '']} />
+                    </div>
                 </div>
             </div>
 

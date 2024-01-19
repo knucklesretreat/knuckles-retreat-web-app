@@ -11,7 +11,7 @@ export default component$(() => {
         <div class={styles.footer_content}>
           <div class={[styles.sec, styles.about]}>
             <div class={styles.logo}>
-              <LogoSymbol alt="knuckles retreat logo" class={styles.logo_symbol} />
+              <LogoSymbol class={styles.logo_symbol} />
               <h2>Knuckles Retreat</h2>
               <h3>-RECONNECT WITH NATURE-</h3>
             </div>

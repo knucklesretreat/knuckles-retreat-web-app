@@ -7,7 +7,7 @@ export default component$(() => {
     return (
         <section id="explore" class={styles.explore}>
             <BgPattern alt="flower pattern" class={styles.bg_img} />
-            <BgContour alt="contour line pattern" class={[styles.bg_img, styles.bottom_img]} />
+            <BgContour class={[styles.bg_img, styles.bottom_img]} />
             <div class={styles.main_content}>
                 <div class={styles.txt_content}>
                     <h2>Explore Knuckles</h2>
