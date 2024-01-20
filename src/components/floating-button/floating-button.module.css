@@ -48,8 +48,8 @@
 
 @media screen and (max-width: 785px) {
     .floating_btn {
-        bottom: 20px;
-        right: 20px;
+        bottom: 6px;
+        right: 6px;
         width: 80px;
         height: 80px;
 

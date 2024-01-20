@@ -3,12 +3,14 @@ import { IoChevronForwardOutline, IoLogoFacebook, IoLogoInstagram, IoLogoYoutube
 import { useNavigate } from "@builder.io/qwik-city";
 import styles from "./home.module.css";
 import BgImage1 from "~/media/home/bg1.webp?jsx";
+import BgImage1Sm from "~/media/home/bg1-sm.webp?jsx";
 import BgImage2 from "~/media/home/bg2.webp?jsx";
 import BgImage3 from "~/media/home/bg3.webp?jsx";
 import BgImage4 from "~/media/home/bg4.webp?jsx";
 
 export default component$(() => {
     const activeIndex = useSignal(0);
+    const isLargeScreen = useSignal(false);
     const nav = useNavigate();
 
     // const animateContent = $(() => {
@@ -44,6 +46,9 @@ export default component$(() => {
     // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(({ cleanup }) => {
         setActiveSlide(0, true);
+        if (typeof window !== "undefined") {
+            isLargeScreen.value = window.innerWidth < 460 ? false : true;
+        }
         const interval = setInterval(() => {
             // setActiveIndex((prevIndex) => (prevIndex + 1) % images.length);
             // animateContent();
@@ -64,7 +69,11 @@ export default component$(() => {
             {activeIndex.value === 0 &&
                 <div class={[styles.bg_slider]}>
                     <div class={[styles.slide, styles.dark_layer]}>
-                        <BgImage1 alt="picture of knuckles retreat sri lanka" />
+                        {/* <BgImage1 class={styles.bgimg_lg} alt="picture of knuckles retreat sri lanka" /> */}
+                        {/* <BgImage1Sm class={styles.bgimg_sm} alt="picture of knuckles retreat sri lanka" /> */}
+                        {!isLargeScreen.value
+                            ? <BgImage1Sm class={styles.bgimg_sm} alt="picture of knuckles retreat sri lanka" />
+                            : <BgImage1 class={styles.bgimg_lg} alt="picture of knuckles retreat sri lanka" />}
                         <div class={styles.text_content}>
                             <h2 class={styles.title}>Harmony <span>Heights</span></h2>
                             <p>
