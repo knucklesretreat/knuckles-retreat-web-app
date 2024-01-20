@@ -7,6 +7,10 @@ import BgImage1Sm from "~/media/home/bg1-sm.webp?jsx";
 import BgImage2 from "~/media/home/bg2.webp?jsx";
 import BgImage3 from "~/media/home/bg3.webp?jsx";
 import BgImage4 from "~/media/home/bg4.webp?jsx";
+import TmbImage1 from "~/media/home/thumbs/tmb1.webp?jsx";
+import TmbImage2 from "~/media/home/thumbs/tmb2.webp?jsx";
+import TmbImage3 from "~/media/home/thumbs/tmb3.webp?jsx";
+import TmbImage4 from "~/media/home/thumbs/tmb4.webp?jsx";
 
 export default component$(() => {
     const activeIndex = useSignal(0);
@@ -153,16 +157,16 @@ export default component$(() => {
             <div class={styles.bg_slider_thumbs}>
                 <div class={styles.thumbs_container}>
                     <div onClick$={() => setActiveSlide(0)}>
-                        <BgImage1 alt="picture of knuckles retreat sri lanka" class={[styles.thumb_img, activeIndex.value === 0 ? styles.thumb_active : '']} />
+                        <TmbImage1 alt="picture of knuckles retreat sri lanka" class={[styles.thumb_img, activeIndex.value === 0 ? styles.thumb_active : '']} />
                     </div>
                     <div onClick$={() => setActiveSlide(1)}>
-                        <BgImage2 alt="picture of forest at knuckles sri lanka" class={[styles.thumb_img, activeIndex.value === 1 ? styles.thumb_active : '']} />
+                        <TmbImage2 alt="picture of forest at knuckles sri lanka" class={[styles.thumb_img, activeIndex.value === 1 ? styles.thumb_active : '']} />
                     </div>
                     <div onClick$={() => setActiveSlide(2)}>
-                        <BgImage3 alt="picture of a stream at knuckles sri lanka" class={[styles.thumb_img, activeIndex.value === 2 ? styles.thumb_active : '']} />
+                        <TmbImage3 alt="picture of a stream at knuckles sri lanka" class={[styles.thumb_img, activeIndex.value === 2 ? styles.thumb_active : '']} />
                     </div>
                     <div onClick$={() => setActiveSlide(3)}>
-                        <BgImage4 alt="picture of sunset at knuckles sri lanka" class={[styles.thumb_img, activeIndex.value === 3 ? styles.thumb_active : '']} />
+                        <TmbImage4 alt="picture of sunset at knuckles sri lanka" class={[styles.thumb_img, activeIndex.value === 3 ? styles.thumb_active : '']} />
                     </div>
                 </div>
             </div>

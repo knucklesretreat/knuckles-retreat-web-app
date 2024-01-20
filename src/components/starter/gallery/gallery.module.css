@@ -1,6 +1,6 @@
 .gallery {
     /* background-color: rgba(0, 0, 0, 0.2); */
-    background: url("/src/media/textile.png") rgba(0, 0, 0, 0.3);
+    background: url("/src/media/textile.webp") rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
     background-blend-mode: multiply;
@@ -110,6 +110,7 @@
 .grid_item:nth-child(3) {
     grid-area: three;
     background-image: url("/src/media/gallery/img3.webp");
+    background-position-y: 75%;
 }
 
 .grid_item:nth-child(4) {

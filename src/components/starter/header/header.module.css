@@ -41,16 +41,9 @@ header.sticky {
   .logo_symbol {
     height: 42px;
     width: 42px;
-    display: none;
   }
 
-  .full_logo {
-    width: 126px;
-    height: 80px;
-    object-fit: cover;
-  }
-
-  /* h4 {
+  h4 {
     font-size: 1.1em;
     line-height: normal;
     text-align: center;
@@ -66,7 +59,7 @@ header.sticky {
     color: var(--white-color);
     margin-top: -2px;
     font-family: "Montserrat", sans-serif;
-  } */
+  }
 }
 
 header.logo_only {
@@ -76,14 +69,6 @@ header.logo_only {
     padding: 6px;
     border: none;
     box-shadow: none;
-
-    .full_logo {
-      display: none;
-    }
-
-    .logo_symbol {
-      display: block;
-    }
 
     h4,
     h5 {
@@ -179,11 +164,6 @@ header.logo_only {
     left: 20px;
     min-height: 55px;
 
-    .full_logo {
-      width: 113px;
-      height: 72px;
-    }
-
     .logo_symbol {
       height: 32px;
       width: 32px;
@@ -199,7 +179,6 @@ header.logo_only {
       margin-top: -1px;
     }
   }
-
   .nav_bar {
     padding: 25px 20px;
   }
@@ -283,15 +262,5 @@ header.logo_only {
     font-size: 1.3em;
     margin-right: 6px;
     bottom: -4px;
-  }
-}
-
-/*======= Media queries (max-width: 420px) =======*/
-@media screen and (max-width: 435px) {
-  .logo_wrapper {
-    .full_logo {
-      width: 102px;
-      height: 65px;
-    }
   }
 }

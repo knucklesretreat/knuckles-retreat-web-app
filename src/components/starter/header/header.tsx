@@ -3,7 +3,6 @@ import styles from "./header.module.css";
 import { MatBlurOnOutlined, MatCloseOutlined, MatExploreOutlined, MatHomeOutlined, MatPhotoLibraryOutlined, MatMailOutlined } from "@qwikest/icons/material";
 import LogoSymbol from "~/media/Logo-Symbol.svg?jsx";
 import { useNavigate } from "@builder.io/qwik-city";
-import FullLogo from "~/media/full-logo.webp?jsx";
 
 export default component$(() => {
   const nav = useNavigate();
@@ -43,9 +42,8 @@ export default component$(() => {
     <header class={styles.header}>
       <div class={styles.logo_wrapper} onClick$={() => nav('/')}>
         <LogoSymbol class={styles.logo_symbol} />
-        {/* <h4>Knuckles Retreat</h4>
-        <h5>-RECONNECT WITH NATURE-</h5> */}
-        <FullLogo alt="Knuckles Retreat logo" class={styles.full_logo}/>
+        <h4>Knuckles Retreat</h4>
+        <h5>-RECONNECT WITH NATURE-</h5>
       </div>
       <div class={styles.nav_bar}>
         <div></div>
