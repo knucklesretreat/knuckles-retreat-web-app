@@ -1,5 +1,5 @@
 
-import { $, component$, useStore } from "@builder.io/qwik";
+import { $, component$, useStore, useVisibleTask$ } from "@builder.io/qwik";
 import styles from "./inquiry.module.css";
 import countrylist from "~/data/country-list.json";
 
@@ -22,6 +22,32 @@ export default component$(() => {
         departure: "",
         guestCount: "1",
         otherInfo: ""
+    });
+
+    const toastState = useStore({
+        showToast: false,
+        toastText: "",
+        type: ""
+    });
+
+    // eslint-disable-next-line qwik/no-use-visible-task
+    useVisibleTask$(() => {
+        if (typeof window !== "undefined") {
+            const recaptchaResElement = document.getElementById('g-recaptcha-response');
+            const departureDateInput = document.getElementById('departure');
+
+            const nextDay = new Date();
+            nextDay.setDate(nextDay.getDate() + 1);
+
+            const minDepartureDate = nextDay.toISOString().split('T')[0];
+            (departureDateInput as HTMLInputElement).setAttribute('min', minDepartureDate);
+
+            if (recaptchaResElement && recaptchaResElement.classList.contains('g-recaptcha-response')) {
+                return;
+            }
+
+            window.grecaptcha.render('kr-g-recaptcha', { 'sitekey': '6LfqVD4pAAAAAByXb5ErD4k81KielZ8Ybz4PRw8K' });
+        }
     });
 
     const validateForm = $(async () => {
@@ -76,11 +102,45 @@ export default component$(() => {
         return 'valid';
     });
 
-    const handleSubmit = $(async () => {
-        console.log("handling submit...");
+    const setMinDepartureDate = $(() => {
+        const arrivalDateInput = document.getElementById('arrival');
+        const arrivalDateValue = (arrivalDateInput as HTMLInputElement).value;
 
-        console.log("making POST api request....")
-        // console.log("Form Data: ", JSON.stringify(formData))
+        const nextDay = new Date(arrivalDateValue);
+        nextDay.setDate(nextDay.getDate() + 1);
+        const minDepartureDate = nextDay.toISOString().split('T')[0];
+        const departureDateInput = document.getElementById('departure');
+        (departureDateInput as HTMLInputElement).setAttribute('min', minDepartureDate);
+
+        const currentDepartureDateValue = new Date((departureDateInput as HTMLInputElement).value);
+
+        // If arrival date is greater than current departure date, update departure date
+        if (new Date(arrivalDateValue) > currentDepartureDateValue) {
+            const nextDay = new Date(arrivalDateValue);
+            nextDay.setDate(nextDay.getDate() + 1);
+            const newDepartureDate = nextDay.toISOString().split('T')[0];
+            (departureDateInput as HTMLInputElement).value = newDepartureDate;
+        }
+    });
+
+    const resetFrom = $(() => {
+        formData.salutation = "Mr.";
+        formData.fullName = "";
+        formData.country = "";
+        formData.telephone = "";
+        formData.email = "";
+        formData.arrival = "";
+        formData.departure = "";
+        formData.guestCount = "1";
+        formData.otherInfo = "";
+
+        if (typeof window !== "undefined") {
+            window.grecaptcha.reset();
+        }
+    });
+
+    const handleSubmit = $(async () => {
+
         const validityStr = await validateForm();
         if (validityStr !== "valid") {
             formState.showError = true;
@@ -92,29 +152,51 @@ export default component$(() => {
         formState.errorTxt = "";
         formState.showLoader = true;
 
-        const baseUrl = "http://127.0.0.1:5001/knuckles-retreat/us-central1/";
+        // const baseUrl = "http://127.0.0.1:5001/knuckles-retreat/us-central1/";
         const reqOptions = {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         }
 
-        await fetch(`${baseUrl}reservation`, reqOptions)
+        await fetch(`${import.meta.env.PUBLIC_API_URL}/reservation`, reqOptions)
             .then(res => res.json())
             .then(data => {
-                console.log("res data: ", data);
+                // console.log("res data: ", data);
                 formState.showLoader = false;
+                if (data.status === 'success') {
+                    toastState.toastText = data.message;
+                    toastState.type = 'success';
+                } else {
+                    toastState.toastText = 'Something went wrong. Please try again.';
+                    toastState.type = 'error';
+                }
+                toastState.showToast = true;
+                resetFrom();
             })
             .catch(err => {
                 console.log("error: ", err);
                 formState.showLoader = false;
+                toastState.toastText = 'Something went wrong. Please try again.';
+                toastState.type = 'error';
+                toastState.showToast = true;
+                resetFrom();
             })
+    });
+
+    const onToastClick = $(() => {
+        if (toastState.showToast) {
+            toastState.showToast = false;
+        }
     });
 
 
     return (
         <section class={styles.inquiry_sec}>
             {formState.showLoader ? <div class="loading-overlay"></div> : ''}
+            {toastState.showToast ? <div class={["toast", (toastState.type === 'error' ? "toast-error" : null)]} onClick$={onToastClick}>
+                <span>{toastState.toastText}</span>
+            </div> : null}
             <div class={styles.inquiry_content}>
                 <div class={styles.header_content}>
                     <h1>Inquire with Knuckles Retreat</h1>
@@ -158,7 +240,7 @@ export default component$(() => {
                         <div class={styles.form_row}>
                             <div class={styles.arrival}>
                                 <label for="arrival">Arrival <span>*</span></label>
-                                <input type="date" id="arrival" name="arrival" placeholder="Select date" value={formData.arrival} onInput$={(e) => formData.arrival = (e.target as HTMLInputElement).value}></input>
+                                <input type="date" id="arrival" name="arrival" placeholder="Select date" min={new Date().toISOString().split("T")[0]} value={formData.arrival} onChange$={setMinDepartureDate} onInput$={(e) => formData.arrival = (e.target as HTMLInputElement).value}></input>
                             </div>
 
                             <div class={styles.departure}>
@@ -185,14 +267,18 @@ export default component$(() => {
                             </div>
                         </div>
 
-                        <div class="g-recaptcha" data-sitekey="6LfqVD4pAAAAAByXb5ErD4k81KielZ8Ybz4PRw8K"></div>
+                        <div class="g-recaptcha" id="kr-g-recaptcha" data-sitekey="6LfqVD4pAAAAAByXb5ErD4k81KielZ8Ybz4PRw8K"></div>
                         <br />
                         {formState.showError
                             ? <div class={styles.error_txt}>* {formState.errorTxt}</div>
                             : ""
                         }
 
-                        <button class={styles.submit_btn} onClick$={handleSubmit} type="submit">Submit</button>
+                        <div class={styles.btn_row}>
+                            <button class={styles.submit_btn} onClick$={handleSubmit} type="submit">Submit</button>
+                            <span onClick$={() => resetFrom()}>RESET</span>
+                        </div>
+
                     </form>
                 </div>
             </div>

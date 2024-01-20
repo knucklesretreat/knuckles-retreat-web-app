@@ -129,6 +129,19 @@
             margin-bottom: 16px;
         }
 
+        .btn_row {
+            display: flex;
+            align-items: center;
+
+            span {
+                text-decoration: underline;
+                font-family: "Nunito Sans", sans-serif;
+                font-size: 0.9em;
+                font-weight: 600;
+                cursor: pointer;
+            }
+        }
+
         .submit_btn {
             font-size: 0.9em;
             font-weight: 600;
@@ -139,6 +152,7 @@
             border: 1px solid transparent;
             outline: none;
             cursor: pointer;
+            margin-right: 36px;
         }
     }
 }

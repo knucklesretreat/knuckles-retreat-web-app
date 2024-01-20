@@ -25,6 +25,7 @@ export default component$(() => {
           <div class={[styles.sec, styles.quicklinks]}>
             <h2>Support</h2>
             <ul>
+              <li><a href="/inquiry">Inquire</a></li>
               <li><a href="/faq">FAQ</a></li>
               <li><a href="/privacy-policy">Privacy Policy</a></li>
               <li><a href="/terms-and-conditions">Terms & Conditions</a></li>
