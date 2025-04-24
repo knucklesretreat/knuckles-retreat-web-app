@@ -22,6 +22,7 @@ export default component$(() => {
     <QwikCityProvider>
       <head>
         <meta charSet="utf-8" />
+        {/* @ts-ignore TS expects PartytownProps but 'forward' is valid */}
         <QwikPartytown forward={['dataLayer.push']} />
         <Schema />
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
