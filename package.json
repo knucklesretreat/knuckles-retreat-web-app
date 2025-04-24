@@ -26,21 +26,21 @@
     "qwik": "qwik"
   },
   "devDependencies": {
-    "@builder.io/partytown": "^0.10.3",
+    "@builder.io/partytown": "^0.8.2",
     "@builder.io/qwik": "^1.13.0",
     "@builder.io/qwik-city": "^1.13.0",
-    "@types/eslint": "^9.6.1",
-    "@types/node": "^22.14.1",
-    "@typescript-eslint/eslint-plugin": "^8.31.0",
-    "@typescript-eslint/parser": "^8.31.0",
-    "eslint": "^9.25.1",
+    "@types/eslint": "8.56.10",
+    "@types/node": "20.14.11",
+    "@typescript-eslint/eslint-plugin": "7.16.1",
+    "@typescript-eslint/parser": "7.16.1",
+    "eslint": "8.57.0",
     "eslint-plugin-qwik": "^1.13.0",
-    "prettier": "^3.5.3",
-    "typescript": "5.8.3",
+    "prettier": "3.3.3",
+    "typescript": "5.4.5",
     "undici": "*",
     "vercel": "^41.6.2",
-    "vite": "^5.4.18",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite": "5.3.5",
+    "vite-tsconfig-paths": "^4.2.1"
   },
   "dependencies": {
     "@qwikest/icons": "^0.0.13"
