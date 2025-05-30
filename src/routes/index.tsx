@@ -6,14 +6,18 @@ import Explore from "~/components/starter/explore/explore";
 import Gallery from "~/components/starter/gallery/gallery";
 import Home from "~/components/starter/home/home";
 import Intro from "~/components/starter/intro/intro";
+import Accommodation from "~/components/starter/accommodation/accommodation";
+import Testimonial from "~/components/starter/testimonial/testimonial";
 
 export default component$(() => {
   return (
     <>
       <Home />
       <Intro />
+      <Accommodation />
       <Gallery />
       <Explore />
+      <Testimonial />
       <Contact />
       <FloatingButton />
     </>
