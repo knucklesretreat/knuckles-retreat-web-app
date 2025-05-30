@@ -3,7 +3,7 @@ import { useNavigate } from "@builder.io/qwik-city";
 import { MatBlurOnOutlined, MatCloseOutlined, MatExploreOutlined, MatHomeOutlined, MatPhotoLibraryOutlined, MatMailOutlined, MatKingBedOutlined } from "@qwikest/icons/material";
 import styles from "./header.module.css";
 import LogoSymbol from "~/media/Logo-Symbol.svg?jsx";
-import BgPattern from "~/media/pattern1.webp?jsx";
+import BgPattern from "~/media/pattern1.webp?url";
 
 export default component$(() => {
   const nav = useNavigate();
@@ -68,7 +68,15 @@ export default component$(() => {
         <div></div>
         <div class={["navigation", styles.navigation]}>
           <div class={styles.nav_items}>
-            <BgPattern alt="flower pattern" class={styles.bg_pattern} />
+            <picture>
+              <source media="(max-width: 460px)" srcset={BgPattern} />
+              {/* <source media="(min-width: 461px)" srcset={BgImage1} /> */}
+              <img
+                class={styles.bg_pattern}
+                alt="flower pattern"
+              />
+            </picture>
+            {/* <BgPattern alt="flower pattern" class={styles.bg_pattern} /> */}
             <i class={styles.nav_close_btn} onClick$={handleCloseBtnClick}><MatCloseOutlined /></i>
             <a href="/#home"><i><MatHomeOutlined /></i>Home</a>
             <a href="/accommodation"><i><MatKingBedOutlined /></i>Accommodation</a>

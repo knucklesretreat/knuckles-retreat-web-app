@@ -5,7 +5,7 @@ import BgPattern from "~/media/pattern1.webp?jsx";
 import BgBranch from "~/media/explore/branch.webp?jsx";
 import ImgOne from "~/media/explore/imgone.jpg?url";
 import ImgTwo from "~/media/explore/img2.webp?url";
-import ImgThree from "~/media/explore/img3.webp?url";
+import ImgThree from "~/media/explore/img-3.jpg?url";
 import ImgFour from "~/media/explore/img4.webp?url";
 
 export default component$(() => {

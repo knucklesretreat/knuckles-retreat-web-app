@@ -2,8 +2,8 @@ import { component$, $, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 import { IoChevronForwardOutline, IoLogoFacebook, IoLogoInstagram, IoLogoYoutube } from "@qwikest/icons/ionicons";
 import { useNavigate } from "@builder.io/qwik-city";
 import styles from "./home.module.css";
-// import BgImage1 from "~/media/home/bg1.webp?jsx";
-// import BgImage1Sm from "~/media/home/bg1-sm.webp?jsx";
+import BgImage1 from "~/media/home/bg1.webp?url";
+import BgImage1Sm from "~/media/home/bg1-sm.webp?url";
 import BgImage2 from "~/media/home/bg2.webp?jsx";
 import BgImage3 from "~/media/home/bg3.webp?jsx";
 import BgImage4 from "~/media/home/bg4.webp?jsx";
@@ -14,7 +14,7 @@ import TmbImage4 from "~/media/home/thumbs/tmb4.webp?jsx";
 
 export default component$(() => {
     const activeIndex = useSignal(0);
-    const isLargeScreen = useSignal(false);
+    // const isLargeScreen = useSignal(false);
     const nav = useNavigate();
     const scrollY = useSignal(0);
     const isTransitioning = useSignal(false);
@@ -51,16 +51,16 @@ export default component$(() => {
 
         // Check screen size
         if (typeof window !== "undefined") {
-            isLargeScreen.value = window.innerWidth >= 460;
+            // isLargeScreen.value = window.innerWidth >= 460;
 
             // Set up scroll listener for parallax
             window.addEventListener("scroll", () => handleScroll());
 
             // Handle window resize
-            const handleResize = () => {
-                isLargeScreen.value = window.innerWidth >= 460;
-            };
-            window.addEventListener("resize", handleResize);
+            // const handleResize = () => {
+            //     isLargeScreen.value = window.innerWidth >= 460;
+            // };
+            // window.addEventListener("resize", handleResize);
         }
 
         // Auto-rotate slides
@@ -75,9 +75,9 @@ export default component$(() => {
             clearInterval(interval);
             if (typeof window !== "undefined") {
                 window.removeEventListener("scroll", () => handleScroll());
-                window.removeEventListener("resize", () => {
-                    isLargeScreen.value = window.innerWidth >= 460;
-                });
+                // window.removeEventListener("resize", () => {
+                //     isLargeScreen.value = window.innerWidth >= 460;
+                // });
             }
         });
     });
@@ -127,14 +127,8 @@ export default component$(() => {
                             style={getParallaxStyle(0.1)}
                         />}*/}
                     <picture>
-                        <source
-                            media="(max-width: 460px)"
-                            srcset="src/media/home/bg1-sm.webp"
-                        />
-                        <source
-                            media="(min-width: 461px)"
-                            srcset="src/media/home/bg1.webp"
-                        />
+                        <source media="(max-width: 460px)" srcset={BgImage1Sm} />
+                        <source media="(min-width: 461px)" srcset={BgImage1} />
                         <img
                             class={[styles.slide_bg, getAnimationClass(0)]}
                             alt="picture of knuckles retreat sri lanka"

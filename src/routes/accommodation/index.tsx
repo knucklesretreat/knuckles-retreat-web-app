@@ -92,7 +92,7 @@ export default component$(() => {
     });
 
     return (
-        <section class={styles.accommodation_sec}>
+        <section class={styles.accommodation_sec} style={{backgroundImage: `url(${ImgTwo})`}}>
             <BgBranch class={[styles.bg_branch]} alt="Background Image" />
             <div class={styles.hero}>
                 <HeroImage alt="Panoramic view of Knuckles Mountain Range" />
