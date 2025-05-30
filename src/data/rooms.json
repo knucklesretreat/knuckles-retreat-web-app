@@ -1,0 +1,92 @@
+{
+    "rooms": [
+        {
+            "id": "001",
+            "name": "Double Rooms",
+            "capacity": "Sleeps 2 Adults",
+            "imageUrl": "room1",
+            "altText": "Double Room at Knuckles Retreat",
+            "types": [
+                {
+                    "text": "Room Only:",
+                    "price": "LKR 7,000"
+                },
+                {
+                    "text": "Bed & Breakfast:",
+                    "price": "LKR 9,000"
+                },
+                {
+                    "text": "Half Board (HB):",
+                    "price": "LKR 10,500"
+                },
+                {
+                    "text": "Full Board (FB):",
+                    "price": "LKR 12,500"
+                }
+            ]
+        },
+        {
+            "id": "002",
+            "name": "Triple Rooms",
+            "capacity": "Sleeps 3 Adults",
+            "imageUrl": "room2",
+            "altText": "Triple Room at Knuckles Retreat",
+            "types": [
+                {
+                    "text": "Room Only:",
+                    "price": "LKR 9,000"
+                },
+                {
+                    "text": "Bed & Breakfast:",
+                    "price": "LKR 12,000"
+                },
+                {
+                    "text": "Half Board (HB):",
+                    "price": "LKR 15,000"
+                },
+                {
+                    "text": "Full Board (FB):",
+                    "price": "LKR 17,000"
+                }
+            ]
+        },
+        {
+            "id": "003",
+            "name": "Family Rooms",
+            "capacity": "Sleeps 2 Adults, 2 Children",
+            "imageUrl": "room3",
+            "altText": "Family Room at Knuckles Retreat",
+            "types": [
+                {
+                    "text": "Room Only:",
+                    "price": "LKR 12,000"
+                },
+                {
+                    "text": "Bed & Breakfast:",
+                    "price": "LKR 15,000"
+                },
+                {
+                    "text": "Half Board (HB):",
+                    "price": "LKR 19,000"
+                },
+                {
+                    "text": "Full Board (FB):",
+                    "price": "LKR 23,000"
+                }
+            ]
+        },
+        {
+            "id": "004",
+            "name": "Groups",
+            "capacity": "Sleeps 10 Adults",
+            "imageUrl": "room4",
+            "altText": "Group Room at Knuckles Retreat",
+            "types": [
+                {
+                    "text": "Room Only:",
+                    "price": "LKR 25,000"
+                }
+            ]
+        }
+    ]
+}
