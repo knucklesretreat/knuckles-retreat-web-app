@@ -3,12 +3,12 @@ import { useNavigate } from "@builder.io/qwik-city";
 import { MatBlurOnOutlined, MatCloseOutlined, MatExploreOutlined, MatHomeOutlined, MatPhotoLibraryOutlined, MatMailOutlined, MatKingBedOutlined } from "@qwikest/icons/material";
 import styles from "./header.module.css";
 import LogoSymbol from "~/media/Logo-Symbol.svg?jsx";
+import BgPattern from "~/media/pattern1.webp?jsx";
 
 export default component$(() => {
   const nav = useNavigate();
   const isScrolled = useSignal(false);
 
-  // Improved scroll handler
   const handleScroll = $(() => {
     if (typeof window === "undefined") return;
     isScrolled.value = window.scrollY > 0;
@@ -68,6 +68,7 @@ export default component$(() => {
         <div></div>
         <div class={["navigation", styles.navigation]}>
           <div class={styles.nav_items}>
+            <BgPattern alt="flower pattern" class={styles.bg_pattern} />
             <i class={styles.nav_close_btn} onClick$={handleCloseBtnClick}><MatCloseOutlined /></i>
             <a href="/#home"><i><MatHomeOutlined /></i>Home</a>
             <a href="/accommodation"><i><MatKingBedOutlined /></i>Accommodation</a>

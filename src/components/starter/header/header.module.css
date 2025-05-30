@@ -115,6 +115,12 @@ header.logo_only {
   text-shadow: var(--text-shadow);
 }
 
+.navigation .nav_items .bg_pattern {
+  pointer-events: none;
+  animation: rotate-clockwise 120s infinite linear;
+  display: none;
+}
+
 .navigation .nav_items a {
   position: relative;
   color: var(--white-color);
@@ -156,6 +162,16 @@ header.logo_only {
   margin-right: 0;
 }
 
+@keyframes rotate-clockwise {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /*======= Media queries (max-width: 1100px) =======*/
 @media screen and (max-width: 1100px) {
   .logo_wrapper {
@@ -180,6 +196,7 @@ header.logo_only {
       transition: 0.5s ease;
     }
   }
+
   .logo_wrapper {
     left: 20px;
     min-height: 55px;
@@ -200,6 +217,7 @@ header.logo_only {
       margin-top: -1px;
     }
   }
+
   .nav_bar {
     padding: 25px 20px;
   }
@@ -260,10 +278,21 @@ header.logo_only {
     box-shadow: var(--box-shadow);
     transform: translateY(-200px);
     transition: 0.3s ease;
+    overflow: hidden;
   }
 
   .navigation.active .nav_items {
     transform: translateY(0);
+  }
+
+  .navigation .nav_items .bg_pattern {
+    display: block;
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    right: -75px;
+    bottom: -75px;
+    opacity: 0.7;
   }
 
   .navigation .nav_items a {
