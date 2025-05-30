@@ -74,6 +74,8 @@ export default component$(() => {
               <img
                 class={styles.bg_pattern}
                 alt="flower pattern"
+                height={20}
+                width={20}
               />
             </picture>
             {/* <BgPattern alt="flower pattern" class={styles.bg_pattern} /> */}

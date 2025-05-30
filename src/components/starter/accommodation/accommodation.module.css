@@ -65,6 +65,7 @@
 .content .explore_btn:hover {
     background-color: #ffffff15;
     transform: scale(1.03);
+    transition-duration: 0.6s;
 }
 
 .content.animate h2,

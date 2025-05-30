@@ -1,5 +1,4 @@
 import { useDocumentHead, useLocation } from "@builder.io/qwik-city";
-
 import { component$ } from "@builder.io/qwik";
 
 /**
@@ -8,6 +7,13 @@ import { component$ } from "@builder.io/qwik";
 export const RouterHead = component$(() => {
   const head = useDocumentHead();
   const loc = useLocation();
+
+  // Helper function to filter out dangerouslySetInnerHTML from props
+  const filterProps = (props: Record<string, any> | undefined) => {
+    if (!props) return {};
+    const { ...safeProps } = props;
+    return safeProps;
+  };
 
   return (
     <>
@@ -26,11 +32,19 @@ export const RouterHead = component$(() => {
       ))}
 
       {head.styles.map((s) => (
-        <style key={s.key} {...s.props} dangerouslySetInnerHTML={s.style} />
+        <style
+          key={s.key}
+          {...filterProps(s.props)} // Spread filtered props
+          dangerouslySetInnerHTML={{ __html: s.style } as any} // Explicitly set
+        />
       ))}
 
       {head.scripts.map((s) => (
-        <script key={s.key} {...s.props} dangerouslySetInnerHTML={s.script} />
+        <script
+          key={s.key}
+          {...filterProps(s.props)} // Spread filtered props
+          dangerouslySetInnerHTML={{ __html: s.script } as any} // Explicitly set
+        />
       ))}
     </>
   );
