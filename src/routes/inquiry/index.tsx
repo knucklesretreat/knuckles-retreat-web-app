@@ -1,7 +1,46 @@
 
 import { $, component$, useStore, useVisibleTask$ } from "@builder.io/qwik";
+import { DocumentHead } from "@builder.io/qwik-city";
 import styles from "./inquiry.module.css";
 import countrylist from "~/data/country-list.json";
+
+export const head: DocumentHead = {
+  title: "Knuckles Retreat | Inquire",
+  meta: [
+    {
+      name: "description",
+      content: "Have a question about our accommodations, services, or special requests? We're here to help. Fill out the form below with your details and inquiries, and our dedicated team will get back to you with the information you need.",
+    },
+    {
+      name: "theme-color",
+      content: "#274e13"
+    },
+    {
+      property: "og:title",
+      content: "Knuckles Retreat Sri Lanka"
+    },
+    {
+      property: "og:description",
+      content: "Knuckles Retreat Sri Lanka offers the perfect escape for a calm, cool and utterly relaxing getaway"
+    },
+    {
+      property: "og:image",
+      content: "https://firebasestorage.googleapis.com/v0/b/knuckles-retreat.appspot.com/o/kr-pic.png?alt=media&token=6a2d1e8b-cce8-49ff-80a6-b9276854c03e"
+    },
+    {
+      property: "og:type",
+      content: "website"
+    },
+    {
+      property: "og:site_name",
+      content: "Knuckles Retreat"
+    },
+    {
+      property: "og:url",
+      content: "https://www.knucklesretreat.com/"
+    }
+  ]
+};
 
 export default component$(() => {
 
