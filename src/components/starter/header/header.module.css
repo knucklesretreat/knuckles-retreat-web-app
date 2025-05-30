@@ -11,11 +11,18 @@ header {
   transition-property: height, background;
 }
 
+header.sticky .logo_wrapper {
+  transition: background 0.2s ease, backdrop-filter 0.2s ease;
+  background: transparent;
+  backdrop-filter: none;
+}
+
 header.sticky {
   height: calc(2.5rem + 1rem);
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: height 0.5s ease, background 0.5s ease 0.2s, backdrop-filter 0.5s ease 0.2s;
 }
 
 .logo_wrapper {
@@ -37,6 +44,8 @@ header.sticky {
   box-shadow: var(--box-shadow);
   border-radius: 0 0 3px 3px;
   cursor: pointer;
+  transition: 0.5s ease;
+  transition-property: background, backdrop-filter, padding, border, box-shadow;
 
   .logo_symbol {
     height: 42px;
@@ -50,6 +59,7 @@ header.sticky {
     color: var(--white-color);
     margin-top: 10px;
     font-family: "Source Sans 3", sans-serif;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
   }
 
   h5 {
@@ -59,6 +69,7 @@ header.sticky {
     color: var(--white-color);
     margin-top: -2px;
     font-family: "Montserrat", sans-serif;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
   }
 }
 
@@ -69,10 +80,12 @@ header.logo_only {
     padding: 6px;
     border: none;
     box-shadow: none;
+    transition: 0.5s ease;
 
     h4,
     h5 {
-      display: none;
+      opacity: 0;
+      visibility: hidden;
     }
   }
 }
@@ -160,9 +173,17 @@ header.logo_only {
 
 /*======= Media queries (max-width: 785px) =======*/
 @media screen and (max-width: 785px) {
+  header.logo_only {
+    .logo_wrapper {
+      left: -20px;
+      top: 5px;
+      transition: 0.5s ease;
+    }
+  }
   .logo_wrapper {
     left: 20px;
     min-height: 55px;
+    transition: 0.5s ease;
 
     .logo_symbol {
       height: 32px;

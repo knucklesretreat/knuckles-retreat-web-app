@@ -1,27 +1,42 @@
-import { component$, useVisibleTask$, $ } from "@builder.io/qwik";
-import styles from "./header.module.css";
-import { MatBlurOnOutlined, MatCloseOutlined, MatExploreOutlined, MatHomeOutlined, MatPhotoLibraryOutlined, MatMailOutlined } from "@qwikest/icons/material";
-import LogoSymbol from "~/media/Logo-Symbol.svg?jsx";
+import { component$, useVisibleTask$, $, useSignal } from "@builder.io/qwik";
 import { useNavigate } from "@builder.io/qwik-city";
+import { MatBlurOnOutlined, MatCloseOutlined, MatExploreOutlined, MatHomeOutlined, MatPhotoLibraryOutlined, MatMailOutlined, MatKingBedOutlined } from "@qwikest/icons/material";
+import styles from "./header.module.css";
+import LogoSymbol from "~/media/Logo-Symbol.svg?jsx";
 
 export default component$(() => {
   const nav = useNavigate();
+  const isScrolled = useSignal(false);
+
+  // Improved scroll handler
   const handleScroll = $(() => {
-    const header = document.querySelector('header');
-    if (header) {
-      header.classList.toggle(styles.sticky, window.scrollY > 0);
-      header.classList.toggle(styles.logo_only, window.scrollY > 0);
-    }
+    if (typeof window === "undefined") return;
+    isScrolled.value = window.scrollY > 0;
   });
 
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ cleanup }) => {
     if (typeof window === "undefined") return;
-    // Navigation bar effects on scroll
-    window.addEventListener('scroll', handleScroll);
+
+    // Check initial scroll position
+    isScrolled.value = window.scrollY > 0;
+
+    // Throttle scroll event handling
+    let ticking = false;
+    const scrollListener = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', scrollListener);
 
     // Clean up the event listener when the component is unmounted
-    cleanup(() => window.removeEventListener('scroll', handleScroll));
+    cleanup(() => window.removeEventListener('scroll', scrollListener));
   });
 
   const handleMenuToggle = $(() => {
@@ -39,7 +54,11 @@ export default component$(() => {
   });
 
   return (
-    <header class={styles.header}>
+    <header class={[
+      styles.header,
+      isScrolled.value ? styles.sticky : '',
+      isScrolled.value ? styles.logo_only : ''
+    ]}>
       <div class={styles.logo_wrapper} onClick$={() => nav('/')}>
         <LogoSymbol class={styles.logo_symbol} />
         <h4>Knuckles Retreat</h4>
@@ -51,6 +70,7 @@ export default component$(() => {
           <div class={styles.nav_items}>
             <i class={styles.nav_close_btn} onClick$={handleCloseBtnClick}><MatCloseOutlined /></i>
             <a href="/#home"><i><MatHomeOutlined /></i>Home</a>
+            <a href="/accommodation"><i><MatKingBedOutlined /></i>Accommodation</a>
             <a href="/#gallery"><i><MatPhotoLibraryOutlined /></i>Gallery</a>
             <a href="/#explore"><i><MatExploreOutlined /></i>Explore</a>
             <a href="/#contact"><i><MatMailOutlined /></i>Contact</a>
