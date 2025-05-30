@@ -38,6 +38,7 @@ export default component$(() => {
               <li><a href="/#home">Home</a></li>
               <li><a href="/#gallery">Gallery</a></li>
               <li><a href="/#explore">Explore</a></li>
+              <li><a href="/accommodation">Accommodation</a></li>
             </ul>
           </div>
 
@@ -52,7 +53,7 @@ export default component$(() => {
 
       </div>
       <div class={styles.copyright}>
-        © Copyright 2023 - Knuckles Retreat. All Rights Reserved.
+        Copyright © 2025 - Knuckles Retreat. All Rights Reserved.
       </div>
     </footer>
   );
