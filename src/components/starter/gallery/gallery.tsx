@@ -1,4 +1,5 @@
-import { component$, useSignal, useVisibleTask$, Signal } from "@builder.io/qwik";
+import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import type { Signal } from "@builder.io/qwik";
 import styles from "./gallery.module.css";
 import BgPattern from "~/media/pattern1.webp?jsx";
 import ImgOne from "~/media/gallery/img1.webp?url";
@@ -19,6 +20,7 @@ export default component$(() => {
     const galleryGridVisible = useSignal(false);
     const gallerySectionVisible = useSignal(false);
 
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(({ cleanup, track }) => {
         track(() => textContentRef.value);
         track(() => galleryGridRef.value);
@@ -64,6 +66,7 @@ export default component$(() => {
         cleanup(() => observer.disconnect());
     }, { strategy: 'document-ready' });
 
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(({ cleanup, track }) => {
         const isVisible = track(() => gallerySectionVisible.value);
         const gridEl = track(() => gridContainerRef.value);

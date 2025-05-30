@@ -1,4 +1,5 @@
-import { component$, useSignal, useStore, useVisibleTask$, $, Signal } from "@builder.io/qwik";
+import { component$, useSignal, useStore, useVisibleTask$, $ } from "@builder.io/qwik";
+import type { Signal } from "@builder.io/qwik";
 import styles from "./testimonial.module.css";
 import { IoChevronForwardOutline, IoChevronBackOutline, IoStarSolid } from "@qwikest/icons/ionicons";
 import BgBranch from "~/media/explore/branch.webp?jsx";
@@ -39,6 +40,7 @@ export default component$(() => {
   const isInitialMount = useSignal(true);
   const carouselHeight = useSignal<string>('290px'); // Dynamic height
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ cleanup, track }) => {
     track(() => titleRef.value);
     track(() => carouselContainerRef.value);
@@ -79,6 +81,7 @@ export default component$(() => {
     cleanup(() => observer.disconnect());
   }, { strategy: 'document-ready' });
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ cleanup, track }) => {
     const isVisible = track(() => sectionVisible.value);
     const sectionEl = track(() => testimonialsSectionRef.value);
@@ -132,6 +135,7 @@ export default component$(() => {
     });
   }, { strategy: 'document-idle' });
 
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ cleanup, track }) => {
     track(() => carouselVisible.value);
     if (carouselVisible.value) {
@@ -145,6 +149,7 @@ export default component$(() => {
   }, { strategy: 'document-ready' });
 
   // Dynamic height adjustment
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track, cleanup }) => {
     track(() => testimonialsStore.currentIndex);
     track(() => testimonialsStore.transitioningTo);
@@ -241,7 +246,7 @@ export default component$(() => {
           class={[styles.carousel_container, { [styles.visible]: carouselVisible.value }]}
           style={{ height: carouselHeight.value }}
         >
-          {testimonialsStore.testimonials.length > 0 && currentTestimonial ? (
+          {testimonialsStore.testimonials.length > 0 ? (
             <>
               <div
                 key={currentTestimonial.id}

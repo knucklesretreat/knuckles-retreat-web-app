@@ -7,7 +7,7 @@ import LogoSymbol from "~/media/Logo-Symbol.svg?jsx";
 export default component$(() => {
     const isVisible = useSignal(false);
     const sectionRef = useSignal<Element>();
-    const crntBgImg = useSignal(BgImg);
+    // const crntBgImg = useSignal(BgImg);
 
     // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(({ cleanup, track }) => {
@@ -97,9 +97,9 @@ export default component$(() => {
             // window.removeEventListener('resize', handleResize);
             window.removeEventListener('scroll', scrollListener);
             // Reset background position on cleanup if needed
-            if (element) {
-                (element as HTMLElement).style.backgroundPositionY = '0px';
-            }
+            (element as HTMLElement).style.backgroundPositionY = '0px';
+            // if (element) {
+            // }
         });
 
     }, { strategy: 'document-ready' }); // Ensure element exists before running

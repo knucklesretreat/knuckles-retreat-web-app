@@ -139,6 +139,8 @@ export default component$(() => {
                             class={[styles.slide_bg, getAnimationClass(0)]}
                             alt="picture of knuckles retreat sri lanka"
                             style={getParallaxStyle(0.1)}
+                            width={100}
+                            height={100}
                         />
                     </picture>
                     <div class={styles.text_content} style={getParallaxStyle(-0.1)}>

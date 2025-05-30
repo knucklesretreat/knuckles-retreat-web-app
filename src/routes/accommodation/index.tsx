@@ -1,5 +1,5 @@
 import { component$, useVisibleTask$ } from "@builder.io/qwik";
-import { DocumentHead } from "@builder.io/qwik-city";
+import type { DocumentHead } from "@builder.io/qwik-city";
 import styles from "./accommodation.module.css";
 
 import HeroImage from "~/media/accommodation/dining_out.webp?jsx"
@@ -70,6 +70,7 @@ export default component$(() => {
     const rooms: Room[] = roomData.rooms;
 
     // Trigger animations when component is visible
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(() => {
         const hero = document.querySelector(`.${styles.hero}`);
         const roomCards = document.querySelectorAll(`.${styles.roomCard}`);

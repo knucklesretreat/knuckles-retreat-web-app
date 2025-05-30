@@ -1,4 +1,5 @@
-import { component$, useSignal, useVisibleTask$, Signal } from "@builder.io/qwik";
+import { component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import type { Signal } from "@builder.io/qwik";
 import styles from "./explore.module.css";
 import BgPattern from "~/media/pattern1.webp?jsx";
 import BgBranch from "~/media/explore/branch.webp?jsx";
@@ -19,6 +20,7 @@ export default component$(() => {
     const exploreSectionVisible = useSignal(false);
 
     // Track visibility for animation triggers
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(({ cleanup, track }) => {
         track(() => textContentRef.value);
         track(() => imgGridRef.value);
@@ -65,6 +67,7 @@ export default component$(() => {
     }, { strategy: 'document-ready' });
 
     // Parallax effect on scroll
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(({ cleanup, track }) => {
         const isVisible = track(() => exploreSectionVisible.value);
         const gridEl = track(() => gridContainerRef.value);

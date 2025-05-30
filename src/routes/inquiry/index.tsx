@@ -1,6 +1,6 @@
 
 import { $, component$, useStore, useVisibleTask$ } from "@builder.io/qwik";
-import { DocumentHead } from "@builder.io/qwik-city";
+import type { DocumentHead } from "@builder.io/qwik-city";
 import styles from "./inquiry.module.css";
 import countrylist from "~/data/country-list.json";
 

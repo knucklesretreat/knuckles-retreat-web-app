@@ -99,9 +99,9 @@ export default component$(() => {
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('scroll', scrollListener);
             // Reset background position on cleanup if needed
-            if (element) {
-                (element as HTMLElement).style.backgroundPositionY = '0px';
-            }
+            (element as HTMLElement).style.backgroundPositionY = '0px';
+            // if (element) {
+            // }
         });
 
     }, { strategy: 'document-ready' }); // Ensure element exists before running
