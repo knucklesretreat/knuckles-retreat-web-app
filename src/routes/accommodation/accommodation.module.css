@@ -1,0 +1,346 @@
+.accommodation_sec {
+    background-color: #2E5B1F;
+    color: #ffffff;
+    padding: 20px 20px 40px 20px;
+    font-family: "Nunito Sans", sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.bg_branch {
+    position: absolute;
+    height: 700px;
+    width: 700px;
+    bottom: 50px;
+    right: -110px;
+    opacity: 0.2;
+    z-index: 1;
+    animation: subtle-branch-sway 12s infinite ease-in-out;
+    transform-origin: bottom center;
+    pointer-events: none;
+}
+
+.hero {
+    position: relative;
+    height: 400px;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 40px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: scale(0.98);
+}
+
+.hero.animateHero {
+    animation: fadeInScale 1s ease-out forwards;
+}
+
+.hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.4);
+}
+
+.heroOverlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+    width: 80%;
+}
+
+.heroOverlay h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    font-family: "Kaushan Script", cursive;
+}
+
+.heroOverlay p {
+    font-size: 1.2rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Container for page content */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Room Grid */
+.roomGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+/* Room Card Styling */
+.roomCard {
+    position: relative;
+    background-color: #fff;
+    color: #274e13;
+    border-radius: 8px;
+    overflow: hidden;
+    /* box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(20px);
+    box-shadow: 0 0 8px 0 rgba(255, 255, 255, 0.5);
+}
+
+.roomCard.animateRoomCard {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.roomCard .bg_img {
+    position: absolute;
+    height: 200px;
+    width: 200px;
+    bottom: -60px;
+    right: -100px;
+    pointer-events: none;
+    transform-origin: center center;
+    animation: rotate-clockwise 120s infinite linear;
+}
+
+.roomCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.roomImageWrapper {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.roomImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.roomCard:hover .roomImage {
+    transform: scale(1.05);
+}
+
+.roomInfo {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.roomInfo h2 {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+}
+
+.roomDetails {
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+}
+
+.roomDetails p {
+    margin-bottom: 5px;
+}
+
+.types {
+    margin-bottom: 20px;
+}
+
+.types h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+
+.types ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.types li {
+    font-size: 0.85rem;
+    background-color: #1818180d;
+    border: 1px solid #274e13;
+    padding: 5px 10px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+}
+
+.typeText {
+    margin-right: 6px;
+    font-size: 1.1em;
+}
+
+/* Booking Inquiry Section */
+.bookingInquiry {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #181818;
+    border-radius: 8px;
+    margin-top: 50px;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.bookingInquiry.animateBooking {
+    animation: fadeInUp 1s ease-out 0.5s forwards;
+}
+
+.bookingInquiry h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.bookingInquiry p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto 25px auto;
+}
+
+.ctaButtonLarge {
+    display: inline-block;
+    background-color: #274e137d;
+    color: #fff;
+    padding: 15px 35px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.ctaButtonLarge:hover {
+    background-color: #274e13;
+    transform: scale(1.03);
+}
+
+@keyframes rotate-clockwise {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes subtle-branch-sway {
+
+    0%,
+    100% {
+        transform: rotate(-0.5deg) translateX(-3px) translateY(2px);
+    }
+
+    50% {
+        transform: rotate(0.5deg) translateX(3px) translateY(-2px);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .bg_branch {
+        height: 500px;
+        width: 500px;
+        bottom: -60px;
+        right: -110px;
+        opacity: 0.1;
+    }
+
+    .pageHeader h1 {
+        font-size: 2.2rem;
+    }
+
+    .introText {
+        font-size: 1rem;
+    }
+
+    .roomGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .heroOverlay h1 {
+        font-size: 2rem;
+    }
+
+    .heroOverlay p {
+        font-size: 1rem;
+    }
+
+    .roomInfo h2 {
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .accommodation_sec {
+        padding: 10px 10px 20px 10px;
+    }
+
+    .pageHeader h1 {
+        font-size: 1.8rem;
+    }
+
+    .roomInfo {
+        padding: 15px;
+    }
+
+    .ctaButton {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    .bookingInquiry h2 {
+        font-size: 1.6rem;
+    }
+
+    .bookingInquiry p {
+        font-size: 1rem;
+    }
+
+    .ctaButtonLarge {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+}
