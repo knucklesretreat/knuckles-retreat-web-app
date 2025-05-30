@@ -1,39 +1,52 @@
 .contact {
-    /* background-color: rgba(0, 0, 0, 0.2); */
-    background: url("/src/media/textile.webp") rgba(0, 0, 0, 0.3);
+    background-color: #181818;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
     position: relative;
+    min-height: 70vh;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
     overflow: hidden;
-    background-blend-mode: multiply;
-
-    .bg_img {
-        position: absolute;
-        height: 1000px;
-        width: 1000px;
-        top: -500px;
-        right: -500px;
-        opacity: 0.7;
-        transition: 0.3s ease;
-    }
-
-    .bottom_img {
-        width: 1000px;
-        height: 1000px;
-        top: auto;
-        bottom: -200px;
-        left: -250px;
-        opacity: 0.4;
-    }
+    text-align: center;
 
     h2 {
         position: relative;
         text-align: center;
-        /* color: #222222; */
         color: #ffffff;
         font-size: 2em;
         margin: auto;
         font-family: "Nunito Sans", sans-serif;
         transition: 0.3s ease;
         margin-top: 40px;
+        z-index: 99;
+        transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+    }
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.content {
+    position: relative;
+
+    h2,
+    .main_content iframe,
+    .main_content .info .logo,
+    .main_content .info h5,
+    .main_content .info h6,
+    .main_content .info a {
+        opacity: 0;
+        transform: translateY(20px);
+        /* Start slightly below */
     }
 }
 
@@ -51,15 +64,18 @@
         max-width: 600px;
         max-height: 600px;
         border-radius: 0.2em;
+        transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
     }
 
     .info {
         padding: 20px;
+
         .logo {
             display: flex;
             align-items: center;
             flex-direction: column;
             margin-bottom: 24px;
+            transition: opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s;
 
             .logo_symbol {
                 position: relative;
@@ -93,12 +109,12 @@
         h6,
         a {
             font-size: 1em;
-            /* color: #222222; */
             color: #ffffff;
             text-align: center;
             margin-bottom: 16px;
             font-family: "Nunito Sans", sans-serif;
             font-weight: 800;
+            transition: opacity 0.6s ease 0.6s, transform 0.6s ease 0.6s;
         }
 
         h6 {
@@ -113,9 +129,24 @@
         a {
             text-decoration: none;
             cursor: pointer;
+            transition: opacity 0.6s ease 0.8s, transform 0.6s ease 0.8s;
         }
     }
 }
+
+.content.animate {
+
+    h2,
+    .main_content iframe,
+    .main_content .info .logo,
+    .main_content .info h5,
+    .main_content .info h6,
+    .main_content .info a {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 
 @media screen and (max-width: 1100px) {
     .main_content {
@@ -160,6 +191,7 @@
 
         .info {
             padding: 20px;
+
             .logo {
                 margin-bottom: 24px;
 
