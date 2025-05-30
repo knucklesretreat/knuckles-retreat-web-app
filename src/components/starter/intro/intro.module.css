@@ -2,22 +2,45 @@
     background-color: #181818;
     position: relative;
     overflow: hidden;
+}
 
-    img {
-        position: absolute;
-        height: 600px;
-        width: 600px;
-        top: -300px;
-        left: -300px;
-        opacity: 0.7;
-        transition: 0.3s ease;
+.pattern_img {
+    position: absolute;
+    height: 600px;
+    width: 600px;
+    opacity: 0.7;
+    transition: 0.3s ease;
+}
+
+.left_img {
+    top: -300px;
+    left: -300px;
+    animation: rotate-clockwise 120s infinite linear;
+}
+
+.right_img {
+    bottom: -300px;
+    right: -300px;
+    animation: rotate-clockwise 120s infinite linear;
+}
+
+@keyframes rotate-clockwise {
+    from {
+        transform: rotate(0deg);
     }
 
-    .right_img {
-        top: auto;
-        left: auto;
-        bottom: -300px;
-        right: -300px;
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotate-counterclockwise {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(-360deg);
     }
 }
 
@@ -26,45 +49,79 @@
     margin: 0 200px;
     padding: 38px 0;
     z-index: 111;
+}
 
-    h1 {
-        text-align: center;
-        color: #ffffff;
-        font-size: 2em;
-        max-width: 480px;
-        margin: auto;
-        font-family: "Nunito Sans", sans-serif;
-        transition: 0.3s ease;
-    }
+.intro_header h1 {
+    text-align: center;
+    color: #ffffff;
+    font-size: 2em;
+    max-width: 480px;
+    margin: auto;
+    font-family: "Nunito Sans", sans-serif;
+    transition: 0.6s ease;
+    opacity: 0;
+    transform: translateY(30px);
+}
 
-    h2 {
-        text-align: center;
-        font-style: italic;
-        color: #ffffff;
-        font-size: 1.8em;
-        max-width: 490px;
-        margin: auto;
-        padding: 30px 20px 10px;
-        font-family: "Kaushan Script", cursive;
-        transition: 0.3s ease;
-    }
+.intro_header h2 {
+    text-align: center;
+    font-style: italic;
+    color: #ffffff;
+    font-size: 1.8em;
+    max-width: 490px;
+    margin: auto;
+    padding: 30px 20px 10px;
+    font-family: "Kaushan Script", cursive;
+    transition: 0.6s ease 0.2s;
+    /* Delay for staggered effect */
+    opacity: 0;
+    transform: translateY(30px);
+}
 
-    p {
-        font-size: 1em;
-        text-align: center;
-        color: #ffffff;
-        opacity: 1;
-        background: none;
-        box-shadow: none;
-        backdrop-filter: none;
-        border: none;
-        transform: none;
-        max-width: 800px;
-        margin: auto;
-        line-height: 1.6em;
-        font-family: "Nunito Sans", sans-serif;
-        transition: 0.3s ease;
-    }
+.intro_header h3 {
+    text-align: center;
+    color: #ffffff;
+    font-size: 2em;
+    max-width: 480px;
+    margin: auto;
+    font-family: "Nunito Sans", sans-serif;
+    transition: 0.6s ease;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.intro_header p {
+    font-size: 1em;
+    text-align: center;
+    color: #ffffff;
+    opacity: 0;
+    background: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    border: none;
+    transform: translateY(30px);
+    max-width: 800px;
+    margin: auto;
+    line-height: 1.6em;
+    font-family: "Nunito Sans", sans-serif;
+    transition: 0.6s ease;
+}
+
+.intro_header .paragraph_one {
+    transition: 0.6s ease 0.4s;
+}
+
+.intro_header .paragraph_two {
+    transition: 0.6s ease 0.6s;
+}
+
+/* Animation class to be added when scrolled into view */
+.intro_header.animate h1,
+.intro_header.animate h2,
+.intro_header.animate h3,
+.intro_header.animate p {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /*======= Media queries (max-width: 1100px) =======*/
@@ -76,36 +133,42 @@
 
 /*======= Media queries (max-width: 785px) =======*/
 @media screen and (max-width: 785px) {
-    .intro {
-        img {
-            height: 500px;
-            width: 500px;
-            top: -250px;
-            left: -250px;
-            opacity: 0.5;
-        }
+    .pattern_img {
+        height: 500px;
+        width: 500px;
+        opacity: 0.5;
+    }
 
-        .right_img {
-            bottom: -250px;
-            right: -250px;
-        }
+    .left_img {
+        top: -250px;
+        left: -250px;
+    }
+
+    .right_img {
+        bottom: -250px;
+        right: -250px;
     }
 
     .intro_header {
         margin: 0 20px;
+    }
 
-        h1 {
-            font-size: 1.8em;
-            line-height: 1em;
-        }
+    .intro_header h1 {
+        font-size: 1.8em;
+        line-height: 1em;
+    }
 
-        h2 {
-            font-size: 1.6em;
-        }
+    .intro_header h2 {
+        font-size: 1.6em;
+    }
 
-        p {
-            font-size: 0.8em;
-            line-height: normal;
-        }
+    .intro_header h3 {
+        font-size: 1.7em;
+        line-height: 1em;
+    }
+
+    .intro_header p {
+        font-size: 0.8em;
+        line-height: normal;
     }
 }
