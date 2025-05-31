@@ -10,6 +10,7 @@ import ImgTwo from "~/media/accommodation/room3.webp?url";
 import ImgThree from "~/media/accommodation/img1.webp?url";
 import ImgFour from "~/media/accommodation/room4.webp?url";
 import roomData from "~/data/rooms.json";
+import LinePattern from "~/media/line-pattern.webp?url";
 
 export const head: DocumentHead = {
     title: "Knuckles Retreat | Accommodation | Rooms",
@@ -92,7 +93,7 @@ export default component$(() => {
     });
 
     return (
-        <section class={styles.accommodation_sec} style={{backgroundImage: `url(${ImgTwo})`}}>
+        <section class={styles.accommodation_sec} style={{backgroundImage: `url(${LinePattern})`}}>
             <BgBranch class={[styles.bg_branch]} alt="Background Image" />
             <div class={styles.hero}>
                 <HeroImage alt="Panoramic view of Knuckles Mountain Range" />

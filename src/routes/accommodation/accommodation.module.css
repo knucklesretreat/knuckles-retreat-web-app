@@ -1,7 +1,7 @@
 .accommodation_sec {
     background-color: rgba(0, 0, 0, 0.9);
     background-blend-mode: darken;
-    background-position: 0 100%;
+    background-size: 100px 100px;
     color: #ffffff;
     padding: 20px 20px 40px 20px;
     font-family: "Nunito Sans", sans-serif;
