@@ -393,11 +393,11 @@
         display: none;
     }
 
-    .bg_branch {
+    /* Disable JS parallax for bg images */
+    /* .bg_branch {
         animation: none !important;
         transform: none !important;
-        /* Disable JS parallax for bg images */
-    }
+    } */
 
     .nav_button:hover:not(:disabled) {
         transform: none;
