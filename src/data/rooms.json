@@ -9,19 +9,19 @@
             "types": [
                 {
                     "text": "Room Only:",
-                    "price": "LKR 7,000"
+                    "price": "LKR 8,000"
                 },
                 {
                     "text": "Bed & Breakfast:",
-                    "price": "LKR 9,000"
+                    "price": "LKR 10,000"
                 },
                 {
                     "text": "Half Board (HB):",
-                    "price": "LKR 10,500"
+                    "price": "LKR 11,500"
                 },
                 {
                     "text": "Full Board (FB):",
-                    "price": "LKR 12,500"
+                    "price": "LKR 13,500"
                 }
             ]
         },
@@ -34,19 +34,19 @@
             "types": [
                 {
                     "text": "Room Only:",
-                    "price": "LKR 9,000"
+                    "price": "LKR 10,000"
                 },
                 {
                     "text": "Bed & Breakfast:",
-                    "price": "LKR 12,000"
+                    "price": "LKR 13,000"
                 },
                 {
                     "text": "Half Board (HB):",
-                    "price": "LKR 15,000"
+                    "price": "LKR 16,000"
                 },
                 {
                     "text": "Full Board (FB):",
-                    "price": "LKR 17,000"
+                    "price": "LKR 18,000"
                 }
             ]
         },
@@ -59,19 +59,19 @@
             "types": [
                 {
                     "text": "Room Only:",
-                    "price": "LKR 12,000"
+                    "price": "LKR 13,000"
                 },
                 {
                     "text": "Bed & Breakfast:",
-                    "price": "LKR 15,000"
+                    "price": "LKR 16,000"
                 },
                 {
                     "text": "Half Board (HB):",
-                    "price": "LKR 19,000"
+                    "price": "LKR 20,000"
                 },
                 {
                     "text": "Full Board (FB):",
-                    "price": "LKR 23,000"
+                    "price": "LKR 24,000"
                 }
             ]
         },
