@@ -9,19 +9,19 @@
             "types": [
                 {
                     "text": "Room Only:",
-                    "price": "LKR 8,000"
+                    "price": "LKR 10,500"
                 },
                 {
                     "text": "Bed & Breakfast:",
-                    "price": "LKR 10,000"
+                    "price": "LKR 12,500"
                 },
                 {
                     "text": "Half Board (HB):",
-                    "price": "LKR 11,500"
+                    "price": "LKR 14,000"
                 },
                 {
                     "text": "Full Board (FB):",
-                    "price": "LKR 13,500"
+                    "price": "LKR 16,000"
                 }
             ]
         },
@@ -34,19 +34,19 @@
             "types": [
                 {
                     "text": "Room Only:",
-                    "price": "LKR 10,000"
-                },
-                {
-                    "text": "Bed & Breakfast:",
                     "price": "LKR 13,000"
                 },
                 {
+                    "text": "Bed & Breakfast:",
+                    "price": "LKR 15,500"
+                },
+                {
                     "text": "Half Board (HB):",
-                    "price": "LKR 16,000"
+                    "price": "LKR 18,500"
                 },
                 {
                     "text": "Full Board (FB):",
-                    "price": "LKR 18,000"
+                    "price": "LKR 20,500"
                 }
             ]
         },
@@ -59,19 +59,19 @@
             "types": [
                 {
                     "text": "Room Only:",
-                    "price": "LKR 13,000"
-                },
-                {
-                    "text": "Bed & Breakfast:",
                     "price": "LKR 16,000"
                 },
                 {
+                    "text": "Bed & Breakfast:",
+                    "price": "LKR 18,500"
+                },
+                {
                     "text": "Half Board (HB):",
-                    "price": "LKR 20,000"
+                    "price": "LKR 23,500"
                 },
                 {
                     "text": "Full Board (FB):",
-                    "price": "LKR 24,000"
+                    "price": "LKR 28,000"
                 }
             ]
         },
@@ -84,7 +84,7 @@
             "types": [
                 {
                     "text": "Room Only:",
-                    "price": "LKR 25,000"
+                    "price": "LKR 30,000"
                 }
             ]
         }
