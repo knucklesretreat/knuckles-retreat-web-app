@@ -126,12 +126,13 @@ export default component$(() => {
                                 </div>
                                 <div class={styles.types}>
                                     <ul>
-                                        {room.types.map((type) => (
+                                        {/* {room.types.map((type) => (
                                             <li key={type.text}>
                                                 <span class={styles.typeText} aria-hidden="true">{type.text}</span>
                                                 {type.price} / night
                                             </li>
-                                        ))}
+                                        ))} */}
+                                        <li>Please contact us for pricing.</li>
                                     </ul>
                                 </div>
                             </div>
