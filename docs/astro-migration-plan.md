@@ -395,6 +395,8 @@ Run the Phase 0 script against `astro build && astro preview`, then against the 
 3. Google Search Console: resubmit the sitemap, run URL Inspection on the 6 routes, watch the
    Coverage/Pages report for a week.
 4. Rollback: Vercel Instant Rollback to the last Qwik deployment (keep it un-deleted).
+5. Update `CLAUDE.md`: Astro commands and structure, remove the Qwik commands and the parity-only
+   rules, and point to Phase 6 as the current work.
 
 ---
 
