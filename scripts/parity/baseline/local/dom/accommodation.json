@@ -1,0 +1,397 @@
+{
+  "headings": [
+    {
+      "tag": "h4",
+      "text": "Knuckles Retreat"
+    },
+    {
+      "tag": "h5",
+      "text": "-RECONNECT WITH NATURE-"
+    },
+    {
+      "tag": "h1",
+      "text": "Discover Our Room Packages"
+    },
+    {
+      "tag": "h2",
+      "text": "Double Rooms"
+    },
+    {
+      "tag": "h2",
+      "text": "Triple Rooms"
+    },
+    {
+      "tag": "h2",
+      "text": "Family Rooms"
+    },
+    {
+      "tag": "h2",
+      "text": "Groups"
+    },
+    {
+      "tag": "h2",
+      "text": "Ready to Experience Knuckles Retreat?"
+    },
+    {
+      "tag": "h2",
+      "text": "Knuckles Retreat"
+    },
+    {
+      "tag": "h3",
+      "text": "-RECONNECT WITH NATURE-"
+    },
+    {
+      "tag": "h2",
+      "text": "Support"
+    },
+    {
+      "tag": "h2",
+      "text": "Navigate"
+    },
+    {
+      "tag": "h2",
+      "text": "Contact Us"
+    }
+  ],
+  "images": [
+    {
+      "tag": "svg",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "width": "350",
+      "height": "350",
+      "fill": "none",
+      "viewBox": "0 0 350 350",
+      "class": "_logo_symbol_tueoj_50"
+    },
+    {
+      "tag": "source",
+      "media": "(max-width: 460px)",
+      "srcset": "/assets/RpZ_A4Ge-pattern1.webp"
+    },
+    {
+      "tag": "img",
+      "alt": "flower pattern",
+      "height": "20",
+      "width": "20",
+      "class": "_bg_pattern_tueoj_118"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "img",
+      "decoding": "async",
+      "loading": "lazy",
+      "alt": "Background Image",
+      "srcset": "/assets/CdBppoZY-branch.webp 200w, /assets/C6ujFkuE-branch.webp 400w, /assets/Dx7Q1gq4-branch.webp 600w, /assets/y2MDm16g-branch.webp 800w, /assets/CFdu-rge-branch.webp 1024w",
+      "width": "1024",
+      "height": "1024",
+      "class": "_bg_branch_6orgu_12"
+    },
+    {
+      "tag": "img",
+      "decoding": "async",
+      "loading": "lazy",
+      "alt": "Panoramic view of Knuckles Mountain Range",
+      "srcset": "/assets/DcWLuoE_-dining_out.webp 200w, /assets/H__nHfOr-dining_out.webp 400w, /assets/B77aA40T-dining_out.webp 600w, /assets/DD3gIpOh-dining_out.webp 800w, /assets/D_8qDJz7-dining_out.webp 1200w",
+      "width": "1200",
+      "height": "800"
+    },
+    {
+      "tag": "img",
+      "decoding": "async",
+      "loading": "lazy",
+      "alt": "flower pattern",
+      "srcset": "/assets/wCkJKIDj-pattern1.webp 200w, /assets/DXlwhoEa-pattern1.webp 400w, /assets/CF2R-weV-pattern1.webp 600w, /assets/CvNiZTuX-pattern1.webp 800w, /assets/DuJMdV06-pattern1.webp 1200w",
+      "width": "1200",
+      "height": "1200",
+      "class": "_bg_img_6orgu_103"
+    },
+    {
+      "tag": "img",
+      "src": "/assets/DIZ64ZB--room1.webp",
+      "alt": "Double Room at Knuckles Retreat",
+      "width": "400",
+      "height": "300",
+      "loading": "lazy",
+      "class": "_roomImage_6orgu_119"
+    },
+    {
+      "tag": "img",
+      "decoding": "async",
+      "loading": "lazy",
+      "alt": "flower pattern",
+      "srcset": "/assets/wCkJKIDj-pattern1.webp 200w, /assets/DXlwhoEa-pattern1.webp 400w, /assets/CF2R-weV-pattern1.webp 600w, /assets/CvNiZTuX-pattern1.webp 800w, /assets/DuJMdV06-pattern1.webp 1200w",
+      "width": "1200",
+      "height": "1200",
+      "class": "_bg_img_6orgu_103"
+    },
+    {
+      "tag": "img",
+      "src": "/assets/COhYoLkH-img1.webp",
+      "alt": "Triple Room at Knuckles Retreat",
+      "width": "400",
+      "height": "300",
+      "loading": "lazy",
+      "class": "_roomImage_6orgu_119"
+    },
+    {
+      "tag": "img",
+      "decoding": "async",
+      "loading": "lazy",
+      "alt": "flower pattern",
+      "srcset": "/assets/wCkJKIDj-pattern1.webp 200w, /assets/DXlwhoEa-pattern1.webp 400w, /assets/CF2R-weV-pattern1.webp 600w, /assets/CvNiZTuX-pattern1.webp 800w, /assets/DuJMdV06-pattern1.webp 1200w",
+      "width": "1200",
+      "height": "1200",
+      "class": "_bg_img_6orgu_103"
+    },
+    {
+      "tag": "img",
+      "src": "/assets/DChzQbqk-room3.webp",
+      "alt": "Family Room at Knuckles Retreat",
+      "width": "400",
+      "height": "300",
+      "loading": "lazy",
+      "class": "_roomImage_6orgu_119"
+    },
+    {
+      "tag": "img",
+      "decoding": "async",
+      "loading": "lazy",
+      "alt": "flower pattern",
+      "srcset": "/assets/wCkJKIDj-pattern1.webp 200w, /assets/DXlwhoEa-pattern1.webp 400w, /assets/CF2R-weV-pattern1.webp 600w, /assets/CvNiZTuX-pattern1.webp 800w, /assets/DuJMdV06-pattern1.webp 1200w",
+      "width": "1200",
+      "height": "1200",
+      "class": "_bg_img_6orgu_103"
+    },
+    {
+      "tag": "img",
+      "src": "/assets/C8yG6A9p-room4.webp",
+      "alt": "Group Room at Knuckles Retreat",
+      "width": "400",
+      "height": "300",
+      "loading": "lazy",
+      "class": "_roomImage_6orgu_119"
+    },
+    {
+      "tag": "svg",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "width": "350",
+      "height": "350",
+      "fill": "none",
+      "viewBox": "0 0 350 350",
+      "class": "_logo_symbol_1a76w_36"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 512 512",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "class": "ionicon"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 512 512",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "class": "ionicon"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 512 512",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "class": "ionicon"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 512 512",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "class": "ionicon"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 512 512",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "class": "ionicon"
+    }
+  ],
+  "backgrounds": [
+    {
+      "tag": "section",
+      "style": "background-image:url(/assets/BrVpaZI8-line-pattern.webp)"
+    }
+  ],
+  "inlineStyles": [
+    {
+      "tag": "section",
+      "style": "background-image:url(/assets/BrVpaZI8-line-pattern.webp)"
+    }
+  ],
+  "links": [
+    {
+      "href": "/#home",
+      "text": "Home"
+    },
+    {
+      "href": "/accommodation",
+      "text": "Accommodation"
+    },
+    {
+      "href": "/#gallery",
+      "text": "Gallery"
+    },
+    {
+      "href": "/#explore",
+      "text": "Explore"
+    },
+    {
+      "href": "/#contact",
+      "text": "Contact"
+    },
+    {
+      "href": "https://wa.me/+94774410767",
+      "text": "Contact Now",
+      "target": "_blank"
+    },
+    {
+      "href": "https://web.facebook.com/profile.php?id=61554911975425",
+      "text": "",
+      "target": "_blank",
+      "ariaLabel": "Knuckles Retreat facebook page link icon"
+    },
+    {
+      "href": "https://www.instagram.com/knucklesretreat",
+      "text": "",
+      "target": "_blank",
+      "ariaLabel": "Knuckles Retreat instagram account link icon"
+    },
+    {
+      "href": "https://www.youtube.com/@KnucklesRetreat",
+      "text": "",
+      "target": "_blank",
+      "ariaLabel": "Knuckles Retreat youtube channel link icon"
+    },
+    {
+      "href": "/inquiry",
+      "text": "Inquire"
+    },
+    {
+      "href": "/faq",
+      "text": "FAQ"
+    },
+    {
+      "href": "/privacy-policy",
+      "text": "Privacy Policy"
+    },
+    {
+      "href": "/terms-and-conditions",
+      "text": "Terms & Conditions"
+    },
+    {
+      "href": "/#home",
+      "text": "Home"
+    },
+    {
+      "href": "/#gallery",
+      "text": "Gallery"
+    },
+    {
+      "href": "/#explore",
+      "text": "Explore"
+    },
+    {
+      "href": "/accommodation",
+      "text": "Accommodation"
+    },
+    {
+      "href": "tel:+94774410767",
+      "text": "+94 77 441 0767"
+    },
+    {
+      "href": "mailto:inquiries@knucklesretreat.com",
+      "text": "inquiries@knucklesretreat.com"
+    }
+  ],
+  "buttons": [],
+  "forms": [],
+  "iframes": [],
+  "textLength": 4261
+}

@@ -1,0 +1,58 @@
+{
+  "404": {
+    "path": "/this-page-does-not-exist/",
+    "status": 404,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "public, max-age=0, must-revalidate"
+    }
+  },
+  "home": {
+    "path": "/",
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "max-age=5"
+    }
+  },
+  "accommodation": {
+    "path": "/accommodation/",
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "max-age=5"
+    }
+  },
+  "inquiry": {
+    "path": "/inquiry/",
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "max-age=5"
+    }
+  },
+  "faq": {
+    "path": "/faq/",
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "max-age=5"
+    }
+  },
+  "privacy-policy": {
+    "path": "/privacy-policy/",
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "max-age=5"
+    }
+  },
+  "terms-and-conditions": {
+    "path": "/terms-and-conditions/",
+    "status": 200,
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "max-age=5"
+    }
+  }
+}

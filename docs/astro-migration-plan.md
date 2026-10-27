@@ -49,7 +49,10 @@ Each step ships and is verified on its own, so a regression can always be traced
 | `/terms-and-conditions/` | `src/routes/terms-and-conditions/index.tsx` | Static |
 
 - **Trailing slashes:** Qwik City defaults to `trailingSlash: true` (canonical URLs and the sitemap
-  both use `/faq/` style). Non-slash URLs currently redirect to the slashed version.
+  both use `/faq/` style). Non-slash URLs currently **301** to the slashed version, query string kept
+  (`/faq?x=1` → `/faq/?x=1`). Paths are case-sensitive (`/FAQ/` → 404); `/index.html` → 404.
+- **Domain redirects (Vercel domain config, captured 2026-10-28):** `knucklesretreat.com` → 308 →
+  `https://www.knucklesretreat.com/`; `http://` → 308 → `https://`. `www` is the canonical host.
 - **Canonical:** `RouterHead` emits `<link rel="canonical" href={loc.url.href}>` → absolute URL with
   trailing slash.
 
@@ -186,7 +189,18 @@ Run on `main`, against a local production build **and** the live site.
 5. Note exactly what `?jsx` images render (attributes like `loading`, `decoding`, `srcset`, `sizes`)
    from the baseline HTML — the Astro image output must match these.
 
-Deliverable: `scripts/parity/baseline/` committed on the branch.
+Deliverable: `scripts/parity/baseline/` committed on the branch (screenshots/video kept local, see
+`scripts/parity/README.md`).
+
+**Phase 0 results (captured 2026-10-28, commit `817c272`):**
+
+- Live `<head>` matches the local production build on all 7 routes → local screenshots are a valid baseline.
+- Live Lighthouse (median of 3), mobile / desktop performance: `/` 79 / 95, `/accommodation/` 75 / 98,
+  `/inquiry/` 82 / 98. Accessibility 100 (inquiry 96), SEO 100, Best Practices 81 everywhere.
+  Mobile LCP 4.7–6.8 s. Mobile runs vary a lot (e.g. 67–98), so compare medians, not single runs.
+- Existing console errors to expect in both builds: `window.grecaptcha.render is not a function` on
+  `/inquiry/` (race with the async reCAPTCHA script — see §4.5).
+- `?jsx` images render with `loading="lazy" decoding="async"`, a 200–1200w `srcset`, no `sizes`.
 
 ---
 
@@ -344,7 +358,9 @@ Keep this file for at least a few months after launch.
   `"framework": "astro"` in `vercel.json`). Do this on a preview deployment first.
 - `vercel.json`:
   - replace the `/build/(.*)` cache rule with `/_astro/(.*)` (Astro's hashed asset dir);
-  - add `"trailingSlash": true` so `/faq` → 308 → `/faq/` like today.
+  - add `"trailingSlash": true` so `/faq` → `/faq/` like today. Vercel answers this with **308**
+    where Qwik answered **301**; both are permanent redirects and are treated the same by search
+    engines, so this is an accepted difference (query strings must still be preserved).
 - Set `PUBLIC_API_URL` for Preview and Production environments.
 - HTML caching: Qwik set `max-age=5, stale-while-revalidate=604800`; Vercel's static default (CDN cache,
   revalidated on deploy) is equivalent or better — no config needed.
@@ -363,7 +379,7 @@ Run the Phase 0 script against `astro build && astro preview`, then against the 
 | Screenshots 375/768/1280/1920 | Pixel diff ≤ 0.1 % (fonts/AA noise); any larger diff reviewed by eye |
 | Animation checkpoints | Header sticky, hero slide 2 after click, each reveal state, mobile menu open, testimonial next/prev mid-transition |
 | Manual side-by-side | Full scroll on `/` vs baseline video (parallax feel), hero auto-advance after 15 s, resize across 876 px and 460 px |
-| URLs | All 6 routes 200 at trailing-slash URL; non-slash 308 → slash; unknown path 404 |
+| URLs | All 6 routes 200 at trailing-slash URL; non-slash → permanent redirect (301/308) → slash, query kept; unknown path 404 |
 | Sitemap / robots | `/site/sitemap.xml`, `/robots.txt`, `/manifest.json`, `/manifest.webmanifest`, `/favicon.svg` byte-identical |
 | Inquiry | Validation messages in order; captcha renders; success + error toast; reset |
 | Lighthouse | Every category ≥ baseline (SEO and Accessibility must be equal or higher) |
@@ -541,12 +557,14 @@ These are deliberately **out of scope** for parity because they change output. L
    slides are capped at 1200 w today).
 2. **Partytown:** it forwards `dataLayer.push`, but no GTM/gtag script exists in the repo. Either add the
    intended analytics tag as `type="text/partytown"` or remove Partytown.
-3. **Poppins font:** `global.css` sets `font-family: "Poppins"` but there is no `@font-face`, and
-   `public/fonts/poppins-*.woff2` are never referenced — so most visitors currently see the fallback
-   `sans-serif`. Adding the `@font-face` **will change the look of the site**; decide deliberately
-   (with preload) and screenshot-review.
-4. **Unused Google Fonts:** `global.css` imports Kaushan Script, Montserrat, Nunito Sans and Source Sans 3
-   (many weights). Trim to what the CSS actually uses.
+3. **Poppins font:** `global.css` sets `* { font-family: "Poppins" }` but there is no `@font-face`, and
+   `public/fonts/poppins-*.woff2` are never referenced. Component CSS overrides it almost everywhere
+   (Nunito Sans ×46, Kaushan Script ×6, Montserrat ×5, Source Sans 3 ×4), so only elements without a
+   component font fall back to the browser's `sans-serif`. Either load Poppins (changes those elements)
+   or drop the rule and the unused woff2 files — decide deliberately and screenshot-review.
+4. **Google Fonts request:** all four families are used, but the `@import` pulls many unused weights and
+   italics (e.g. Nunito Sans 200–900 plus italics). Trim to the weights the CSS uses, and consider
+   `<link rel="preconnect">` + `<link>` instead of a CSS `@import` (which delays font discovery).
 5. **Inquiry country select:** the "Please select" option has no `value=""`, so re-selecting it passes
    validation as a country. Add `value=""` (and the same check server-side, §7.4).
 6. **Sitemap:** replace the hand-maintained `public/site/sitemap.xml` with `@astrojs/sitemap` (keep the

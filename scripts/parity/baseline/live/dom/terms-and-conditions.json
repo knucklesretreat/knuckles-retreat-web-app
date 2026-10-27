@@ -1,0 +1,299 @@
+{
+  "headings": [
+    {
+      "tag": "h4",
+      "text": "Knuckles Retreat"
+    },
+    {
+      "tag": "h5",
+      "text": "-RECONNECT WITH NATURE-"
+    },
+    {
+      "tag": "h1",
+      "text": "TERMS AND CONDITIONS"
+    },
+    {
+      "tag": "h2",
+      "text": "Reservation and Payment"
+    },
+    {
+      "tag": "h2",
+      "text": "Cancellation and Refund Policy"
+    },
+    {
+      "tag": "h2",
+      "text": "Check-in and Check-out"
+    },
+    {
+      "tag": "h2",
+      "text": "Occupancy and Child Policy"
+    },
+    {
+      "tag": "h2",
+      "text": "Property Use"
+    },
+    {
+      "tag": "h2",
+      "text": "Force Majeure"
+    },
+    {
+      "tag": "h2",
+      "text": "Contact Information"
+    },
+    {
+      "tag": "h2",
+      "text": "Agreement Acceptance"
+    },
+    {
+      "tag": "h2",
+      "text": "Knuckles Retreat"
+    },
+    {
+      "tag": "h3",
+      "text": "-RECONNECT WITH NATURE-"
+    },
+    {
+      "tag": "h2",
+      "text": "Support"
+    },
+    {
+      "tag": "h2",
+      "text": "Navigate"
+    },
+    {
+      "tag": "h2",
+      "text": "Contact Us"
+    }
+  ],
+  "images": [
+    {
+      "tag": "svg",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "width": "350",
+      "height": "350",
+      "fill": "none",
+      "viewBox": "0 0 350 350",
+      "class": "_logo_symbol_tueoj_50"
+    },
+    {
+      "tag": "source",
+      "media": "(max-width: 460px)",
+      "srcset": "/assets/RpZ_A4Ge-pattern1.webp"
+    },
+    {
+      "tag": "img",
+      "alt": "flower pattern",
+      "height": "20",
+      "width": "20",
+      "class": "_bg_pattern_tueoj_118"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 24 24",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg"
+    },
+    {
+      "tag": "svg",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "width": "350",
+      "height": "350",
+      "fill": "none",
+      "viewBox": "0 0 350 350",
+      "class": "_logo_symbol_1a76w_36"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 512 512",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "class": "ionicon"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 512 512",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "class": "ionicon"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 512 512",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "class": "ionicon"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 512 512",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "class": "ionicon"
+    },
+    {
+      "tag": "svg",
+      "fill": "currentColor",
+      "height": "1em",
+      "stroke": "none",
+      "viewBox": "0 0 512 512",
+      "width": "1em",
+      "xmlns": "http://www.w3.org/2000/svg",
+      "class": "ionicon"
+    }
+  ],
+  "backgrounds": [],
+  "inlineStyles": [],
+  "links": [
+    {
+      "href": "/#home",
+      "text": "Home"
+    },
+    {
+      "href": "/accommodation",
+      "text": "Accommodation"
+    },
+    {
+      "href": "/#gallery",
+      "text": "Gallery"
+    },
+    {
+      "href": "/#explore",
+      "text": "Explore"
+    },
+    {
+      "href": "/#contact",
+      "text": "Contact"
+    },
+    {
+      "href": "https://web.facebook.com/profile.php?id=61554911975425",
+      "text": "",
+      "target": "_blank",
+      "ariaLabel": "Knuckles Retreat facebook page link icon"
+    },
+    {
+      "href": "https://www.instagram.com/knucklesretreat",
+      "text": "",
+      "target": "_blank",
+      "ariaLabel": "Knuckles Retreat instagram account link icon"
+    },
+    {
+      "href": "https://www.youtube.com/@KnucklesRetreat",
+      "text": "",
+      "target": "_blank",
+      "ariaLabel": "Knuckles Retreat youtube channel link icon"
+    },
+    {
+      "href": "/inquiry",
+      "text": "Inquire"
+    },
+    {
+      "href": "/faq",
+      "text": "FAQ"
+    },
+    {
+      "href": "/privacy-policy",
+      "text": "Privacy Policy"
+    },
+    {
+      "href": "/terms-and-conditions",
+      "text": "Terms & Conditions"
+    },
+    {
+      "href": "/#home",
+      "text": "Home"
+    },
+    {
+      "href": "/#gallery",
+      "text": "Gallery"
+    },
+    {
+      "href": "/#explore",
+      "text": "Explore"
+    },
+    {
+      "href": "/accommodation",
+      "text": "Accommodation"
+    },
+    {
+      "href": "tel:+94774410767",
+      "text": "+94 77 441 0767"
+    },
+    {
+      "href": "mailto:inquiries@knucklesretreat.com",
+      "text": "inquiries@knucklesretreat.com"
+    }
+  ],
+  "buttons": [],
+  "forms": [],
+  "iframes": [],
+  "textLength": 5410
+}

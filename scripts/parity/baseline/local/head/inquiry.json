@@ -1,0 +1,243 @@
+{
+  "htmlAttrs": {
+    "lang": "en-us"
+  },
+  "bodyAttrs": {
+    "lang": "en"
+  },
+  "title": "Knuckles Retreat | Inquire",
+  "elements": [
+    {
+      "tag": "meta",
+      "attrs": {
+        "charset": "utf-8"
+      }
+    },
+    {
+      "tag": "script",
+      "attrs": {},
+      "inline": "partytown-snippet"
+    },
+    {
+      "tag": "script",
+      "attrs": {
+        "type": "application/ld+json"
+      },
+      "json": {
+        "@context": "http://schema.org",
+        "@type": "WebSite",
+        "name": "Knuckles Retreat",
+        "url": "https://www.knucklesretreat.com/",
+        "publisher": {
+          "@type": "Hotel",
+          "image": "https://firebasestorage.googleapis.com/v0/b/knuckles-retreat.appspot.com/o/kr-pic.png?alt=media&token=6a2d1e8b-cce8-49ff-80a6-b9276854c03e",
+          "priceRange": "$20 - $1100",
+          "name": "Knuckles Retreat",
+          "@id": "https://www.knucklesretreat.com/",
+          "logo": "https://firebasestorage.googleapis.com/v0/b/knuckles-retreat.appspot.com/o/kr-logo.png?alt=media&token=4af82e8f-7001-4275-be50-911c62b4f589",
+          "url": "https://www.knucklesretreat.com/",
+          "brand": {
+            "@type": "Brand",
+            "name": "Knuckles Retreat",
+            "url": "https://www.knucklesretreat.com/",
+            "logo": "https://firebasestorage.googleapis.com/v0/b/knuckles-retreat.appspot.com/o/kr-logo.png?alt=media&token=4af82e8f-7001-4275-be50-911c62b4f589"
+          },
+          "description": "Experience serenity amidst nature's embrace in the heart of Sri Lanka's Central Province. Nestled amidst lush forests, tea plantations, and majestic mountains, Knuckles Retreat offers the perfect escape for a calm, cool, and utterly relaxing getaway.",
+          "sameAs": [
+            "https://web.facebook.com/profile.php?id=61554911975425",
+            "https://www.instagram.com/knucklesretreat",
+            "https://www.youtube.com/@KnucklesRetreat"
+          ],
+          "hasMap": "https://www.google.lk/maps/place/Knuckles+Retreat/@7.4010009,80.7823746,17z/data=!3m1!4b1!4m6!3m5!1s0x3ae35f038d4d7721:0x73186daaad420c8!8m2!3d7.4010009!4d80.7823746!16s%2Fg%2F11l5tnmkpn?entry=ttu",
+          "telephone": "(+)94 77 441 0767",
+          "parentOrganization": {
+            "@type": "Corporation",
+            "url": "https://www.knucklesretreat.com/",
+            "name": "Knuckles Retreat",
+            "logo": "https://firebasestorage.googleapis.com/v0/b/knuckles-retreat.appspot.com/o/kr-logo.png?alt=media&token=4af82e8f-7001-4275-be50-911c62b4f589",
+            "@id": "https://www.knucklesretreat.com/"
+          },
+          "contactPoint": [
+            {
+              "@type": "ContactPoint",
+              "contactType": "Reservations",
+              "telephone": " (+)94 77 441 0767",
+              "email": " inquiries@knucklesretreat.com"
+            }
+          ],
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Knuckles Peak Road",
+            "addressLocality": "Knuckles Peak Road, Gomara",
+            "addressCountry": "Sri Lanka"
+          }
+        }
+      }
+    },
+    {
+      "tag": "script",
+      "attrs": {
+        "src": "https://www.google.com/recaptcha/api.js",
+        "async": "",
+        "defer": ""
+      }
+    },
+    {
+      "tag": "link",
+      "attrs": {
+        "rel": "manifest",
+        "href": "/manifest.json"
+      }
+    },
+    {
+      "tag": "title",
+      "attrs": {},
+      "text": "Knuckles Retreat | Inquire"
+    },
+    {
+      "tag": "link",
+      "attrs": {
+        "rel": "canonical",
+        "href": "http://localhost:4173/inquiry/"
+      }
+    },
+    {
+      "tag": "meta",
+      "attrs": {
+        "name": "viewport",
+        "content": "width=device-width, initial-scale=1.0"
+      }
+    },
+    {
+      "tag": "link",
+      "attrs": {
+        "rel": "icon",
+        "type": "image/svg+xml",
+        "href": "/favicon.svg"
+      }
+    },
+    {
+      "tag": "meta",
+      "attrs": {
+        "name": "description",
+        "content": "Have a question about our accommodations, services, or special requests? We're here to help. Fill out the form below with your details and inquiries, and our dedicated team will get back to you with the information you need."
+      }
+    },
+    {
+      "tag": "meta",
+      "attrs": {
+        "name": "theme-color",
+        "content": "#274e13"
+      }
+    },
+    {
+      "tag": "meta",
+      "attrs": {
+        "property": "og:title",
+        "content": "Knuckles Retreat Sri Lanka"
+      }
+    },
+    {
+      "tag": "meta",
+      "attrs": {
+        "property": "og:description",
+        "content": "Knuckles Retreat Sri Lanka offers the perfect escape for a calm, cool and utterly relaxing getaway"
+      }
+    },
+    {
+      "tag": "meta",
+      "attrs": {
+        "property": "og:image",
+        "content": "https://firebasestorage.googleapis.com/v0/b/knuckles-retreat.appspot.com/o/kr-pic.png?alt=media&token=6a2d1e8b-cce8-49ff-80a6-b9276854c03e"
+      }
+    },
+    {
+      "tag": "meta",
+      "attrs": {
+        "property": "og:type",
+        "content": "website"
+      }
+    },
+    {
+      "tag": "meta",
+      "attrs": {
+        "property": "og:site_name",
+        "content": "Knuckles Retreat"
+      }
+    },
+    {
+      "tag": "meta",
+      "attrs": {
+        "property": "og:url",
+        "content": "https://www.knucklesretreat.com/"
+      }
+    },
+    {
+      "tag": "script",
+      "attrs": {
+        "type": "module"
+      },
+      "inline": "388 chars: \"serviceWorker\"in navigator&&navigator.serviceWorker.getRegistrations().then(r=>"
+    },
+    {
+      "tag": "link",
+      "attrs": {
+        "rel": "modulepreload",
+        "href": "/build/q-pLIxelCT.js"
+      }
+    },
+    {
+      "tag": "script",
+      "attrs": {
+        "type": "module",
+        "async": "true",
+        "src": "/build/q-pLIxelCT.js"
+      }
+    },
+    {
+      "tag": "link",
+      "attrs": {
+        "rel": "stylesheet",
+        "href": "/assets/sHOefXpa-style.css"
+      }
+    },
+    {
+      "tag": "link",
+      "attrs": {
+        "rel": "modulepreload",
+        "href": "/build/q-4PVSIEAD.js"
+      }
+    },
+    {
+      "tag": "link",
+      "attrs": {
+        "rel": "preload",
+        "href": "/assets/D3t6zqIy-bundle-graph.json",
+        "as": "fetch",
+        "crossorigin": "anonymous"
+      }
+    },
+    {
+      "tag": "script",
+      "attrs": {
+        "type": "module",
+        "async": "true"
+      },
+      "inline": "109 chars: let b=fetch(\"/assets/D3t6zqIy-bundle-graph.json\");import(\"/build/q-4PVSIEAD.js\")"
+    },
+    {
+      "tag": "link",
+      "attrs": {
+        "rel": "modulepreload",
+        "href": "/build/q-CYCHJ31N.js"
+      }
+    },
+    {
+      "tag": "style",
+      "attrs": {
+        "hidden": ""
+      },
+      "inline": "32 chars"
+    }
+  ]
+}

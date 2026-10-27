@@ -1,0 +1,41 @@
+{
+  "htmlAttrs": {
+    "lang": null
+  },
+  "bodyAttrs": {
+    "lang": null
+  },
+  "title": "404 Resource Not Found",
+  "elements": [
+    {
+      "tag": "meta",
+      "attrs": {
+        "charset": "utf-8"
+      }
+    },
+    {
+      "tag": "meta",
+      "attrs": {
+        "http-equiv": "Status",
+        "content": "404"
+      }
+    },
+    {
+      "tag": "title",
+      "attrs": {},
+      "text": "404 Resource Not Found"
+    },
+    {
+      "tag": "meta",
+      "attrs": {
+        "name": "viewport",
+        "content": "width=device-width,initial-scale=1"
+      }
+    },
+    {
+      "tag": "style",
+      "attrs": {},
+      "inline": "461 chars"
+    }
+  ]
+}
