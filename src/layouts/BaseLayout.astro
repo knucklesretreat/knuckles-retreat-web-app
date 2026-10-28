@@ -1,6 +1,8 @@
 ---
 // Replaces Qwik's root.tsx + RouterHead + routes/layout.tsx. The <head> order matches the Qwik site
 // exactly (see scripts/parity/baseline/*/head/*.json); keep it that way.
+import Footer from "~/components/Footer.astro";
+import Header from "~/components/Header.astro";
 import Partytown from "~/components/Partytown.astro";
 import Schema from "~/components/Schema.astro";
 import { SHARED_META } from "~/lib/seo";
@@ -31,8 +33,10 @@ const meta = [{ name: "description", content: description }, ...SHARED_META];
     {meta.map((m) => <meta {...m} />)}
   </head>
   <body lang="en">
+    <Header />
     <main>
       <slot />
     </main>
+    <Footer />
   </body>
 </html>

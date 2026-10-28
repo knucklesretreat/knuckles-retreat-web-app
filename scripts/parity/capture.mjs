@@ -1,8 +1,9 @@
 // Captures a reference snapshot of the site: server HTML, SEO <head>, DOM facts (images, links,
-// headings), full-page screenshots, interaction/animation checkpoints and a scroll video.
+// headings), stylesheets, full-page screenshots, interaction/animation checkpoints and a scroll video.
 //
 //   node capture.mjs --base http://localhost:4173 --out baseline/local
 //   node capture.mjs --base https://www.knucklesretreat.com --out baseline/live --no-screens
+//   node capture.mjs --base <url> --out <dir> --css-only   # only (re)capture css/
 import { chromium } from "playwright";
 import { execSync } from "node:child_process";
 import { rename } from "node:fs/promises";
@@ -13,9 +14,10 @@ const opts = args({
   base: { type: "string" },
   out: { type: "string" },
   "no-screens": { type: "boolean", default: false },
+  "css-only": { type: "boolean", default: false },
 });
 if (!opts.base || !opts.out) {
-  console.error("usage: node capture.mjs --base <url> --out <dir> [--no-screens]");
+  console.error("usage: node capture.mjs --base <url> --out <dir> [--no-screens | --css-only]");
   process.exit(1);
 }
 const base = opts.base.replace(/\/$/, "");
@@ -26,27 +28,64 @@ const browser = await chromium.launch();
 const consoleLog = {};
 
 try {
-  await captureServerHtml();
-  await captureDomFacts();
-  if (!opts["no-screens"]) {
-    await captureFullPages();
-    await captureStates();
-    await captureScrollVideo();
+  if (opts["css-only"]) {
+    await captureCss();
+  } else {
+    await captureServerHtml();
+    await captureCss();
+    await captureDomFacts();
+    if (!opts["no-screens"]) {
+      await captureFullPages();
+      await captureStates();
+      await captureScrollVideo();
+    }
+    await save(join(out, "console.json"), consoleLog);
+    await save(join(out, "meta.json"), {
+      base,
+      capturedAt: new Date().toISOString(),
+      gitCommit: execSync("git rev-parse HEAD").toString().trim(),
+      browser: `chromium ${browser.version()}`,
+      screenshots: !opts["no-screens"],
+    });
   }
-  await save(join(out, "console.json"), consoleLog);
-  await save(join(out, "meta.json"), {
-    base,
-    capturedAt: new Date().toISOString(),
-    gitCommit: execSync("git rev-parse HEAD").toString().trim(),
-    browser: `chromium ${browser.version()}`,
-    screenshots: !opts["no-screens"],
-  });
   console.log(`done → ${out}`);
 } finally {
   await browser.close();
 }
 
 // ---------------------------------------------------------------------------------------------
+
+/**
+ * Every stylesheet each route loads, in document order: linked files are saved once under their own
+ * name, inline <style> blocks as <route>-inline-<n>.css; css/index.json maps routes to files.
+ */
+async function captureCss() {
+  const index = {};
+  const saved = new Set();
+  for (const route of ROUTES) {
+    const html = await (await fetch(url(route.path))).text();
+    const files = [];
+    for (const m of html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*>|<style\b[^>]*>([\s\S]*?)<\/style>/g)) {
+      if (m[0].startsWith("<style")) {
+        if (!m[1].trim()) continue;
+        const name = `${route.slug}-inline-${files.length}.css`;
+        await save(join(out, "css", name), m[1]);
+        files.push(name);
+        continue;
+      }
+      const href = m[0].match(/href="([^"]+)"/)[1];
+      const name = href.split("/").pop();
+      if (!saved.has(name)) {
+        await save(join(out, "css", name), await (await fetch(new URL(href, url(route.path)))).text());
+        saved.add(name);
+      }
+      files.push(name);
+    }
+    index[route.slug] = files;
+    console.log(`css   ${route.path} (${files.length} stylesheet${files.length === 1 ? "" : "s"})`);
+  }
+  await save(join(out, "css", "index.json"), index);
+}
 
 /** Raw HTML exactly as the server sends it (what crawlers see), plus status and headers. */
 async function captureServerHtml() {

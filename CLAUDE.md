@@ -12,9 +12,10 @@ hardcoded or comes from `src/data/*.json`. The only backend call is the inquiry 
   updated when facts change.
 - Order: Astro parity on Vercel (Phases 0–5) → Turnstile + backend verification (6) → Cloudflare
   hosting (7) → improvements (8). Each one ships and is verified separately.
-- Phases 0 (baseline) and 1 (Astro setup, layout, `<head>`) are done. Check `git log` and the plan to
-  see which phase is in progress. Astro (`src/pages`, `src/layouts`) and Qwik (`src/routes`) coexist
-  until the end of Phase 3; both build to `dist/`.
+- Phases 0 (baseline), 1 (Astro setup, layout, `<head>`) and 2 (static markup, images, icons, CSS) are
+  done. Check `git log` and the plan to see which phase is in progress. Astro (`src/pages`,
+  `src/layouts`, `src/components/**/*.astro`, `src/lib`) and Qwik (`src/routes`,
+  `src/components/starter`) coexist until the end of Phase 3; both build to `dist/`.
 
 ## Parity rules (Phases 1–5)
 
@@ -25,7 +26,13 @@ The migrated site must look, animate and index exactly like the Qwik site.
 - Port `useVisibleTask$` logic line for line: same thresholds, parallax factors, clamps and timings.
 - Initial server HTML must match Qwik's SSR output: classes, inline styles, attributes, `<head>` order.
 - Keep known quirks (missing Poppins `@font-face`, the "Please select" country bug, reCAPTCHA on every
-  page, the no-op Partytown). They are listed in Phase 8 of the plan; don't fix them during parity.
+  page, the no-op Partytown, uncoloured testimonial stars, internal links without trailing slashes).
+  They are listed in Phase 8 of the plan; don't fix them during parity.
+- Images: use `ResponsiveImage.astro` where Qwik used `?jsx` and `reencodedUrl()` where it used `?url`
+  (Qwik re-encoded those). Read image metadata through `metadataOf()`, never `img.width` etc., or
+  Astro ships the multi-MB originals. Icons: `Icon.astro` (generated from qwikest), not Iconify.
+- Don't change the browser targets, CSS minifier or `inlineStylesheets` in `astro.config.mjs`; they
+  make the CSS match Qwik's (plan §4.3).
 - Don't change markup semantics for style (e.g. a `<button>` that navigates stays a `<button>`).
 - If parity seems impossible, stop and ask. Don't approximate silently.
 
@@ -47,6 +54,7 @@ Astro (7.3.8, needs Node ≥ 22.23.4):
 npm run astro:dev
 npm run astro:build && npm run astro:preview   # preview runs as a daemon on :4173
 npx astro preview stop
+npm run astro:check                            # types, via tsconfig.astro.json until Qwik is gone
 ```
 
 Qwik (until it's removed):
@@ -62,7 +70,7 @@ Parity check (a production preview must be running on :4173):
 ```sh
 cd scripts/parity
 node capture.mjs --base http://localhost:4173 --out candidate/local [--no-screens]
-node compare.mjs --baseline baseline/local --candidate candidate/local
+node compare.mjs --baseline baseline/local --candidate candidate/local [--only body,css] [--routes faq]
 ```
 
 ## Project facts
@@ -70,7 +78,8 @@ node compare.mjs --baseline baseline/local --candidate candidate/local
 - Canonical host is `www.knucklesretreat.com`. URLs have trailing slashes (`/faq` → 301 → `/faq/`).
 - `public/site/sitemap.xml` is hand-maintained; `robots.txt` points to that path.
 - `PUBLIC_API_URL` is inlined at build time (`.env` locally, Vercel env vars in deploys).
-- Images live in `src/media/` (some sources are 2–4 MB; don't re-encode them during parity).
+- Images live in `src/media/` (some sources are 2–4 MB; don't replace or resize the source files during
+  parity — the build output has to stay what Qwik produced).
 
 ## Workflow
 

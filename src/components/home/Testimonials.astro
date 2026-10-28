@@ -1,0 +1,44 @@
+---
+import Icon from "~/components/Icon.astro";
+import ResponsiveImage from "~/components/ResponsiveImage.astro";
+import testimonials from "~/data/testimonials.json";
+import BgBranch from "~/media/explore/branch.webp";
+import TestimonialCard from "./TestimonialCard.astro";
+import styles from "./testimonial.module.css";
+---
+
+<section id="testimonials" class:list={[styles.testimonials_section]}>
+  <div>
+    <ResponsiveImage src={BgBranch} alt="background branch image" class:list={[styles.bg_branch]} />
+  </div>
+
+  <div class={styles.main_content_testimonials}>
+    <div class={styles.title_container}>
+      <h2>What Our Guests Say</h2>
+      <p>Real experiences from valued visitors.</p>
+    </div>
+
+    <div class={styles.carousel_container} style="height:290px">
+      {
+        testimonials.length > 0 ? (
+          <TestimonialCard testimonial={testimonials[0]} class={styles.slideInInitial} />
+        ) : (
+          <p class={styles.no_testimonials}>No testimonials yet. Be the first to share your experience!</p>
+        )
+      }
+    </div>
+
+    {
+      testimonials.length > 1 && (
+        <div class={styles.carousel_navigation}>
+          <button aria-label="Previous testimonial" class={styles.nav_button}>
+            <Icon name="IoChevronBackOutline" />
+          </button>
+          <button aria-label="Next testimonial" class={styles.nav_button}>
+            <Icon name="IoChevronForwardOutline" />
+          </button>
+        </div>
+      )
+    }
+  </div>
+</section>

@@ -1,0 +1,43 @@
+---
+import ResponsiveImage from "~/components/ResponsiveImage.astro";
+import { reencodedUrl } from "~/lib/images";
+import BgBranch from "~/media/explore/branch.webp";
+import ImgOne from "~/media/explore/imgone.jpg";
+import ImgTwo from "~/media/explore/img2.webp";
+import ImgThree from "~/media/explore/img-3.jpg";
+import ImgFour from "~/media/explore/img4.webp";
+import BgPattern from "~/media/pattern1.webp";
+import styles from "./explore.module.css";
+
+const images = await Promise.all([ImgOne, ImgTwo, ImgThree, ImgFour].map(reencodedUrl));
+---
+
+<section id="explore" class={styles.explore}>
+  {/* Qwik's scrollY signal for this image was never updated, so the transform is static. */}
+  <ResponsiveImage src={BgPattern} alt="flower pattern" class:list={[styles.bg_img, styles.top_img]} style="transform:translateY(0px)" />
+  <ResponsiveImage src={BgBranch} class:list={[styles.bg_branch]} alt="Background image" />
+  <div class={styles.main_content}>
+    <div class={styles.txt_content}>
+      <h2>Explore Knuckles</h2>
+      <p>
+        Embark on a journey of discovery at Knuckles Retreat. Uncover the
+        hidden treasures of the Knuckles Mountain Range, traverse scenic
+        trails, and indulge in the natural serenity that awaits your
+        exploration.
+      </p>
+      <p>
+        Named after its distinct knuckle-shaped peaks, the mountain range is
+        renowned for its lush forests, pristine waterfalls, and an abundance
+        of biodiversity. The cool, misty climate that blankets the peaks
+        enhances the mystique of the region, creating an atmosphere that is
+        both serene and invigorating.
+      </p>
+    </div>
+
+    <div class={styles.img_grid}>
+      <div class={styles.grid_container}>
+        {images.map((img) => <div class={styles.grid_item} style={`background-image:url(${img})`}></div>)}
+      </div>
+    </div>
+  </div>
+</section>

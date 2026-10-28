@@ -1,0 +1,24 @@
+---
+import { reencodedUrl } from "~/lib/images";
+import BgImgSrc from "~/media/accommodation/img1.webp";
+import styles from "./accommodation.module.css";
+
+const BgImg = await reencodedUrl(BgImgSrc);
+---
+
+<section class={styles.accommodation} style={`background-image:url(${BgImg})`}>
+  <div class={styles.overlay}></div>
+  <div class={styles.content}>
+    <h2>Your Private Sanctuary</h2>
+    <p>
+      Discover unparalleled comfort in our thoughtfully designed rooms.
+      Each space blends rustic charm with modern amenities, offering
+      stunning views of the Knuckles mountain range. Wake up to the sounds of nature
+      and unwind in tranquility after a day of exploration. Perfect for
+      couples, families, and solo adventurers seeking peace and relaxation.
+    </p>
+    <button class={styles.explore_btn}>
+      Explore
+    </button>
+  </div>
+</section>

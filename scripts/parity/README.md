@@ -19,8 +19,12 @@ Astro: `npm run astro:build && npm run astro:preview`, stopped with `npx astro p
 # HTML, <head>, DOM facts, full-page screenshots, animation states, scroll video
 node capture.mjs --base http://localhost:4173 --out baseline/local
 
-# Live site: HTML / <head> / DOM only (screenshots come from the local build)
+# Live site: HTML / <head> / DOM / CSS only (screenshots come from the local build)
 node capture.mjs --base https://www.knucklesretreat.com --out baseline/live --no-screens
+
+# Only the stylesheets (added to both baselines in Phase 2; the local Qwik build served the same
+# content-hashed sHOefXpa-style.css as production, so baseline/local/css is a copy of the live one)
+node capture.mjs --base https://www.knucklesretreat.com --out baseline/live --css-only
 
 # Redirects and status codes (live run also checks apex/www and http/https)
 node redirects.mjs --base https://www.knucklesretreat.com --out baseline/live
@@ -35,14 +39,22 @@ node lighthouse.mjs --base https://www.knucklesretreat.com --out baseline/live
 Capture the migrated site into `candidate/` (gitignored), then:
 
 ```sh
-node compare.mjs --baseline baseline/local --candidate candidate/local            # all checks
-node compare.mjs --baseline baseline/live --candidate candidate/local --only head # vs production
+node compare.mjs --baseline baseline/local --candidate candidate/local                     # all checks
+node compare.mjs --baseline baseline/live --candidate candidate/local --only head,body,css # vs production
+node compare.mjs --baseline baseline/local --candidate candidate/local --routes faq,404    # some pages
 ```
 
-Checks so far: `head` (title, `<html>`/`<body>` lang, every non-framework `<head>` element in order,
-canonical compared by path, exact Partytown snippet text) and `responses` (status, content type).
-Framework plumbing is ignored: assets under `/build/`, `/assets/`, `/_astro/`, `<style>` tags and
-inline module scripts. Exits 1 on any difference.
+Exits 1 on any difference.
+
+| Check | What must match |
+| --- | --- |
+| `head` | Title, `<html>`/`<body>` lang, every non-framework `<head>` element in order, canonical (by path), exact Partytown snippet text. Ignored: assets under `/build/`, `/assets/`, `/_astro/`, `<style>` tags, inline module scripts |
+| `responses` | Status code and content type per route |
+| `body` | Server HTML `<body>` parsed with JS off, one line per node. Normalized: framework attributes (`q:*`, `on:*`, `data-qwikest-icon`, …), comments (adjacent text merged), `<script>`/`<style>`, attribute order, whitespace runs, asset hashes (→ `asset:name.ext`), date-input `min` |
+| `css` | Union of all stylesheets, compared declaration by declaration through Chromium's CSSOM (formatting and rule grouping drop out), plus the raw vendor-prefixed declarations and `@import` URLs (Chromium drops prefixes it doesn't support). Ignored: Qwik City's `:root{view-transition-name:none}` |
+| `screens` | Full-page screenshots per viewport: same size and ≤ 0.1 % differing pixels (pixelmatch threshold 0.1). Diffs are written to `<candidate>/screens-diff/` |
+
+The `states/` screenshots and the scroll video are compared by eye.
 
 ## Output
 
@@ -50,6 +62,7 @@ inline module scripts. Exits 1 on any difference.
 | --- | --- |
 | `html/<route>.html` | Raw server HTML (what crawlers see) |
 | `responses.json` | Status code and key headers per route |
+| `css/` | Every stylesheet the routes load (inline `<style>` blocks as `<route>-inline-<n>.css`); `css/index.json` maps routes to files |
 | `head/<route>.json` | `<html>`/`<body>` lang, title and every `<head>` element in order (framework attributes stripped) |
 | `dom/<route>.json` | Headings, images (`img`/`source`/`svg` attributes), inline styles, links, buttons, form fields, iframes |
 | `screens/<width>/<route>.png` | Full-page screenshots at 375/768/1280/1920 after all scroll reveals have fired (iframes masked, CSS animations finished) |

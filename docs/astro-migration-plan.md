@@ -86,9 +86,9 @@ Document attributes: `<html lang="en-us">` (from `entry.ssr.tsx` container attri
 | Import style | What Qwik produces today | Used in |
 | --- | --- | --- |
 | `img.webp?jsx` | `<img>` with `srcset` at **200/400/600/800/1200w**, WebP q75, `width`/`height` of the largest variant (see `qwik-city/lib/vite` `imagePlugin`) | Home slides 2–4, thumbs, patterns, branches, accommodation hero |
-| `img.webp?url` | Original file, untouched, hashed URL | Gallery, Explore, Home slide 1 `<picture>`, accommodation section bg, contact bg, room cards, header pattern, line pattern |
+| `img.webp?url` | **Re-encoded, not the original:** `?url` counts as a directive, so vite-imagetools re-saves the file with sharp's defaults (same format and dimensions, quality 80, metadata stripped; `.jpg` is emitted as `.jpeg`). Hashed URL | Gallery, Explore, Home slide 1 `<picture>`, accommodation section bg, contact bg, room cards, header pattern, line pattern |
 | `Logo-Symbol.svg?jsx` | Inline `<svg>` component | Header, Footer, Contact |
-| `quote.svg?url` | URL | Testimonial card background |
+| `quote.svg?url` | Inlined as a `data:image/svg+xml` URI (under Vite's 4 KB inline limit) | Testimonial card background |
 
 ### Client behaviour (all `useVisibleTask$` — default strategy is `intersection-observer`, i.e. it runs when the component first becomes visible)
 
@@ -158,8 +158,8 @@ wrapped in `useVisibleTask$`.
 
 **Package changes**
 
-- Added (Phase 1, exact versions): `astro@7.3.8`, `astro-icon@1.2.0`, `@iconify-json/ion@1.2.7`,
-  `@iconify-json/ic@1.2.4`, `@astrojs/check@0.9.12`. Astro 7 needs **Node ≥ 22.23.4** — set the
+- Added (exact versions): `astro@7.3.8`, `@astrojs/check@0.9.12` (Phase 1); `esbuild@0.28.2` (Phase 2,
+  the CSS minifier, see §4.3). Astro 7 needs **Node ≥ 22.23.4** — set the
   Vercel project's Node version and `engines.node` accordingly when the build switches (Phase 3).
 - Kept: `@qwik.dev/partytown@0.11.2` — it is a standalone package, and using the same version keeps the
   inline snippet byte-identical. `@astrojs/partytown` is **not** used (it injects the snippet at the end
@@ -167,8 +167,11 @@ wrapped in `useVisibleTask$`.
 - Verification tooling lives in `scripts/parity/` with its own `package.json` (Playwright, Lighthouse).
 - Removed in Phase 1: `vercel` (CLI; its pinned esbuild 0.14 broke Astro's Vite 8 tree — `npm run deploy`
   now uses `npx vercel deploy`).
+- Removed in Phase 2: `astro-icon`, `@iconify-json/ion`, `@iconify-json/ic` (icons are generated from
+  qwikest instead, see §4.3).
 - Remove with Qwik (end of Phase 3): `@builder.io/qwik`, `@builder.io/qwik-city`, `@qwikest/icons`,
-  `eslint-plugin-qwik`, `vite-tsconfig-paths`, `vite`, `undici`, plus the temporary `astro:*` scripts.
+  `eslint-plugin-qwik`, `vite-tsconfig-paths`, `vite`, `undici`, plus the temporary `astro:*` scripts and
+  `tsconfig.astro.json` (its settings become `tsconfig.json`; drop the `src/lib` exclude).
 - Delete: `adapters/`, `src/entry.*.tsx`, `src/root.tsx`, `src/routes/`, `vite.config.ts`,
   `.vscode/qwik*.code-snippets`.
 
@@ -218,10 +221,13 @@ Deliverable: `scripts/parity/baseline/` committed on the branch (screenshots/vid
 `src/routes`, Astro in `src/pages`; both build to `dist/`, so rebuild whichever one you're previewing).
 
 - `astro.config.mjs`: `site`, `output: 'static'`, `trailingSlash: 'always'`,
-  `build.format: 'directory'`, `integrations: [icon(), partytownLib]` — `partytownLib` is a 10-line
+  `build.format: 'directory'`, `integrations: [partytownLib]` — `partytownLib` is a 10-line
   local integration that copies the Partytown library (incl. `debug/`) to `/~partytown/` on build.
+  Phase 2 added the CSS/JS browser targets, the esbuild CSS minifier and `inlineStylesheets: 'never'`
+  (§4.3).
 - `tsconfig.json` stays Qwik's until Qwik is removed (its `~/*` alias already works for Astro); switch
-  to `astro/tsconfigs/strict` at the end of Phase 3.
+  to `astro/tsconfigs/strict` at the end of Phase 3. Meanwhile `tsconfig.json` excludes `src/lib`
+  (Astro-only code) and `npm run astro:check` type-checks the Astro side with `tsconfig.astro.json`.
 - `src/global.css` stays where it is (imported by `BaseLayout.astro`), so its relative
   `url("./media/spinner.svg")` keeps working with no edit.
 - Temporary scripts: `npm run astro:dev | astro:build | astro:preview` (preview on :4173).
@@ -254,7 +260,55 @@ Deliverable: `scripts/parity/baseline/` committed on the branch (screenshots/vid
 
 ### 4.3 Static components and pages (Phase 2)
 
-Straight markup ports — JSX → Astro template:
+**Status: done.** Server HTML of all 7 routes matches the baseline (local and live) after
+normalization; all CSS is semantically identical; every non-`srcset` image is byte-identical to
+production; FAQ, privacy, terms, inquiry and 404 screenshots match with 0 differing pixels at all 4
+widths. Home and accommodation screenshots can only match once Phase 3 adds the scripts (their
+sections start hidden and are revealed by JS; the testimonial carousel height is measured by JS).
+
+What it took (the original table below was the starting point; these replace parts of it):
+
+- **Icons:** not `astro-icon`. Iconify's path data isn't guaranteed to match qwikest's, so
+  `src/lib/icons.ts` is generated from `@qwikest/icons@0.0.13` (byte-identical to all 82 icons in the
+  baseline) and rendered by `src/components/Icon.astro`. qwikest spread the caller's props *before* its
+  own, so a passed `class`/`width`/`height` never reached the DOM — only `style` did. Kept: the
+  testimonial stars have no `star_icon`/`filled_star` class (see Phase 8).
+- **`?jsx` images:** `src/components/ResponsiveImage.astro` calls `getImage()` per width (WebP q75,
+  200–1200 w capped at the source width, duplicates dropped) and emits `srcset` without `src`/`sizes`,
+  plus width/height of the largest variant. Output is byte-identical to the Qwik build locally; Vercel's
+  Linux build differs by ~0.05 % in bytes (libvips), same as Qwik's own Linux builds.
+- **`?url` images:** re-encoded exactly like vite-imagetools did (§1) by `reencodedUrl()` in
+  `src/lib/images.ts`; verified byte-identical to the 23 production files.
+- **Original images:** Astro's image import is a proxy that ships the multi-MB original as soon as any
+  property is read; `metadataOf()` reads from `.clone` (as Astro's `getImage` does), which keeps
+  20 MB of unreferenced originals out of `dist/`.
+- **Logo SVG:** `LogoSymbol.astro` holds the svgo-optimized markup copied from the baseline HTML.
+- **CSS:** module files copied byte-for-byte next to their components (`src/components/`,
+  `src/components/home/`, `src/styles/` for pages). Three build settings were needed to match Qwik's
+  CSS output:
+  - browser targets `edge88, firefox78, chrome87, safari14` for CSS and JS (Vite 6's default, which
+    Qwik used). Vite 8's default would ship native CSS nesting and drop `-webkit-backdrop-filter`,
+    breaking older Safari/Chrome/Firefox. (`es2020` is left out: Vite 8 rejects it next to browser
+    versions.)
+  - `cssMinify: 'esbuild'` (Qwik's minifier). Lightning CSS, Vite 8's default, rewrites rules
+    enough that equivalence can't be shown; with esbuild the CSSOM comparison is exact.
+  - `inlineStylesheets: 'never'`: Qwik served all CSS as external files.
+  Cascade order: Qwik ships one stylesheet (modules, then `global.css`); Astro ships page modules, then
+  the layout bundle (header/footer modules, then `global.css`). Module rules can't collide (scoped class
+  names; the only unscoped selector is `header`, used nowhere else) and `global.css` is last in both,
+  so the order is equivalent.
+- **Whitespace:** Astro's HTML compression removes whitespace between tags exactly like Qwik's JSX did,
+  so inline layouts (icon rows, buttons) are unaffected — verified by the body diff.
+- **Inquiry `min` date** is computed at build time as the no-JS fallback (§4.5 still applies).
+- No hooks were added to the markup for Phase 3 scripts: they select elements by the same
+  CSS-module class names Qwik's code used, so the server HTML stays identical.
+
+Parity tooling added (`scripts/parity/`): `compare.mjs` checks `body` (normalized server HTML, line
+diff), `css` (semantic CSSOM diff + raw vendor-prefixed declarations and `@import`s) and `screens`
+(pixel diff ≤ 0.1 %, diff images in `<candidate>/screens-diff/`); `--routes` limits a run to some
+pages; `capture.mjs` saves stylesheets (`css/`, also added to both baselines via `--css-only`).
+
+Original plan — straight markup ports, JSX → Astro template:
 
 | Qwik | Astro |
 | --- | --- |
@@ -264,10 +318,10 @@ Straight markup ports — JSX → Astro template:
 | `<X />` from `img?jsx` | `<Image>` / `<Picture>` from `astro:assets` configured to reproduce §1 (WebP, q75, widths `[200,400,600,800,1200]`, same `width`/`height`, same `loading`/`decoding`) — or a tiny `QImg.astro` wrapper using `getImage()` to emit the exact same `<img srcset>` |
 | `img?url` | `import x from '...webp'` → use the **original** file URL (`x.src`) — no re-encoding in parity phase |
 | `Logo-Symbol.svg?jsx` | Astro SVG component import (`import Logo from '~/media/Logo-Symbol.svg'`), passing the same `class` |
-| `@qwikest/icons` | `astro-icon` `<Icon>` (see table below). Must render `width="1em" height="1em"` like qwikest; compare SVG paths visually |
+| `@qwikest/icons` | ~~`astro-icon` `<Icon>`~~ — superseded: generated `Icon.astro`, see above |
 | `onClick$={() => nav('/x')}` on `<button>` | keep the `<button>` (styling depends on it) + script `location.href = '/x/'` |
 
-Icon mapping:
+Icon mapping (not used — kept for reference if icons ever move to Iconify):
 
 | Qwik | Iconify |
 | --- | --- |
@@ -378,8 +432,8 @@ more. Keep the file for at least a few months after launch.
 ## 5. Phase 4 — Verification (parity sign-off)
 
 Run the Phase 0 capture against `astro build && astro preview` into `candidate/local`, then against the
-Vercel preview URL, and compare with `node compare.mjs` (head + responses since Phase 1; DOM and
-screenshot checks are added as Phases 2–3 need them).
+Vercel preview URL, and compare with `node compare.mjs` (checks: `head`, `responses`, `body`, `css`,
+`screens`; animation-state screenshots in `states/` are still compared by eye).
 
 | Check | Pass criteria |
 | --- | --- |
@@ -389,7 +443,7 @@ screenshot checks are added as Phases 2–3 need them).
 | Screenshots 375/768/1280/1920 | Pixel diff ≤ 0.1 % (fonts/AA noise); any larger diff reviewed by eye |
 | Animation checkpoints | Header sticky, hero slide 2 after click, each reveal state, mobile menu open, testimonial next/prev mid-transition |
 | Manual side-by-side | Full scroll on `/` vs baseline video (parallax feel), hero auto-advance after 15 s, resize across 876 px and 460 px |
-| URLs | All 6 routes 200 at trailing-slash URL; non-slash → permanent redirect (301/308) → slash, query kept; unknown path 404 |
+| URLs | All 6 routes 200 at trailing-slash URL; non-slash → permanent redirect (301/308) → slash, query kept; unknown path 404. (Accepted difference: on the Qwik site an unknown `/assets/…` URL returns an empty **200**; static hosting returns 404.) |
 | Sitemap / robots | `/site/sitemap.xml`, `/robots.txt`, `/manifest.json`, `/manifest.webmanifest`, `/favicon.svg` byte-identical |
 | Inquiry | Validation messages in order; captcha renders; success + error toast; reset |
 | Lighthouse | Every category ≥ baseline (SEO and Accessibility must be equal or higher) |
@@ -564,7 +618,8 @@ change, verified with the same parity script.
 These are deliberately **out of scope** for parity because they change output. Listed by impact.
 
 1. **Image weight.** Six source images are 2–4 MB (`explore/img1–4.webp`, `home/bg2–4.webp`). The
-   `?url` ones (Explore grid, Gallery) ship at full size today. Use `getImage()` for CSS backgrounds and
+   `?url` ones (Explore grid, Gallery, backgrounds) ship at full resolution today (re-encoded at q80,
+   see §1). Use `getImage()` for CSS backgrounds and
    `<Picture>` with sensible widths. Visually compare — sharpness on large screens may *improve* (hero
    slides are capped at 1200 w today).
 2. **Partytown:** it forwards `dataLayer.push`, but no GTM/gtag script exists in the repo. Either add the
@@ -585,7 +640,13 @@ These are deliberately **out of scope** for parity because they change output. L
 8. **Branded 404 page** using the site layout, with `<meta name="robots" content="noindex">` (today it
    is Qwik's plain default page, reproduced as `public/404.html` for parity).
 9. Optionally add Astro View Transitions (`<ClientRouter />`) for SPA-like navigation — re-check all
-   scripts re-initialise on `astro:page-load` if adopted.
+   scripts re-initialise on `astro:page-load` if adopted. (Qwik City injected
+   `:root{view-transition-name:none}` on every page; it's not reproduced since nothing uses it.)
+10. **Testimonial stars:** the `star_icon` / `filled_star` / `half_filled_star` / `empty_star` classes
+    never reached the DOM (qwikest dropped them), so stars render in the inherited text colour instead
+    of gold and half/empty stars can't show. Fixing it changes the look — decide and screenshot-review.
+11. **Internal links without trailing slash:** header/footer/FAQ links use `/inquiry`, `/faq`,
+    `/accommodation`, … so every click costs a redirect hop to the slashed URL. Link to `/inquiry/` etc.
 
 ---
 
@@ -614,7 +675,8 @@ These are deliberately **out of scope** for parity because they change output. L
 | Stale Qwik service worker on returning visitors | Kill-switch `service-worker.js` (§4.7) |
 | Arrival-date `min` frozen at build time | Set on the client (§4.5) |
 | Firebase CORS rejects preview domain | Test from preview early in Phase 3; update allow-list in Phase 7 |
-| Icon glyph differences (qwikest vs Iconify versions) | Screenshot diff of header, footer, hero, testimonial stars |
+| Icon glyph differences | Resolved in Phase 2: icons generated from qwikest, byte-identical to the baseline |
+| Different CSS lowering/minification (Vite 8 vs Qwik's Vite 6) | Resolved in Phase 2: Qwik's browser targets + esbuild minifier; `compare.mjs --only css` proves equivalence |
 | Inquiry form broken mid-Turnstile rollout | Backend soft mode → frontend → enforce (§7.5) |
 | Turnstile blocks real guests (e.g. privacy browsers, strict networks) | Managed mode; watch `error-codes` in function logs during soft mode before enforcing |
 | Turnstile hostname mismatch on new host | Add preview/production hostnames before Phase 7 cut-over; hostname check in §7.4 |

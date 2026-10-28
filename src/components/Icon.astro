@@ -1,0 +1,16 @@
+---
+// Inline SVG icon with the exact markup @qwikest/icons rendered. qwikest spread the caller's props
+// before its own constant attributes, so a passed class/width/height was dropped and only `style`
+// survived (e.g. the testimonial stars). Keep it that way during parity.
+import { icons, type IconName } from "~/lib/icons";
+
+interface Props {
+  name: IconName;
+  style?: string;
+}
+
+const { name, style } = Astro.props;
+const svg = style ? icons[name].replace("<svg ", `<svg style="${style}" `) : icons[name];
+---
+
+<Fragment set:html={svg} />

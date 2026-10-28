@@ -1,0 +1,101 @@
+---
+import Icon from "~/components/Icon.astro";
+import ResponsiveImage from "~/components/ResponsiveImage.astro";
+import { reencodedUrl } from "~/lib/images";
+import BgImage1Src from "~/media/home/bg1.webp";
+import BgImage1SmSrc from "~/media/home/bg1-sm.webp";
+import BgImage2 from "~/media/home/bg2.webp";
+import BgImage3 from "~/media/home/bg3.webp";
+import BgImage4 from "~/media/home/bg4.webp";
+import TmbImage1 from "~/media/home/thumbs/tmb1.webp";
+import TmbImage2 from "~/media/home/thumbs/tmb2.webp";
+import TmbImage3 from "~/media/home/thumbs/tmb3.webp";
+import TmbImage4 from "~/media/home/thumbs/tmb4.webp";
+import styles from "./home.module.css";
+
+const BgImage1 = await reencodedUrl(BgImage1Src);
+const BgImage1Sm = await reencodedUrl(BgImage1SmSrc);
+
+// Initial (server-rendered) state: slide 0 active, no scroll offset.
+const parallax = "transform:translateY(0px)";
+const zoom = [styles.zoom_in, styles.zoom_out, styles.zoom_in, styles.zoom_out];
+
+const slides = [
+  {
+    alt: "picture of knuckles retreat sri lanka",
+    thumb: TmbImage1,
+    title: "Harmony",
+    span: "Heights",
+    text: "At Knuckles Retreat, find your sanctuary amid mist-draped mountains and verdant tea estates. Immerse yourself in the hushed symphony of nature, where tranquility meets the heights of harmony.",
+  },
+  {
+    image: BgImage2,
+    alt: "picture of forest at knuckles sri lanka",
+    thumb: TmbImage2,
+    title: "Whispering",
+    span: "Woodlands",
+    text: "In the heart of Sri Lanka's Central Provience, discover Knuckles mountain range, where the lush embrace of nature whispers tales of tranquility. A canvas of green, it's a haven where every leaf has a story to tell.",
+  },
+  {
+    image: BgImage3,
+    alt: "picture of a stream at knuckles sri lanka",
+    thumb: TmbImage3,
+    title: "Sunlit",
+    span: "Serenade",
+    text: "Embark on a sunlit journey at Knuckles Retreat, where a river's melody meets the distant mountains' silhouette. Under the gentle caress of sunlight, each moment becomes a serenade to nature's grandeur.",
+  },
+  {
+    image: BgImage4,
+    alt: "picture of sunset at knuckles sri lanka",
+    thumb: TmbImage4,
+    title: "Twilight",
+    span: "Tranquility",
+    text: "As daylight fades, Knuckles Retreat reveals its twilight charm. Amidst the golden glow, the mountains and forests weave a tranquil tapestry, inviting you to lose yourself in nature's quiet symphony.",
+  },
+];
+---
+
+<section id="home" class={styles.home}>
+  <div class={styles.social_icons}>
+    <a href="https://web.facebook.com/profile.php?id=61554911975425" target="_blank" aria-label="Knuckles Retreat facebook page link icon"><i><Icon name="IoLogoFacebook" /></i></a>
+    <a href="https://www.instagram.com/knucklesretreat" target="_blank" aria-label="Knuckles Retreat instagram account link icon"><i><Icon name="IoLogoInstagram" /></i></a>
+    <a href="https://www.youtube.com/@KnucklesRetreat" target="_blank" aria-label="Knuckles Retreat youtube channel link icon"><i><Icon name="IoLogoYoutube" /></i></a>
+  </div>
+
+  <div class={styles.hero_slider}>
+    {
+      slides.map((slide, i) => (
+        <div class:list={[styles.slide, i === 0 && styles.slide_active, styles.dark_layer]}>
+          {slide.image ? (
+            <ResponsiveImage src={slide.image} class:list={[styles.slide_bg, zoom[i]]} alt={slide.alt} style={parallax} />
+          ) : (
+            <picture>
+              <source media="(max-width: 460px)" srcset={BgImage1Sm} />
+              <source media="(min-width: 461px)" srcset={BgImage1} />
+              <img class:list={[styles.slide_bg, zoom[i]]} alt={slide.alt} style={parallax} width={100} height={100} />
+            </picture>
+          )}
+          <div class={styles.text_content} style={parallax}>
+            <h2 class={styles.title}>{slide.title} <span>{slide.span}</span></h2>
+            <p>{slide.text}</p>
+            <button class={styles.inquire_btn}>
+              Inquire Now <i><Icon name="IoChevronForwardOutline" /></i>
+            </button>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class={styles.bg_slider_thumbs}>
+    <div class={styles.thumbs_container}>
+      {
+        slides.map((slide, i) => (
+          <div>
+            <ResponsiveImage src={slide.thumb} alt={slide.alt} class:list={[styles.thumb_img, i === 0 && styles.thumb_active]} />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
