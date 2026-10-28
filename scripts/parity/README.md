@@ -12,8 +12,9 @@ npx playwright install chromium
 
 ## Capture
 
-Start the site locally first (Qwik: `npm run build.client && npm run build.preview && npx vite preview --port 4173`;
-Astro: `npm run astro:build && npm run astro:preview`, stopped with `npx astro preview stop`), then:
+Start the site locally first (`npm run build && npm run preview`, stopped with `npx astro preview stop`;
+the Qwik baseline was served with `npm run build.client && npm run build.preview && npx vite preview --port 4173`
+at commit `817c272`), then:
 
 ```sh
 # HTML, <head>, DOM facts, full-page screenshots, animation states, scroll video
@@ -50,7 +51,7 @@ Exits 1 on any difference.
 | --- | --- |
 | `head` | Title, `<html>`/`<body>` lang, every non-framework `<head>` element in order, canonical (by path), exact Partytown snippet text. Ignored: assets under `/build/`, `/assets/`, `/_astro/`, `<style>` tags, inline module scripts |
 | `responses` | Status code and content type per route |
-| `body` | Server HTML `<body>` parsed with JS off, one line per node. Normalized: framework attributes (`q:*`, `on:*`, `data-qwikest-icon`, …), comments (adjacent text merged), `<script>`/`<style>`, attribute order, whitespace runs, asset hashes (→ `asset:name.ext`), date-input `min` |
+| `body` | Server HTML `<body>` parsed with JS off, one line per node. Normalized: inert `<template>`s dropped, framework attributes (`q:*`, `on:*`, `data-qwikest-icon`, …), comments (adjacent text merged), `<script>`/`<style>`, attribute order, whitespace runs, asset hashes (→ `asset:name.ext`), date-input `min` |
 | `css` | Union of all stylesheets, compared declaration by declaration through Chromium's CSSOM (formatting and rule grouping drop out), plus the raw vendor-prefixed declarations and `@import` URLs (Chromium drops prefixes it doesn't support). Ignored: Qwik City's `:root{view-transition-name:none}` |
 | `screens` | Full-page screenshots per viewport: same size and ≤ 0.1 % differing pixels (pixelmatch threshold 0.1). Diffs are written to `<candidate>/screens-diff/` |
 

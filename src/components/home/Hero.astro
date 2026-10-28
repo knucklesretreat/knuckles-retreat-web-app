@@ -1,6 +1,7 @@
 ---
 import Icon from "~/components/Icon.astro";
 import ResponsiveImage from "~/components/ResponsiveImage.astro";
+import ScriptData from "~/components/ScriptData.astro";
 import { reencodedUrl } from "~/lib/images";
 import BgImage1Src from "~/media/home/bg1.webp";
 import BgImage1SmSrc from "~/media/home/bg1-sm.webp";
@@ -99,3 +100,81 @@ const slides = [
     </div>
   </div>
 </section>
+
+<ScriptData name="hero" data={styles} />
+
+<script>
+  import { createRenderer, cx, navigate, onVisible } from "~/lib/qwik-runtime";
+  import { readScriptData, type Classes } from "~/lib/script-data";
+
+  const styles = readScriptData<Classes>("hero");
+  const home = document.getElementById("home")!;
+  const render = createRenderer();
+
+  let activeIndex = 0;
+  let scrollY = 0;
+  let isTransitioning = false;
+
+  // Calculate parallax offset based on scroll position
+  const getParallaxStyle = (factor = 0.2) => `transform:translateY(${scrollY * factor}px)`;
+
+  home.querySelectorAll<HTMLElement>(`.${styles.slide}`).forEach((slide, i) => {
+    render.bind(slide, "class", () => cx(styles.slide, activeIndex === i ? styles.slide_active : "", styles.dark_layer));
+  });
+  home.querySelectorAll<HTMLElement>(`.${styles.thumb_img}`).forEach((thumb, i) => {
+    render.bind(thumb, "class", () => cx(styles.thumb_img, activeIndex === i ? styles.thumb_active : ""));
+  });
+  home.querySelectorAll<HTMLElement>(`.${styles.slide_bg}`).forEach((img) => render.bind(img, "style", () => getParallaxStyle(0.1)));
+  home.querySelectorAll<HTMLElement>(`.${styles.text_content}`).forEach((el) => render.bind(el, "style", () => getParallaxStyle(-0.1)));
+
+  // Handle parallax effect
+  const handleScroll = () => {
+    scrollY = window.scrollY;
+    render.invalidate();
+  };
+
+  // Setup slide transition
+  const setActiveSlide = (index: number, isInit?: boolean) => {
+    if (activeIndex === index && !isInit) return;
+    if (isTransitioning && !isInit) return;
+
+    isTransitioning = true;
+
+    // Set a slight delay to ensure the fade-out animation completes
+    setTimeout(
+      () => {
+        activeIndex = index;
+        render.invalidate();
+
+        // Reset transitioning state after the fade-in animation is complete
+        setTimeout(() => {
+          isTransitioning = false;
+        }, 1500); // Match this with the CSS transition duration
+      },
+      isInit ? 0 : 800,
+    ); // shorter delay for init, normal delay for transitions
+  };
+
+  onVisible(home, () => {
+    // Initialize first slide
+    setActiveSlide(0, true);
+
+    // Set up scroll listener for parallax
+    window.addEventListener("scroll", () => handleScroll());
+
+    // Auto-rotate slides
+    setInterval(() => {
+      if (!isTransitioning) {
+        const nextIndex = (activeIndex + 1) % 4;
+        setActiveSlide(nextIndex);
+      }
+    }, 15000);
+  });
+
+  home.querySelectorAll(`.${styles.thumbs_container} > div`).forEach((thumb, i) => {
+    thumb.addEventListener("click", () => setActiveSlide(i));
+  });
+  home.querySelectorAll(`.${styles.inquire_btn}`).forEach((button) => {
+    button.addEventListener("click", () => navigate("/inquiry/"));
+  });
+</script>

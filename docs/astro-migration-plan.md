@@ -169,11 +169,15 @@ wrapped in `useVisibleTask$`.
   now uses `npx vercel deploy`).
 - Removed in Phase 2: `astro-icon`, `@iconify-json/ion`, `@iconify-json/ic` (icons are generated from
   qwikest instead, see §4.3).
-- Remove with Qwik (end of Phase 3): `@builder.io/qwik`, `@builder.io/qwik-city`, `@qwikest/icons`,
+- Removed with Qwik (end of Phase 3, done): `@builder.io/qwik`, `@builder.io/qwik-city`, `@qwikest/icons`,
   `eslint-plugin-qwik`, `vite-tsconfig-paths`, `vite`, `undici`, plus the temporary `astro:*` scripts and
   `tsconfig.astro.json` (its settings become `tsconfig.json`; drop the `src/lib` exclude).
-- Delete: `adapters/`, `src/entry.*.tsx`, `src/root.tsx`, `src/routes/`, `vite.config.ts`,
-  `.vscode/qwik*.code-snippets`.
+- Deleted: `adapters/`, `src/entry.*.tsx`, `src/root.tsx`, `src/routes/`, `vite.config.ts`,
+  `.vscode/qwik*.code-snippets`, and the Qwik-only `src/components/{starter,floating-button,partytown,
+  router-head,schema}/` and `src/types/`. `sharp` left the top level with Qwik; Astro always used its
+  own nested `sharp@0.35.5`, so image output is unchanged. ESLint stays for `src/**/*.ts` without the
+  Qwik plugin (`.astro` files are covered by `astro check`). Scripts are now `dev`, `build`, `preview`
+  (:4173), `check`, `lint`, `fmt`, `deploy`.
 
 ---
 
@@ -217,20 +221,19 @@ Deliverable: `scripts/parity/baseline/` committed on the branch (screenshots/vid
 
 ### 4.1 Project setup (Phase 1)
 
-**Status: done.** Astro and Qwik coexist on the branch until the end of Phase 3 (Qwik in
-`src/routes`, Astro in `src/pages`; both build to `dist/`, so rebuild whichever one you're previewing).
+**Status: done.** Astro and Qwik coexisted on the branch until the end of Phase 3 (Qwik in
+`src/routes`, Astro in `src/pages`); Qwik is now removed (§2).
 
 - `astro.config.mjs`: `site`, `output: 'static'`, `trailingSlash: 'always'`,
   `build.format: 'directory'`, `integrations: [partytownLib]` — `partytownLib` is a 10-line
   local integration that copies the Partytown library (incl. `debug/`) to `/~partytown/` on build.
   Phase 2 added the CSS/JS browser targets, the esbuild CSS minifier and `inlineStylesheets: 'never'`
   (§4.3).
-- `tsconfig.json` stays Qwik's until Qwik is removed (its `~/*` alias already works for Astro); switch
-  to `astro/tsconfigs/strict` at the end of Phase 3. Meanwhile `tsconfig.json` excludes `src/lib`
-  (Astro-only code) and `npm run astro:check` type-checks the Astro side with `tsconfig.astro.json`.
+- `tsconfig.json` extends `astro/tsconfigs/strict` with the `~/*` alias (until Phase 3 a separate
+  `tsconfig.astro.json` was used while Qwik's tsconfig stayed in place).
 - `src/global.css` stays where it is (imported by `BaseLayout.astro`), so its relative
   `url("./media/spinner.svg")` keeps working with no edit.
-- Temporary scripts: `npm run astro:dev | astro:build | astro:preview` (preview on :4173).
+- Scripts (since Phase 3): `npm run dev | build | preview | check` (preview on :4173).
 - Astro 7's `astro preview` runs as a background daemon; stop it with `npx astro preview stop`.
 - `astro preview` returns 404 for non-slash URLs (`/faq`) — it doesn't redirect. The 301/308 redirect
   comes from Vercel's `trailingSlash` setting (§4.8) and is verified on the Vercel preview in Phase 4.
@@ -271,8 +274,9 @@ What it took (the original table below was the starting point; these replace par
 - **Icons:** not `astro-icon`. Iconify's path data isn't guaranteed to match qwikest's, so
   `src/lib/icons.ts` is generated from `@qwikest/icons@0.0.13` (byte-identical to all 82 icons in the
   baseline) and rendered by `src/components/Icon.astro`. qwikest spread the caller's props *before* its
-  own, so a passed `class`/`width`/`height` never reached the DOM — only `style` did. Kept: the
-  testimonial stars have no `star_icon`/`filled_star` class (see Phase 8).
+  own, so a passed `class`/`width`/`height` never reached the server HTML — only `style` did. Kept: the
+  testimonial stars have no `star_icon`/`filled_star` class in the server HTML (a client re-render
+  adds them to some cards — see §4.4 and Phase 8).
 - **`?jsx` images:** `src/components/ResponsiveImage.astro` calls `getImage()` per width (WebP q75,
   200–1200 w capped at the source width, duplicates dropped) and emits `srcset` without `src`/`sizes`,
   plus width/height of the largest variant. Output is byte-identical to the Qwik build locally; Vercel's
@@ -338,7 +342,38 @@ modulo CSS-module hashes, same inline styles); screenshots at all 4 widths match
 
 ### 4.4 Interactive behaviour (Phase 3)
 
-General translation pattern for each `useVisibleTask$`:
+**Status: done.** All `useVisibleTask$` code and the inquiry form are ported; checked against the live
+site with Playwright probes (post-JS `class`/inline style of every home element at 13 scroll positions,
+38 testimonial-carousel states at 375/1280, 24 inquiry-form states incl. mocked success/error
+submissions, accommodation reveal, header/menu/navigation buttons) — all identical. The one difference
+is timing: the hero auto-rotation starts slightly earlier than on Qwik (Qwik first lazy-loads the
+task's chunk), so the 15 s slide changes happen a little sooner.
+
+How it's done (this replaces the sketch further down):
+
+- `src/lib/qwik-runtime.ts` reproduces the Qwik semantics the ports depend on: `onVisible` (default
+  strategy: first intersection of the component root), `onIdle` (`document-idle`), `cx` (Qwik's class
+  serialization), `createRenderer` (state-bound `class`/`style`/`disabled`/`value` re-rendered on the
+  next macrotask, written only when they differ from the last *rendered* value, a changed
+  `class`/`style` replacing the whole value — which wipes inline styles set directly, as on Qwik),
+  `createTask` (tracked tasks re-run after the render, previous cleanup first) and `navigate`
+  (`useNavigate()` to the current path only scrolls to the top).
+- Each component's `<script>` is its `useVisibleTask$` bodies line for line. Class maps and image URLs
+  reach the script as JSON via `src/components/ScriptData.astro` — importing a `.module.css` in a client
+  script would make Astro emit that CSS twice. Scripts and `<template>`s sit after the component root, so
+  no position-based selector is affected; the body check drops inert `<template>`s.
+- **Testimonials:** cards are cloned from per-testimonial `<template>`s (generated by
+  `TestimonialCard.astro`) and reconciled by key like Qwik's JSX. Two Qwik behaviours found on the live
+  site are reproduced: (1) the server-rendered card's stars are re-rendered on the component's first
+  client render, and a client-created card's stars when it becomes the outgoing card — qwikest then
+  applies `width="20" height="20"` and `star_icon filled_star` (the star wrapper is 20 px instead of
+  23 px tall, which shows in the 375 px layout); (2) from the second transition on, the outgoing card
+  shows the *incoming* testimonial's text (a created card's text stayed bound to
+  `transitioningTo.index`; its avatar `src`/`alt` don't change). Both are in Phase 8.
+- **Inquiry:** CAPTCHA isolated in `src/components/inquiry/captcha.ts` (`ensureRendered`, `getToken`,
+  `reset`). The arrival `min` is set on load (the server value is the build date).
+
+General translation pattern (original sketch) for each `useVisibleTask$`:
 
 ```astro
 <section id="gallery" class={styles.gallery} data-gallery>…</section>
@@ -415,6 +450,12 @@ activate it deletes `QwikBuild*` caches and unregisters itself. Nothing register
 more. Keep the file for at least a few months after launch.
 
 ### 4.8 Deployment config
+
+**Status: repo side done** (`vercel.json`: `framework: astro`, `trailingSlash: true`, `/_astro/(.*)`
+immutable cache rule; `engines.node >= 22.23.4`). Still to do in the Vercel dashboard before the first
+preview deploy: set the project's Node version to 22.x (≥ 22.23.4) and check `PUBLIC_API_URL` exists
+for Preview and Production. Redirects (`/faq` → `/faq/`, 308) can only be verified on a Vercel deploy —
+`astro preview` returns 404 for slashless URLs.
 
 - Vercel project: framework preset **Astro**, build `astro build`, output `dist` (or set
   `"framework": "astro"` in `vercel.json`). Do this on a preview deployment first.
@@ -643,10 +684,15 @@ These are deliberately **out of scope** for parity because they change output. L
    scripts re-initialise on `astro:page-load` if adopted. (Qwik City injected
    `:root{view-transition-name:none}` on every page; it's not reproduced since nothing uses it.)
 10. **Testimonial stars:** the `star_icon` / `filled_star` / `half_filled_star` / `empty_star` classes
-    never reached the DOM (qwikest dropped them), so stars render in the inherited text colour instead
-    of gold and half/empty stars can't show. Fixing it changes the look — decide and screenshot-review.
+    are missing from the server HTML and from client-created cards (qwikest dropped them); they only
+    appear after certain client re-renders (§4.4), which also changes the card height by 3 px. Stars
+    render in the inherited text colour and half/empty stars can't show. Render the classes
+    consistently — changes the look, so decide and screenshot-review.
 11. **Internal links without trailing slash:** header/footer/FAQ links use `/inquiry`, `/faq`,
     `/accommodation`, … so every click costs a redirect hop to the slashed URL. Link to `/inquiry/` etc.
+12. **Testimonial transition shows the wrong text:** from the second prev/next on, the card sliding
+    out displays the incoming testimonial's text under the old avatar (§4.4). Keep each card's content
+    fixed while it animates out.
 
 ---
 

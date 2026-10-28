@@ -1,5 +1,6 @@
 ---
 import ResponsiveImage from "~/components/ResponsiveImage.astro";
+import ScriptData from "~/components/ScriptData.astro";
 import roomData from "~/data/rooms.json";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { reencodedUrl } from "~/lib/images";
@@ -75,4 +76,32 @@ const rooms = roomData.rooms;
       </section>
     </div>
   </section>
+  <ScriptData name="accommodation" data={styles} />
+
+  <script>
+    import { onVisible } from "~/lib/qwik-runtime";
+    import { readScriptData, type Classes } from "~/lib/script-data";
+
+    const styles = readScriptData<Classes>("accommodation");
+
+    onVisible(document.querySelector(`.${styles.accommodation_sec}`)!, () => {
+      const hero = document.querySelector(`.${styles.hero}`);
+      const roomCards = document.querySelectorAll(`.${styles.roomCard}`);
+      const bookingSection = document.querySelector(`.${styles.bookingInquiry}`);
+
+      if (hero) {
+        hero.classList.add(styles.animateHero);
+      }
+
+      roomCards.forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.add(styles.animateRoomCard);
+        }, index * 150); // Staggered animation for each card
+      });
+
+      if (bookingSection) {
+        bookingSection.classList.add(styles.animateBooking);
+      }
+    });
+  </script>
 </BaseLayout>

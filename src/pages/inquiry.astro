@@ -1,11 +1,12 @@
 ---
+import ScriptData from "~/components/ScriptData.astro";
 import countrylist from "~/data/country-list.json";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import styles from "~/styles/inquiry.module.css";
 
 const salutations = ["Mr.", "Mrs.", "Miss.", "Dr.", "Prof.", "Ven."];
-// Qwik computed this per request; a static build freezes it at build time, so the page script (Phase 3)
-// sets it again on load. This value is only the no-JS fallback.
+// Qwik computed this per request; a static build freezes it at build time, so the page script sets it
+// again on load. This value is only the no-JS fallback.
 const today = new Date().toISOString().split("T")[0];
 ---
 
@@ -96,4 +97,270 @@ const today = new Date().toISOString().split("T")[0];
       </div>
     </div>
   </section>
+  <ScriptData name="inquiry" data={styles} />
+
+  <script>
+    import { ensureRendered, getToken, reset } from "~/components/inquiry/captcha";
+    import { createRenderer, cx, onVisible } from "~/lib/qwik-runtime";
+    import { readScriptData, type Classes } from "~/lib/script-data";
+
+    const styles = readScriptData<Classes>("inquiry");
+    const section = document.querySelector<HTMLElement>(`.${styles.inquiry_sec}`)!;
+    const inquiryContent = section.querySelector(`.${styles.inquiry_content}`)!;
+    const form = section.querySelector("form")!;
+    const field = <T extends HTMLElement = HTMLInputElement>(id: string) => document.getElementById(id) as T;
+    const render = createRenderer();
+
+    const formState = {
+      showError: false,
+      errorTxt: "",
+      showLoader: false,
+    };
+
+    const formData = {
+      salutation: "Mr.",
+      fullName: "",
+      country: "",
+      telephone: "",
+      email: "",
+      arrival: "",
+      departure: "",
+      guestCount: "1",
+      otherInfo: "",
+    };
+
+    const toastState = {
+      showToast: false,
+      toastText: "",
+      type: "",
+    };
+
+    // Inputs: the store follows each field's input event; the field's value is re-rendered from the
+    // store only when the store value changes (so values set directly on the DOM can survive a reset).
+    const inputs: [string, keyof typeof formData][] = [
+      ["salutation", "salutation"],
+      ["fname", "fullName"],
+      ["country", "country"],
+      ["telephone", "telephone"],
+      ["arrival", "arrival"],
+      ["departure", "departure"],
+      ["email", "email"],
+      ["guestcount", "guestCount"],
+      ["otherinfo", "otherInfo"],
+    ];
+    for (const [id, key] of inputs) {
+      const el = field(id);
+      render.bind(el, "value", () => formData[key]);
+      el.addEventListener("input", (e) => {
+        formData[key] = (e.target as HTMLInputElement).value;
+        render.invalidate();
+      });
+    }
+
+    // The per-request arrival `min` of the Qwik page (the server-rendered one is the build date).
+    field("arrival").setAttribute("min", new Date().toISOString().split("T")[0]);
+
+    // Conditionally rendered parts: loader and toast before the content, error text after the <br>.
+    let loader: HTMLElement | null = null;
+    let toast: HTMLElement | null = null;
+    let errorEl: HTMLElement | null = null;
+    render.afterRender(() => {
+      if (formState.showLoader && !loader) {
+        loader = document.createElement("div");
+        loader.className = "loading-overlay";
+        section.insertBefore(loader, section.firstChild);
+      } else if (!formState.showLoader && loader) {
+        loader.remove();
+        loader = null;
+      }
+
+      if (toastState.showToast) {
+        if (!toast) {
+          toast = document.createElement("div");
+          toast.append(document.createElement("span"));
+          toast.addEventListener("click", onToastClick);
+          section.insertBefore(toast, inquiryContent);
+        }
+        const toastClass = cx(["toast", toastState.type === "error" ? "toast-error" : null]);
+        if (toast.className !== toastClass) toast.className = toastClass;
+        const span = toast.firstElementChild!;
+        if (span.textContent !== toastState.toastText) span.textContent = toastState.toastText;
+      } else if (toast) {
+        toast.remove();
+        toast = null;
+      }
+
+      if (formState.showError) {
+        if (!errorEl) {
+          errorEl = document.createElement("div");
+          errorEl.className = styles.error_txt;
+          form.querySelector("br")!.after(errorEl);
+        }
+        const text = `* ${formState.errorTxt}`;
+        if (errorEl.textContent !== text) errorEl.textContent = text;
+      } else if (errorEl) {
+        errorEl.remove();
+        errorEl = null;
+      }
+    });
+
+    onVisible(section, () => {
+      const departureDateInput = document.getElementById("departure");
+
+      const nextDay = new Date();
+      nextDay.setDate(nextDay.getDate() + 1);
+
+      const minDepartureDate = nextDay.toISOString().split("T")[0];
+      (departureDateInput as HTMLInputElement).setAttribute("min", minDepartureDate);
+
+      ensureRendered();
+    });
+
+    const validateForm = async () => {
+      // Check if fullName is empty
+      if (formData.fullName.trim() === "") {
+        return "Please enter your full name.";
+      }
+
+      // Check if country is empty
+      if (formData.country.trim() === "") {
+        return "Please select your country.";
+      }
+
+      // Check if telephone is empty
+      if (formData.telephone.trim() === "") {
+        return "Please enter a telephone number.";
+      }
+
+      // Check if arrival date is empty
+      if (formData.arrival.trim() === "") {
+        return "Please select an arrival date.";
+      }
+
+      // Check if departure date is empty
+      if (formData.departure.trim() === "") {
+        return "Please select a departure date.";
+      }
+
+      // Check if guestCount is empty
+      if (formData.guestCount.trim() === "") {
+        return "Please enter the number of guests.";
+      }
+
+      // Check if email is empty
+      if (formData.email.trim() === "") {
+        return "Please enter an email address.";
+      }
+
+      // Check if email format is incorrect
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        return "Invalid email format.";
+      }
+
+      // Check if reCAPTCHA is confirmed
+      const captchaRes = await getToken();
+      if (!(captchaRes.length > 10)) {
+        return "reCAPTCHA not confirmed. Please verify that you are not a robot.";
+      }
+
+      // All checks passed
+      return "valid";
+    };
+
+    const setMinDepartureDate = () => {
+      const arrivalDateInput = document.getElementById("arrival");
+      const arrivalDateValue = (arrivalDateInput as HTMLInputElement).value;
+
+      const nextDay = new Date(arrivalDateValue);
+      nextDay.setDate(nextDay.getDate() + 1);
+      const minDepartureDate = nextDay.toISOString().split("T")[0];
+      const departureDateInput = document.getElementById("departure");
+      (departureDateInput as HTMLInputElement).setAttribute("min", minDepartureDate);
+
+      const currentDepartureDateValue = new Date((departureDateInput as HTMLInputElement).value);
+
+      // If arrival date is greater than current departure date, update departure date
+      if (new Date(arrivalDateValue) > currentDepartureDateValue) {
+        const nextDay = new Date(arrivalDateValue);
+        nextDay.setDate(nextDay.getDate() + 1);
+        const newDepartureDate = nextDay.toISOString().split("T")[0];
+        (departureDateInput as HTMLInputElement).value = newDepartureDate;
+      }
+    };
+
+    const resetFrom = () => {
+      formData.salutation = "Mr.";
+      formData.fullName = "";
+      formData.country = "";
+      formData.telephone = "";
+      formData.email = "";
+      formData.arrival = "";
+      formData.departure = "";
+      formData.guestCount = "1";
+      formData.otherInfo = "";
+      render.invalidate();
+
+      reset();
+    };
+
+    const handleSubmit = async () => {
+      const validityStr = await validateForm();
+      if (validityStr !== "valid") {
+        formState.showError = true;
+        formState.errorTxt = validityStr;
+        render.invalidate();
+        return;
+      }
+
+      formState.showError = false;
+      formState.errorTxt = "";
+      formState.showLoader = true;
+      render.invalidate();
+
+      const reqOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      };
+
+      await fetch(`${import.meta.env.PUBLIC_API_URL}/reservation`, reqOptions)
+        .then((res) => res.json())
+        .then((data) => {
+          formState.showLoader = false;
+          if (data.status === "success") {
+            toastState.toastText = data.message;
+            toastState.type = "success";
+          } else {
+            toastState.toastText = "Something went wrong. Please try again.";
+            toastState.type = "error";
+          }
+          toastState.showToast = true;
+          render.invalidate();
+          resetFrom();
+        })
+        .catch((err) => {
+          console.log("error: ", err);
+          formState.showLoader = false;
+          toastState.toastText = "Something went wrong. Please try again.";
+          toastState.type = "error";
+          toastState.showToast = true;
+          render.invalidate();
+          resetFrom();
+        });
+    };
+
+    const onToastClick = () => {
+      if (toastState.showToast) {
+        toastState.showToast = false;
+        render.invalidate();
+      }
+    };
+
+    // preventdefault:submit
+    form.addEventListener("submit", (e) => e.preventDefault());
+    field("arrival").addEventListener("change", setMinDepartureDate);
+    form.querySelector(`.${styles.submit_btn}`)!.addEventListener("click", handleSubmit);
+    form.querySelector(`.${styles.btn_row} > span`)!.addEventListener("click", () => resetFrom());
+  </script>
 </BaseLayout>

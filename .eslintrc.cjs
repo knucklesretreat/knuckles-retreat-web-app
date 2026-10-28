@@ -5,10 +5,10 @@ module.exports = {
     es2021: true,
     node: true,
   },
+  // .astro files are covered by `npm run check` (astro check).
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:qwik/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -16,9 +16,6 @@ module.exports = {
     project: ["./tsconfig.json"],
     ecmaVersion: 2021,
     sourceType: "module",
-    ecmaFeatures: {
-      jsx: true,
-    },
   },
   plugins: ["@typescript-eslint"],
   rules: {

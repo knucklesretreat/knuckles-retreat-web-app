@@ -98,6 +98,8 @@ async function serializeBody(page, html) {
     const remove = [];
     while (comments.nextNode()) remove.push(comments.currentNode);
     remove.forEach((c) => c.remove());
+    // Inert <template>s hold markup the Astro scripts clone (the testimonial cards); they render nothing.
+    document.body.querySelectorAll("template").forEach((t) => t.remove());
     document.body.normalize();
 
     const DROP_ATTR = /^(q:|on:|on-document:|on-window:|preventdefault:|data-qwikest-icon$|data-astro-)/;

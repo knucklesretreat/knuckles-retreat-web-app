@@ -1,5 +1,6 @@
 ---
 import LogoSymbol from "~/components/LogoSymbol.astro";
+import ScriptData from "~/components/ScriptData.astro";
 import { reencodedUrl } from "~/lib/images";
 import BgImgSrc from "~/media/contact/bg_tea.webp";
 import styles from "./contact.module.css";
@@ -35,3 +36,67 @@ const BgImg = await reencodedUrl(BgImgSrc);
     </div>
   </div>
 </section>
+
+<ScriptData name="contact" data={styles} />
+
+<script>
+  import { createRenderer, cx } from "~/lib/qwik-runtime";
+  import { readScriptData, type Classes } from "~/lib/script-data";
+
+  const styles = readScriptData<Classes>("contact");
+  const element = document.getElementById("contact")!;
+  const render = createRenderer();
+  let isVisible = false;
+  render.bind(element.querySelector(`.${styles.content}`)!, "class", () => cx(styles.content, isVisible ? styles.animate : ""));
+
+  // strategy: 'document-ready'
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          isVisible = true;
+          render.invalidate();
+        }
+      });
+    },
+    {
+      threshold: 0.3, // Trigger when 30% of the element is visible
+    },
+  );
+
+  observer.observe(element);
+
+  // Parallax Effect on Scroll
+  const handleScroll = () => {
+    const explore = document.getElementById("explore");
+    const testimonials = document.getElementById("testimonials");
+    const offset = 60; // header offset height
+
+    // Get their positions relative to the document top
+    const testimonialsBottom = testimonials
+      ? testimonials.getBoundingClientRect().bottom + window.scrollY
+      : explore!.getBoundingClientRect().bottom + window.scrollY || 0;
+
+    const scrollY = window.scrollY - testimonialsBottom + offset;
+
+    // Adjust the speed factor (0.3 here) for more/less parallax effect
+    const parallaxOffset = scrollY * 0.3;
+    element.style.backgroundPositionY = `${parallaxOffset}px`;
+  };
+
+  // Throttle scroll events using requestAnimationFrame
+  let ticking = false;
+  const scrollListener = () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        handleScroll();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+
+  // Check initial position in case element is already in view on load
+  handleScroll();
+  window.addEventListener("scroll", scrollListener, { passive: true });
+</script>

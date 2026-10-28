@@ -1,5 +1,6 @@
 ---
 import ResponsiveImage from "~/components/ResponsiveImage.astro";
+import ScriptData from "~/components/ScriptData.astro";
 import BgPattern from "~/media/pattern1.webp";
 import styles from "./intro.module.css";
 ---
@@ -40,3 +41,49 @@ import styles from "./intro.module.css";
     <br />
   </div>
 </section>
+
+<ScriptData name="intro" data={styles} />
+
+<script>
+  import { createRenderer, cx, onVisible } from "~/lib/qwik-runtime";
+  import { readScriptData, type Classes } from "~/lib/script-data";
+
+  const styles = readScriptData<Classes>("intro");
+  const intro = document.getElementById("intro")!;
+  const render = createRenderer();
+  let isVisible = false;
+  render.bind(intro.querySelector(`.${styles.intro_header}`)!, "class", () => cx(styles.intro_header, isVisible ? styles.animate : ""));
+
+  onVisible(intro, () => {
+    // Function to check if element is in viewport
+    const checkVisibility = () => {
+      const introSection = document.querySelector(`.${styles.intro}`);
+      if (!introSection) return;
+
+      const rect = introSection.getBoundingClientRect();
+      const isInView = rect.top <= (window.innerHeight || document.documentElement.clientHeight) * 0.7 && rect.bottom >= 0;
+
+      if (isInView && !isVisible) {
+        isVisible = true;
+        render.invalidate();
+      }
+    };
+
+    // Check visibility initially and on scroll
+    checkVisibility();
+
+    // Throttle scroll events
+    let ticking = false;
+    const scrollListener = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          checkVisibility();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", scrollListener);
+  });
+</script>

@@ -1,5 +1,6 @@
 ---
 import ResponsiveImage from "~/components/ResponsiveImage.astro";
+import ScriptData from "~/components/ScriptData.astro";
 import { reencodedUrl } from "~/lib/images";
 import BgBranch from "~/media/explore/branch.webp";
 import ImgOne from "~/media/explore/imgone.jpg";
@@ -41,3 +42,107 @@ const images = await Promise.all([ImgOne, ImgTwo, ImgThree, ImgFour].map(reencod
     </div>
   </div>
 </section>
+
+<ScriptData name="explore" data={styles} />
+
+<script>
+  import { createRenderer, createTask, cx, onIdle } from "~/lib/qwik-runtime";
+  import { readScriptData, type Classes } from "~/lib/script-data";
+
+  const styles = readScriptData<Classes>("explore");
+  const exploreSectionRef = document.getElementById("explore")!;
+  const textContentRef = exploreSectionRef.querySelector<HTMLElement>(`.${styles.txt_content}`)!;
+  const imgGridRef = exploreSectionRef.querySelector<HTMLElement>(`.${styles.img_grid}`)!;
+  const gridContainerRef = exploreSectionRef.querySelector<HTMLElement>(`.${styles.grid_container}`)!;
+  const render = createRenderer();
+
+  let textContentVisible = false;
+  let imgGridVisible = false;
+  let exploreSectionVisible = false;
+  render.bind(imgGridRef, "class", () => cx(styles.img_grid, { [styles.visible]: imgGridVisible }));
+  render.bind(textContentRef, "class", () => cx(styles.txt_content, { [styles.visible]: textContentVisible }));
+
+  // strategy: 'document-ready'
+  const elementsToObserve: { ref: Element; set: (value: boolean) => void }[] = [
+    { ref: textContentRef, set: (value) => (textContentVisible = value) },
+    { ref: imgGridRef, set: (value) => (imgGridVisible = value) },
+    { ref: exploreSectionRef, set: (value) => (exploreSectionVisible = value) },
+  ];
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const elementConfig = elementsToObserve.find((el) => el.ref === entry.target);
+          if (elementConfig) {
+            elementConfig.set(true);
+            render.invalidate();
+            if (elementConfig.ref !== exploreSectionRef) {
+              observer.unobserve(entry.target);
+            }
+          }
+        } else {
+          if (entry.target === exploreSectionRef) {
+            exploreSectionVisible = false;
+            render.invalidate();
+          }
+        }
+      });
+    },
+    {
+      threshold: 0.2,
+    },
+  );
+
+  elementsToObserve.forEach((elementConfig) => observer.observe(elementConfig.ref));
+
+  // Parallax effect on scroll (strategy: 'document-idle', re-runs when the section's visibility changes)
+  const parallax = createTask(
+    () => [exploreSectionVisible],
+    () => {
+      const isVisible = exploreSectionVisible;
+      if (!isVisible) {
+        gridContainerRef.style.transform = "translateY(0px)";
+        textContentRef.style.transform = "translateY(0px)";
+        return;
+      }
+
+      const handleScroll = () => {
+        const rect = exploreSectionRef.getBoundingClientRect();
+        const sectionTop = rect.top + window.scrollY;
+        const sectionHeight = rect.height;
+        const viewportHeight = window.innerHeight;
+        const scrollY = window.scrollY;
+
+        const sectionCenter = sectionTop + sectionHeight / 2;
+        const viewportCenter = scrollY + viewportHeight / 2;
+        const diff = sectionCenter - viewportCenter;
+
+        const parallaxFactor = -0.08;
+        const maxTranslate = viewportHeight * 0.03;
+        let translateY = diff * parallaxFactor;
+        translateY = Math.max(-maxTranslate, Math.min(maxTranslate, translateY));
+
+        window.requestAnimationFrame(() => {
+          textContentRef.style.transform = `translateY(${translateY}px)`;
+          textContentRef.style.transition = "transform 0.2s ease-out";
+          gridContainerRef.style.transform = `translateY(${translateY}px)`;
+          gridContainerRef.style.transition = "transform 0.2s ease-out";
+        });
+      };
+
+      handleScroll();
+      window.addEventListener("scroll", handleScroll, { passive: true });
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+        textContentRef.style.transform = "translateY(0px)";
+        textContentRef.style.transition = "";
+        gridContainerRef.style.transform = "translateY(0px)";
+        gridContainerRef.style.transition = "";
+      };
+    },
+  );
+  render.afterRender(parallax.check);
+  onIdle(parallax.start);
+</script>

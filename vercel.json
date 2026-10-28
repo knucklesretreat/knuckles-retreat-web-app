@@ -1,7 +1,9 @@
 {
+  "framework": "astro",
+  "trailingSlash": true,
   "headers": [
     {
-      "source": "/build/(.*)",
+      "source": "/_astro/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
