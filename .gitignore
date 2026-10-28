@@ -40,8 +40,10 @@ lerna-debug.log*
 .yarn/*
 !.yarn/releases
 
-# Vercel
+# Vercel / Cloudflare
 .vercel
+.wrangler
+.dev.vars*
 
 # Astro
 .astro

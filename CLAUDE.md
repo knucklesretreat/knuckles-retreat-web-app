@@ -15,8 +15,8 @@ hardcoded or comes from `src/data/*.json`. The only backend call is the inquiry 
   Turnstile + backend verification (6) → improvements (8). Phase 7 (the hosting move) was merged into
   4–5. Each one ships and is verified separately.
 - Phases 0 (baseline), 1 (Astro setup, layout, `<head>`), 2 (static markup, images, icons, CSS) and
-  3 (interactive behaviour, inquiry form, Qwik removed) are done. Check `git log` and the plan to see
-  which phase is in progress. The Qwik source is in git history (commit `817c272`); port from there.
+  3 (interactive behaviour, inquiry form, Qwik removed) are done; 4 (Cloudflare setup + verification)
+  is in progress. Check `git log` and the plan for the current state. The Qwik source is in git history (commit `817c272`); port from there.
 
 ## Parity rules (Phases 1–5)
 
@@ -59,6 +59,8 @@ Astro (7.3.8, needs Node ≥ 22.23.4):
 npm run dev
 npm run build && npm run preview   # preview runs as a daemon on :4173
 npx astro preview stop
+npm run build && npm run preview.cf  # Cloudflare's local runtime on :8787 (redirects, _headers, 404)
+npm run deploy                     # build + wrangler deploy
 npm run check                      # types (astro check)
 npm run lint
 ```
@@ -71,8 +73,8 @@ node capture.mjs --base http://localhost:4173 --out candidate/local [--no-screen
 node compare.mjs --baseline baseline/local --candidate candidate/local [--only body,css] [--routes faq]
 ```
 
-`astro preview` doesn't redirect `/faq` → `/faq/` (Cloudflare does, see plan §4.8), so redirects are
-checked on the Cloudflare preview (`*.workers.dev`). Screenshot captures are timing-sensitive under heavy machine load;
+`astro preview` doesn't redirect `/faq` → `/faq/`; `npm run preview.cf` does (via `public/_redirects`),
+so check redirects there or on the `*.workers.dev` deploy. Screenshot captures are timing-sensitive under heavy machine load;
 re-run before treating a one-off diff as real.
 
 ## Project facts

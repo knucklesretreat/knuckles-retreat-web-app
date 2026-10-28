@@ -465,9 +465,20 @@ more. Keep the file for at least a few months after launch.
 
 ### 4.8 Deployment config
 
-**Status: changed 2026-10-28 — target is Cloudflare, not Vercel; done as the first step of Phase 4.**
-Phase 3 updated `vercel.json` for Astro; that file is now unused on this branch and is deleted in this
-step (the Vercel project keeps serving the last Qwik deployment from its own history).
+**Status: repo side done (Phase 4).** Target changed to Cloudflare on 2026-10-28. Added
+`wrangler.jsonc`, `public/_redirects`, `public/_headers`, `.node-version` (22.23.4) and
+`wrangler@4.154.0`; `vercel.json` deleted (the Vercel project keeps serving the last Qwik deployment
+from its own history). `npm run preview.cf` runs the build in Cloudflare's local runtime
+(`wrangler dev`, :8787) with the same redirects, headers and 404 handling as production;
+`npm run deploy` builds and runs `wrangler deploy`. Checked locally under `wrangler dev`:
+
+- Redirects (`redirects.mjs`) match the Qwik baseline for every URL — `/faq` → **301** → `/faq/`
+  (`_redirects` wins over the built-in 307), query kept, `/FAQ/` and unknown paths 404 — except
+  `/index.html`: Qwik 404, Cloudflare **307** → `/` (`html_handling` maps `index.html` to its folder;
+  `_redirects` can't return a 404). Accepted: nothing links to it and it lands on the canonical URL.
+- `/_astro/*` gets `public, max-age=31536000, immutable`; HTML gets `public, max-age=0,
+  must-revalidate`; unknown paths return `dist/404.html` byte-identical with HTTP 404; `_redirects` and
+  `_headers` are not served.
 
 - **Project:** Cloudflare Workers with static assets (Cloudflare's recommended path for new projects
   over Pages). `wrangler.jsonc`:
@@ -508,6 +519,36 @@ step (the Vercel project keeps serving the last Qwik deployment from its own his
 ---
 
 ## 5. Phase 4 — Verification (parity sign-off)
+
+**Status: in progress.** Local run under `wrangler dev` (`candidate/cf`): `head`, `responses`, `body`,
+`css`, `screens` all match `baseline/local` (28 screenshots, ≤ 0.0002 % differing pixels); `head`,
+`body`, `css` match `baseline/live`; robots, sitemap, manifests and favicon are byte-identical to
+production.
+
+Deployed to `https://knuckles-retreat.kesharalahiru1.workers.dev` (`npm run deploy`, built with the
+local `.env`). There: `head`, `responses`, `body`, `css`, `screens` match `baseline/local`;
+`head`, `body`, `css` match `baseline/live`; redirects as under `wrangler dev`; `/_astro/*` immutable
+cache header live.
+
+**Lighthouse** (mobile, 7 interleaved runs per page against the live site on the same machine, medians;
+`baseline/live/lighthouse.json` turned out too noisy with 3 runs): Accessibility, Best Practices and SEO
+are equal on every page. Performance live → preview: home 62 → 62, accommodation 68 → 64,
+inquiry 61 → 59. Desktop is within noise. Not a real regression:
+
+- Lighthouse's mobile score is *simulated* (Lantern) from per-origin RTT/latency estimates taken during
+  the run. The *observed* timings are the same: median FCP live/preview 1465/1504 ms (accommodation),
+  2550/2522 ms (home), 1576/1512 ms (inquiry). HTML TTFB is lower on Cloudflare (≈45–60 ms vs ≈100 ms,
+  `cf-cache-status: HIT`, brotli).
+- The simulated gap comes from: two page stylesheets instead of Qwik's one (each is an extra
+  render-blocking request in the model), the Google Fonts `@import` chain (biggest blocker on both),
+  and on `/accommodation/` the LCP element: on the live site it is usually the header `<h4>`, on the
+  preview always the hero `<img>` (revealed by the page script; Qwik reveals it later, after its chunk
+  loads, so Chrome seldom picks it).
+- Re-measured after cut-over on the real domain (Phase 5). The CSS chain and font loading are Phase 8
+  items (§9, items 3–4).
+
+Still to do on the preview: browsers, manual side-by-side. The service worker check needs the real
+domain, so it moves to Phase 5.
 
 First set up the Cloudflare project (§4.8). Run the Phase 0 capture against
 `astro build && astro preview` into `candidate/local`, then against the Cloudflare preview URL

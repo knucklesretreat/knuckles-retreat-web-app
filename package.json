@@ -13,11 +13,12 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview --port 4173",
+    "preview.cf": "wrangler dev --port 8787",
     "check": "astro check",
     "lint": "eslint \"src/**/*.ts\"",
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
-    "deploy": "npx vercel deploy"
+    "deploy": "astro build && wrangler deploy"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
@@ -30,6 +31,7 @@
     "esbuild": "0.28.2",
     "eslint": "8.57.0",
     "prettier": "3.3.3",
-    "typescript": "5.4.5"
+    "typescript": "5.4.5",
+    "wrangler": "4.154.0"
   }
 }
