@@ -13,7 +13,7 @@ npx playwright install chromium
 ## Capture
 
 Start the site locally first (Qwik: `npm run build.client && npm run build.preview && npx vite preview --port 4173`;
-Astro: `npx astro build && npx astro preview --port 4173`), then:
+Astro: `npm run astro:build && npm run astro:preview`, stopped with `npx astro preview stop`), then:
 
 ```sh
 # HTML, <head>, DOM facts, full-page screenshots, animation states, scroll video
@@ -30,7 +30,19 @@ node redirects.mjs --base http://localhost:4173 --out baseline/local --local
 node lighthouse.mjs --base https://www.knucklesretreat.com --out baseline/live
 ```
 
-For the migrated site, write to a different folder (e.g. `--out candidate/local`) and compare.
+## Compare
+
+Capture the migrated site into `candidate/` (gitignored), then:
+
+```sh
+node compare.mjs --baseline baseline/local --candidate candidate/local            # all checks
+node compare.mjs --baseline baseline/live --candidate candidate/local --only head # vs production
+```
+
+Checks so far: `head` (title, `<html>`/`<body>` lang, every non-framework `<head>` element in order,
+canonical compared by path, exact Partytown snippet text) and `responses` (status, content type).
+Framework plumbing is ignored: assets under `/build/`, `/assets/`, `/_astro/`, `<style>` tags and
+inline module scripts. Exits 1 on any difference.
 
 ## Output
 

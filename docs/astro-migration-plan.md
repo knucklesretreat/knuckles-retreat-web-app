@@ -158,11 +158,17 @@ wrapped in `useVisibleTask$`.
 
 **Package changes**
 
-- Add: `astro`, `@astrojs/partytown`, `astro-icon`, `@iconify-json/ion`, `@iconify-json/ic`
-  (and `@astrojs/check` for type checking). Pin exact versions when starting.
-- Dev-only for verification: `@playwright/test`, `pixelmatch` (or Playwright's `toHaveScreenshot`).
-- Remove: `@builder.io/qwik`, `@builder.io/qwik-city`, `@qwik.dev/partytown`, `@qwikest/icons`,
-  `eslint-plugin-qwik`, `vite-tsconfig-paths`, `vercel` (CLI not needed as a dep), `undici`.
+- Added (Phase 1, exact versions): `astro@7.3.8`, `astro-icon@1.2.0`, `@iconify-json/ion@1.2.7`,
+  `@iconify-json/ic@1.2.4`, `@astrojs/check@0.9.12`. Astro 7 needs **Node ≥ 22.23.4** — set the
+  Vercel project's Node version and `engines.node` accordingly when the build switches (Phase 3).
+- Kept: `@qwik.dev/partytown@0.11.2` — it is a standalone package, and using the same version keeps the
+  inline snippet byte-identical. `@astrojs/partytown` is **not** used (it injects the snippet at the end
+  of `<head>`, which changes the order).
+- Verification tooling lives in `scripts/parity/` with its own `package.json` (Playwright, Lighthouse).
+- Removed in Phase 1: `vercel` (CLI; its pinned esbuild 0.14 broke Astro's Vite 8 tree — `npm run deploy`
+  now uses `npx vercel deploy`).
+- Remove with Qwik (end of Phase 3): `@builder.io/qwik`, `@builder.io/qwik-city`, `@qwikest/icons`,
+  `eslint-plugin-qwik`, `vite-tsconfig-paths`, `vite`, `undici`, plus the temporary `astro:*` scripts.
 - Delete: `adapters/`, `src/entry.*.tsx`, `src/root.tsx`, `src/routes/`, `vite.config.ts`,
   `.vscode/qwik*.code-snippets`.
 
@@ -208,24 +214,33 @@ Deliverable: `scripts/parity/baseline/` committed on the branch (screenshots/vid
 
 ### 4.1 Project setup (Phase 1)
 
-- Scaffold Astro in place on the branch; keep `src/data`, `src/media`, `public` untouched.
-- `astro.config.mjs`:
-  - `site: 'https://www.knucklesretreat.com'`
-  - `trailingSlash: 'always'`, `build.format: 'directory'` (matches Qwik URLs and sitemap)
-  - `output: 'static'`
-  - `integrations: [partytown({ config: { forward: ['dataLayer.push'] } }), icon()]`
-  - `vite.css.modules` left default (same Vite CSS-modules behaviour Qwik used).
-- `tsconfig.json`: extend `astro/tsconfigs/strict`, keep `~/*` → `src/*` path alias so imports port
-  unchanged.
-- Move `src/global.css` → imported once in `BaseLayout.astro`. Its `url("./media/spinner.svg")` is
-  relative to `src/`; if the file moves, update **only** that path.
+**Status: done.** Astro and Qwik coexist on the branch until the end of Phase 3 (Qwik in
+`src/routes`, Astro in `src/pages`; both build to `dist/`, so rebuild whichever one you're previewing).
+
+- `astro.config.mjs`: `site`, `output: 'static'`, `trailingSlash: 'always'`,
+  `build.format: 'directory'`, `integrations: [icon(), partytownLib]` — `partytownLib` is a 10-line
+  local integration that copies the Partytown library (incl. `debug/`) to `/~partytown/` on build.
+- `tsconfig.json` stays Qwik's until Qwik is removed (its `~/*` alias already works for Astro); switch
+  to `astro/tsconfigs/strict` at the end of Phase 3.
+- `src/global.css` stays where it is (imported by `BaseLayout.astro`), so its relative
+  `url("./media/spinner.svg")` keeps working with no edit.
+- Temporary scripts: `npm run astro:dev | astro:build | astro:preview` (preview on :4173).
+- Astro 7's `astro preview` runs as a background daemon; stop it with `npx astro preview stop`.
+- `astro preview` returns 404 for non-slash URLs (`/faq`) — it doesn't redirect. The 301/308 redirect
+  comes from Vercel's `trailingSlash` setting (§4.8) and is verified on the Vercel preview in Phase 4.
 
 ### 4.2 Layout + SEO (Phase 1)
 
 `BaseLayout.astro` props: `title`, `description`, optional overrides for OG fields.
 
-- Reproduce the `<head>` order from §1 exactly (Partytown snippet comes from the integration — confirm
-  position in the diff).
+**Status: done — `<head>` and status codes match the baseline (local and live) on all 7 routes**
+(`node compare.mjs --baseline baseline/local --candidate candidate/local`).
+
+- Reproduce the `<head>` order from §1 exactly. The Partytown snippet is rendered by
+  `src/components/Partytown.astro` (same helper and version as Qwik) so it stays second in `<head>`.
+- `Schema.astro` was generated from `schema.tsx` by script so the JSON-LD object can't drift.
+- Pages are shells (`src/pages/*.astro`) with the exact titles/descriptions; bodies come in Phase 2.
+- Qwik's inline service-worker script is not reproduced (see §4.7).
 - `<html lang="en-us">`, `<body lang="en">`.
 - Canonical: `new URL(Astro.url.pathname, Astro.site)` → absolute, trailing-slashed, no query string
   (today's canonical would include a query string if one was present; for crawled URLs it is identical).
@@ -331,26 +346,19 @@ Vanilla script mirroring `src/routes/inquiry/index.tsx`:
 
 ### 4.6 404 page
 
-Qwik City currently returns its default 404. Add `src/pages/404.astro` using `BaseLayout` with
-`<meta name="robots" content="noindex">`. Confirm Vercel returns HTTP **404** (not 200) for unknown
-paths.
+**Status: done.** The baseline showed that Qwik City serves its plain built-in 404 page (no site
+layout, no doctype, blue "404 Resource Not Found" box). For parity it is reproduced byte-for-byte as
+`public/404.html` (copied from the baseline capture). A branded 404 is a Phase 8 item. Confirm Vercel
+returns HTTP **404** (not 200) for unknown paths in Phase 4.
 
-### 4.7 Service worker kill-switch (important for returning visitors)
+### 4.7 Service worker cleanup
 
-Existing visitors have Qwik's prefetch service worker registered at `/service-worker.js` (confirm the
-exact path in the baseline HTML). After the switch it would keep intercepting requests for Qwik bundles
-that no longer exist. Ship `public/service-worker.js`:
-
-```js
-self.addEventListener("install", () => self.skipWaiting());
-self.addEventListener("activate", async () => {
-  await self.registration.unregister();
-  const clients = await self.clients.matchAll({ type: "window" });
-  clients.forEach((c) => c.navigate(c.url));
-});
-```
-
-Keep this file for at least a few months after launch.
+**Status: done.** The baseline showed Qwik 1.16 already **unregisters** its service worker on every
+page load (inline script in `<head>`) and deletes the `QwikBuild*` cache, and the live
+`/service-worker.js` has no fetch handler. So only visitors who haven't been back since older Qwik
+versions still have an active worker. `public/service-worker.js` replaces it at the same URL: on
+activate it deletes `QwikBuild*` caches and unregisters itself. Nothing registers a service worker any
+more. Keep the file for at least a few months after launch.
 
 ### 4.8 Deployment config
 
@@ -369,7 +377,9 @@ Keep this file for at least a few months after launch.
 
 ## 5. Phase 4 — Verification (parity sign-off)
 
-Run the Phase 0 script against `astro build && astro preview`, then against the Vercel preview URL.
+Run the Phase 0 capture against `astro build && astro preview` into `candidate/local`, then against the
+Vercel preview URL, and compare with `node compare.mjs` (head + responses since Phase 1; DOM and
+screenshot checks are added as Phases 2–3 need them).
 
 | Check | Pass criteria |
 | --- | --- |
@@ -572,7 +582,9 @@ These are deliberately **out of scope** for parity because they change output. L
 6. **Sitemap:** replace the hand-maintained `public/site/sitemap.xml` with `@astrojs/sitemap` (keep the
    `/site/sitemap.xml` path or update `robots.txt` and resubmit in Search Console).
 7. **Content collections** for rooms, testimonials and FAQ (typed via a zod schema).
-8. Optionally add Astro View Transitions (`<ClientRouter />`) for SPA-like navigation — re-check all
+8. **Branded 404 page** using the site layout, with `<meta name="robots" content="noindex">` (today it
+   is Qwik's plain default page, reproduced as `public/404.html` for parity).
+9. Optionally add Astro View Transitions (`<ClientRouter />`) for SPA-like navigation — re-check all
    scripts re-initialise on `astro:page-load` if adopted.
 
 ---

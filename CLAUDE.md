@@ -12,7 +12,9 @@ hardcoded or comes from `src/data/*.json`. The only backend call is the inquiry 
   updated when facts change.
 - Order: Astro parity on Vercel (Phases 0–5) → Turnstile + backend verification (6) → Cloudflare
   hosting (7) → improvements (8). Each one ships and is verified separately.
-- Phase 0 (baseline) is done. Check `git log` and the plan to see which phase is in progress.
+- Phases 0 (baseline) and 1 (Astro setup, layout, `<head>`) are done. Check `git log` and the plan to
+  see which phase is in progress. Astro (`src/pages`, `src/layouts`) and Qwik (`src/routes`) coexist
+  until the end of Phase 3; both build to `dist/`.
 
 ## Parity rules (Phases 1–5)
 
@@ -39,18 +41,28 @@ honestly, including ones that look like noise.
 
 ## Commands
 
+Astro (7.3.8, needs Node ≥ 22.23.4):
+
+```sh
+npm run astro:dev
+npm run astro:build && npm run astro:preview   # preview runs as a daemon on :4173
+npx astro preview stop
+```
+
 Qwik (until it's removed):
 
 ```sh
-npm run dev                                  # dev server
+npm run dev
 npm run build.client && npm run build.preview && npx vite preview --port 4173   # production preview
 npm run build.types && npm run lint
 ```
 
-Parity capture (production preview must be running on :4173):
+Parity check (a production preview must be running on :4173):
 
 ```sh
-cd scripts/parity && node capture.mjs --base http://localhost:4173 --out candidate/local
+cd scripts/parity
+node capture.mjs --base http://localhost:4173 --out candidate/local [--no-screens]
+node compare.mjs --baseline baseline/local --candidate candidate/local
 ```
 
 ## Project facts
