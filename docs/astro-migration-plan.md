@@ -2,8 +2,9 @@
 
 Branch: `astro-migration`
 Status: Draft
-Goal: Replace Qwik / Qwik City (SSR on Vercel Edge) with Astro (static output on Vercel) **with zero
-visible or SEO regressions**. Every page must look, animate and index exactly as it does today.
+Goal: Replace Qwik / Qwik City (SSR on Vercel Edge) with Astro (static output on Cloudflare Workers
+static assets) **with zero visible or SEO regressions**. Every page must look, animate and index
+exactly as it does today.
 
 ## Roadmap
 
@@ -11,10 +12,16 @@ Each step ships and is verified on its own, so a regression can always be traced
 
 | Step | What | Section |
 | --- | --- | --- |
-| 1 | Astro migration on Vercel (pixel/SEO parity) | Phases 0–5 (§3–§6) |
+| 1 | Astro migration (pixel/SEO parity), launched directly on Cloudflare | Phases 0–5 (§3–§6) |
 | 2 | Replace reCAPTCHA with Cloudflare Turnstile **and** verify the token in the Firebase function | Phase 6 (§7) |
-| 3 | Move hosting from Vercel to Cloudflare (Workers static assets) | Phase 7 (§8) |
+| 3 | ~~Move hosting from Vercel to Cloudflare~~ — merged into Phases 4–5 (2026-10-28) | Phase 7 (§8) |
 | 4 | Post-migration improvements (images, fonts, etc.) | Phase 8 (§9) |
+
+**Change 2026-10-28:** the Astro site is not deployed to Vercel. Since hosting moves to Cloudflare
+anyway, the Astro build launches straight on Cloudflare: Phase 4 verifies it on a Cloudflare preview
+(`*.workers.dev`), Phase 5 is the DNS cut-over. The Vercel project keeps serving the last Qwik
+deployment until then and stays as the rollback target. Phase numbers are kept so existing
+references (e.g. "Phase 8") stay valid.
 
 ---
 
@@ -30,8 +37,9 @@ Each step ships and is verified on its own, so a regression can always be traced
    during parity phases is a bug.
 4. **Initial HTML must equal Qwik's SSR output** (minus Qwik's `q:*` / `on:*` attributes and script tags).
    Client scripts only change things *after* load, exactly as `useVisibleTask$` does today.
-5. **Ship via Vercel preview deployments only** until sign-off. Production switch is a single promote;
-   rollback is Vercel "Instant Rollback" to the last Qwik deployment.
+5. **Ship via Cloudflare preview deployments only** until sign-off. The production switch is the DNS
+   cut-over (Phase 5); rollback is pointing DNS back to Vercel, which keeps serving the last Qwik
+   deployment.
 
 ---
 
@@ -159,8 +167,8 @@ wrapped in `useVisibleTask$`.
 **Package changes**
 
 - Added (exact versions): `astro@7.3.8`, `@astrojs/check@0.9.12` (Phase 1); `esbuild@0.28.2` (Phase 2,
-  the CSS minifier, see §4.3). Astro 7 needs **Node ≥ 22.23.4** — set the
-  Vercel project's Node version and `engines.node` accordingly when the build switches (Phase 3).
+  the CSS minifier, see §4.3). Astro 7 needs **Node ≥ 22.23.4** — `engines.node` is set (Phase 3);
+  the Cloudflare build's Node version is pinned in Phase 4 (§4.8).
 - Kept: `@qwik.dev/partytown@0.11.2` — it is a standalone package, and using the same version keeps the
   inline snippet byte-identical. `@astrojs/partytown` is **not** used (it injects the snippet at the end
   of `<head>`, which changes the order).
@@ -198,7 +206,7 @@ Run on `main`, against a local production build **and** the live site.
 3. Record Lighthouse (mobile + desktop) for `/`, `/accommodation/`, `/inquiry/`.
 4. Record redirect behaviour: `curl -I` for `/faq`, `/faq/`, `/FAQ/`, `/nonexistent`, and the
    apex/`www` and `http`/`https` variants (`http://knucklesretreat.com`, `https://knucklesretreat.com`,
-   `http://www.knucklesretreat.com`). These must stay the same through the later host move (Phase 7).
+   `http://www.knucklesretreat.com`). These must stay the same through the host move (Phase 5).
 5. Note exactly what `?jsx` images render (attributes like `loading`, `decoding`, `srcset`, `sizes`)
    from the baseline HTML — the Astro image output must match these.
 
@@ -235,8 +243,11 @@ Deliverable: `scripts/parity/baseline/` committed on the branch (screenshots/vid
   `url("./media/spinner.svg")` keeps working with no edit.
 - Scripts (since Phase 3): `npm run dev | build | preview | check` (preview on :4173).
 - Astro 7's `astro preview` runs as a background daemon; stop it with `npx astro preview stop`.
-- `astro preview` returns 404 for non-slash URLs (`/faq`) — it doesn't redirect. The 301/308 redirect
-  comes from Vercel's `trailingSlash` setting (§4.8) and is verified on the Vercel preview in Phase 4.
+- `astro preview` returns 404 for non-slash URLs (`/faq`) — it doesn't redirect. In production the
+  redirect comes from the host (§4.8) and is verified on the Cloudflare preview in Phase 4.
+- `trailingSlash: 'always'` stays: today's URLs, canonicals and sitemap all end in `/`. In a static
+  build it only affects the dev server and generated URLs (`Astro.url`, canonical); the host decides
+  the redirect.
 
 ### 4.2 Layout + SEO (Phase 1)
 
@@ -430,15 +441,18 @@ Vanilla script mirroring `src/routes/inquiry/index.tsx`:
   (`grecaptcha.ready` / onload callback) instead of assuming it is loaded. This is a parity port only —
   reCAPTCHA is replaced by Turnstile in Phase 6, so keep the CAPTCHA code isolated in one small module
   (`src/components/inquiry/captcha.ts`: `getToken()`, `reset()`) to make that swap a one-file change.
-- Test a real submission against the Firebase function from a preview deploy (CORS must allow the
-  preview origin — check the function's allowed origins).
+- ~~Test a real submission from a preview deploy.~~ Changed 2026-10-28: on the `*.workers.dev`
+  preview reCAPTCHA rejects the domain and the function's CORS doesn't allow the origin, and reCAPTCHA
+  is replaced in Phase 6 anyway. Submissions were verified with mocked responses in Phase 3; a real
+  submission is done right after the Phase 5 cut-over (same production origin as today, so CORS and the
+  reCAPTCHA key already allow it).
 
 ### 4.6 404 page
 
 **Status: done.** The baseline showed that Qwik City serves its plain built-in 404 page (no site
 layout, no doctype, blue "404 Resource Not Found" box). For parity it is reproduced byte-for-byte as
-`public/404.html` (copied from the baseline capture). A branded 404 is a Phase 8 item. Confirm Vercel
-returns HTTP **404** (not 200) for unknown paths in Phase 4.
+`public/404.html` (copied from the baseline capture). A branded 404 is a Phase 8 item. Confirm
+Cloudflare returns HTTP **404** (not 200) for unknown paths in Phase 4 (`not_found_handling: "404-page"`).
 
 ### 4.7 Service worker cleanup
 
@@ -451,29 +465,53 @@ more. Keep the file for at least a few months after launch.
 
 ### 4.8 Deployment config
 
-**Status: repo side done** (`vercel.json`: `framework: astro`, `trailingSlash: true`, `/_astro/(.*)`
-immutable cache rule; `engines.node >= 22.23.4`). Still to do in the Vercel dashboard before the first
-preview deploy: set the project's Node version to 22.x (≥ 22.23.4) and check `PUBLIC_API_URL` exists
-for Preview and Production. Redirects (`/faq` → `/faq/`, 308) can only be verified on a Vercel deploy —
-`astro preview` returns 404 for slashless URLs.
+**Status: changed 2026-10-28 — target is Cloudflare, not Vercel; done as the first step of Phase 4.**
+Phase 3 updated `vercel.json` for Astro; that file is now unused on this branch and is deleted in this
+step (the Vercel project keeps serving the last Qwik deployment from its own history).
 
-- Vercel project: framework preset **Astro**, build `astro build`, output `dist` (or set
-  `"framework": "astro"` in `vercel.json`). Do this on a preview deployment first.
-- `vercel.json`:
-  - replace the `/build/(.*)` cache rule with `/_astro/(.*)` (Astro's hashed asset dir);
-  - add `"trailingSlash": true` so `/faq` → `/faq/` like today. Vercel answers this with **308**
-    where Qwik answered **301**; both are permanent redirects and are treated the same by search
-    engines, so this is an accepted difference (query strings must still be preserved).
-- Set `PUBLIC_API_URL` for Preview and Production environments.
-- HTML caching: Qwik set `max-age=5, stale-while-revalidate=604800`; Vercel's static default (CDN cache,
-  revalidated on deploy) is equivalent or better — no config needed.
+- **Project:** Cloudflare Workers with static assets (Cloudflare's recommended path for new projects
+  over Pages). `wrangler.jsonc`:
+  ```jsonc
+  {
+    "name": "knuckles-retreat",
+    "compatibility_date": "<pin at setup>",
+    "assets": {
+      "directory": "./dist",
+      "html_handling": "auto-trailing-slash",   // serves dist/faq/index.html at /faq/
+      "not_found_handling": "404-page"          // serves dist/404.html with HTTP 404
+    }
+  }
+  ```
+  Connect the GitHub repo with Workers Builds (build: `npm run build`). Pin Node ≥ 22.23.4 for the
+  build (`.node-version` file or the `NODE_VERSION` build variable).
+- **Trailing-slash redirect status:** Workers static assets answers `/faq` → `/faq/` with **307**
+  (temporary). Qwik answers **301**, and temporary redirects don't pass canonical signals, so add
+  `public/_redirects` with a permanent redirect for each slashless route (`/faq /faq/ 301`,
+  `/accommodation`, `/inquiry`, `/privacy-policy`, `/terms-and-conditions`). Verify on the preview
+  that `_redirects` wins over `html_handling` and that the query string is kept (`/faq?x=1` →
+  `/faq/?x=1`). 301 or 308 are both acceptable.
+- **Env vars:** `PUBLIC_API_URL` as a **build-time** variable (it is inlined by Astro). It is public
+  (shipped in the client bundle), so it isn't a secret.
+- **Headers:** `public/_headers`:
+  ```
+  /_astro/*
+    Cache-Control: public, max-age=31536000, immutable
+  ```
+- **HTML caching:** Qwik set `max-age=5, stale-while-revalidate=604800`; Cloudflare serves static
+  assets from its edge and revalidates on deploy — equivalent or better, no config needed.
+- **Scripts:** `npm run deploy` → `wrangler deploy` (or rely on Workers Builds only); add `wrangler` as a
+  pinned dev dependency.
+- **Vercel:** before merging to `main`, disconnect the Vercel project's Git integration (or set its
+  Ignored Build Step to skip all builds) so a merge can't redeploy Vercel production away from the
+  Qwik rollback target.
 
 ---
 
 ## 5. Phase 4 — Verification (parity sign-off)
 
-Run the Phase 0 capture against `astro build && astro preview` into `candidate/local`, then against the
-Vercel preview URL, and compare with `node compare.mjs` (checks: `head`, `responses`, `body`, `css`,
+First set up the Cloudflare project (§4.8). Run the Phase 0 capture against
+`astro build && astro preview` into `candidate/local`, then against the Cloudflare preview URL
+(`*.workers.dev`) into `candidate/preview`, and compare with `node compare.mjs` (checks: `head`, `responses`, `body`, `css`,
 `screens`; animation-state screenshots in `states/` are still compared by eye).
 
 | Check | Pass criteria |
@@ -484,9 +522,9 @@ Vercel preview URL, and compare with `node compare.mjs` (checks: `head`, `respon
 | Screenshots 375/768/1280/1920 | Pixel diff ≤ 0.1 % (fonts/AA noise); any larger diff reviewed by eye |
 | Animation checkpoints | Header sticky, hero slide 2 after click, each reveal state, mobile menu open, testimonial next/prev mid-transition |
 | Manual side-by-side | Full scroll on `/` vs baseline video (parallax feel), hero auto-advance after 15 s, resize across 876 px and 460 px |
-| URLs | All 6 routes 200 at trailing-slash URL; non-slash → permanent redirect (301/308) → slash, query kept; unknown path 404. (Accepted difference: on the Qwik site an unknown `/assets/…` URL returns an empty **200**; static hosting returns 404.) |
+| URLs | All 6 routes 200 at trailing-slash URL; non-slash → permanent redirect (301/308, **not** Cloudflare's default 307, §4.8) → slash, query kept; unknown path 404. (Accepted difference: on the Qwik site an unknown `/assets/…` URL returns an empty **200**; static hosting returns 404.) |
 | Sitemap / robots | `/site/sitemap.xml`, `/robots.txt`, `/manifest.json`, `/manifest.webmanifest`, `/favicon.svg` byte-identical |
-| Inquiry | Validation messages in order; captcha renders; success + error toast; reset |
+| Inquiry | Validation messages in order; success + error toast (mocked); reset. reCAPTCHA and a real submission are not checked on the preview (§4.5) — the real submission is checked after cut-over (Phase 5) |
 | Lighthouse | Every category ≥ baseline (SEO and Accessibility must be equal or higher) |
 | Browsers | Chrome, Safari (iOS + macOS), Firefox, Android Chrome |
 | Service worker | In a browser with the old site's SW installed, visiting the preview unregisters it and loads fresh |
@@ -495,12 +533,26 @@ Vercel preview URL, and compare with `node compare.mjs` (checks: `head`, `respon
 
 ## 6. Phase 5 — Launch
 
-1. Merge `astro-migration` → `main` only after Phase 4 sign-off.
-2. Production deploy; immediately re-run the parity script against `https://www.knucklesretreat.com`.
-3. Google Search Console: resubmit the sitemap, run URL Inspection on the 6 routes, watch the
+1. Disconnect Vercel's Git integration (§4.8), then merge `astro-migration` → `main` only after Phase 4
+   sign-off. Workers Builds deploys `main` to the Worker (still only on `*.workers.dev`).
+2. **DNS cut-over:**
+   - Custom domains on a Worker need the zone on Cloudflare. If the domain's DNS isn't on Cloudflare
+     yet, move it first (copy all existing records — MX/TXT for email included — before switching
+     nameservers) and lower TTLs a day in advance.
+   - Attach `www.knucklesretreat.com` and `knucklesretreat.com` as custom domains.
+   - Reproduce the redirects captured in Phase 0: apex → `https://www.knucklesretreat.com/` (Redirect
+     Rule, path and query kept) and `http` → `https` ("Always Use HTTPS"). Vercel answered 308;
+     Cloudflare answers 301 — both permanent, accepted.
+3. Immediately: re-run the parity script and `redirects.mjs` against `https://www.knucklesretreat.com`,
+   and send **one real inquiry** (marked as a test) to check the Firebase function, CORS and reCAPTCHA
+   on the new host.
+4. Google Search Console: resubmit the sitemap, run URL Inspection on the 6 routes, watch the
    Coverage/Pages report for a week.
-4. Rollback: Vercel Instant Rollback to the last Qwik deployment (keep it un-deleted).
-5. Update `CLAUDE.md`: Astro commands and structure, remove the Qwik commands and the parity-only
+5. Rollback: point DNS back to Vercel (it still serves the last Qwik deployment). Keep the Vercel
+   project for at least 2–4 weeks. Within Cloudflare, earlier Worker versions can be restored from the
+   dashboard or with `wrangler rollback`.
+6. Cleanup once stable: delete the Vercel project.
+7. Update `CLAUDE.md`: Astro commands and structure, remove the Qwik commands and the parity-only
    rules, and point to Phase 6 as the current work.
 
 ---
@@ -521,15 +573,15 @@ CAPTCHA currently provides no server-side protection. This phase fixes that and 
 ### 7.2 Cloudflare setup
 
 1. Cloudflare dashboard → Turnstile → add a widget (mode: **Managed**).
-2. Hostnames: `knucklesretreat.com`, `www.knucklesretreat.com` (add the Cloudflare preview hostname
-   later in Phase 7). For local dev and Vercel previews use Cloudflare's **test keys** instead of adding
-   those hostnames:
+2. Hostnames: `knucklesretreat.com`, `www.knucklesretreat.com`. For local dev and `*.workers.dev`
+   previews use Cloudflare's **test keys** instead of adding those hostnames:
    - site key `1x00000000000000000000AA` (always passes) / `2x00000000000000000000AB` (always blocks)
    - secret `1x0000000000000000000000000000000AA` (always passes) /
      `2x0000000000000000000000000000000AA` (always fails) /
      `3x0000000000000000000000000000000AA` (token already spent)
 3. Store keys:
-   - site key → `PUBLIC_TURNSTILE_SITE_KEY` (public, inlined at build; per environment in Vercel);
+   - site key → `PUBLIC_TURNSTILE_SITE_KEY` (public, inlined at build; a Workers Builds build variable,
+     test key for preview builds);
    - secret → Firebase secret: `firebase functions:secrets:set TURNSTILE_SECRET_KEY` (never in this repo).
 
 ### 7.3 Frontend changes (this repo)
@@ -611,46 +663,11 @@ The frontend and backend deploy separately, so order matters:
 
 ---
 
-## 8. Phase 7 — Move hosting from Vercel to Cloudflare
+## 8. Phase 7 — Move hosting from Vercel to Cloudflare (merged into Phases 4–5)
 
-After Phase 6 is enforced and stable. The site is fully static by now, so this is a configuration
-change, verified with the same parity script.
-
-1. **Project:** Cloudflare Workers with static assets (Cloudflare's recommended path for new projects
-   over Pages). `wrangler.jsonc`:
-   ```jsonc
-   {
-     "name": "knuckles-retreat",
-     "compatibility_date": "<pin at setup>",
-     "assets": {
-       "directory": "./dist",
-       "html_handling": "auto-trailing-slash",   // /faq → /faq/, as today
-       "not_found_handling": "404-page"          // serves dist/404.html with HTTP 404
-     }
-   }
-   ```
-   Connect the GitHub repo with Workers Builds (build: `npm run build`).
-2. **Env vars:** set `PUBLIC_API_URL` and `PUBLIC_TURNSTILE_SITE_KEY` as **build-time** variables.
-3. **Headers:** move the cache rule from `vercel.json` to `public/_headers`:
-   ```
-   /_astro/*
-     Cache-Control: public, max-age=31536000, immutable
-   ```
-4. **Allow-lists:** add the `*.workers.dev` preview hostname to the Turnstile widget and to the Firebase
-   function's CORS / hostname checks (or use test keys on previews).
-5. **Verify on the preview URL:** re-run the full Phase 4 parity suite + Phase 6 form checks.
-6. **DNS cut-over:**
-   - Lower DNS TTL a day in advance (or move the domain's DNS to Cloudflare first, if it isn't already).
-   - Attach `www.knucklesretreat.com` and `knucklesretreat.com` as custom domains; reproduce the
-     apex↔`www` and `http`→`https` redirects captured in Phase 0 (Cloudflare redirect rule).
-   - Remove the preview hostnames from the Turnstile/CORS allow-lists once live, if they were only
-     needed for testing.
-7. **After cut-over:** re-run the parity suite and redirect checks against production; check Search
-   Console for crawl errors for a week.
-8. **Rollback:** keep the Vercel project and its last deployment for at least 2–4 weeks; rollback =
-   point DNS back to Vercel. Within Cloudflare, previous Worker versions can be rolled back from the
-   dashboard or `wrangler rollback`.
-9. **Cleanup:** delete `vercel.json`, `.vercel/`, and the Vercel project once stable.
+**Changed 2026-10-28:** no longer a separate step. The Astro site is never deployed to Vercel; the
+Cloudflare setup is in §4.8, preview verification in Phase 4 (§5) and the DNS cut-over and rollback in
+Phase 5 (§6).
 
 ---
 
@@ -704,11 +721,11 @@ These are deliberately **out of scope** for parity because they change output. L
 | 1 Setup, layout, SEO | 0.5 day |
 | 2 Static markup, images, icons | 1 day |
 | 3 Interactivity + inquiry form | 1–1.5 days |
-| 4 Verification + fixes | 1 day |
-| 5 Launch + monitoring | 0.5 day (+ a week of passive monitoring) |
-| **Subtotal: Astro parity launch** | **≈ 4.5–5 days** |
+| 4 Cloudflare setup + verification + fixes | 1–1.5 days |
+| 5 DNS cut-over + monitoring | 0.5–1 day (+ a week of passive monitoring) |
+| **Subtotal: Astro parity launch on Cloudflare** | **≈ 5–6 days** |
 | 6 Turnstile (frontend + Firebase function + staged rollout) | 1 day (+ ~1 week soft-mode observation) |
-| 7 Cloudflare hosting + DNS cut-over | 0.5–1 day (+ a week of monitoring) |
+| 7 (merged into 4–5) | — |
 | 8 Improvements | per item, 0.5–1 day each |
 
 ## 11. Risks
@@ -717,13 +734,14 @@ These are deliberately **out of scope** for parity because they change output. L
 | --- | --- |
 | Subtle animation timing differences | Line-for-line port of timings; checkpoint screenshots + side-by-side video |
 | Image `srcset`/dimension changes shift layout | Reproduce Qwik's `?jsx` directives exactly in parity phase; compare `<img>` attributes in HTML diff |
-| URL / trailing-slash drift hurting SEO | `trailingSlash: 'always'` + Vercel `trailingSlash: true`, then Cloudflare `auto-trailing-slash`; automated redirect checks after every phase |
+| URL / trailing-slash drift hurting SEO | `trailingSlash: 'always'` + Cloudflare `auto-trailing-slash` + `_redirects` 301s (Cloudflare's own redirect is a temporary 307); automated redirect checks on the preview and after cut-over |
 | Stale Qwik service worker on returning visitors | Kill-switch `service-worker.js` (§4.7) |
 | Arrival-date `min` frozen at build time | Set on the client (§4.5) |
-| Firebase CORS rejects preview domain | Test from preview early in Phase 3; update allow-list in Phase 7 |
+| Inquiry submission broken on the new host | Production origin is unchanged, so CORS/reCAPTCHA already allow it; real test submission right after cut-over, DNS rollback ready |
+| Email or other DNS records lost when moving the zone to Cloudflare | Copy every record before switching nameservers; compare `dig` output before/after |
 | Icon glyph differences | Resolved in Phase 2: icons generated from qwikest, byte-identical to the baseline |
 | Different CSS lowering/minification (Vite 8 vs Qwik's Vite 6) | Resolved in Phase 2: Qwik's browser targets + esbuild minifier; `compare.mjs --only css` proves equivalence |
 | Inquiry form broken mid-Turnstile rollout | Backend soft mode → frontend → enforce (§7.5) |
 | Turnstile blocks real guests (e.g. privacy browsers, strict networks) | Managed mode; watch `error-codes` in function logs during soft mode before enforcing |
-| Turnstile hostname mismatch on new host | Add preview/production hostnames before Phase 7 cut-over; hostname check in §7.4 |
+| Turnstile hostname mismatch | Production hostnames on the widget; test keys on previews; hostname check in §7.4 |
 | DNS cut-over downtime / lost apex→www redirect | Low TTL in advance; redirects captured in Phase 0 and re-checked; Vercel kept for rollback |

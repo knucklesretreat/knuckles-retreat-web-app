@@ -10,8 +10,10 @@ hardcoded or comes from `src/data/*.json`. The only backend call is the inquiry 
 - Branch `astro-migration`. The plan in `docs/astro-migration-plan.md` is the source of truth for scope,
   order and acceptance criteria. Read the relevant phase before starting work, and keep the plan
   updated when facts change.
-- Order: Astro parity on Vercel (Phases 0–5) → Turnstile + backend verification (6) → Cloudflare
-  hosting (7) → improvements (8). Each one ships and is verified separately.
+- Order: Astro parity, launched directly on Cloudflare Workers static assets (Phases 0–5; the Astro
+  site is never deployed to Vercel, which keeps serving the Qwik site as the rollback target) →
+  Turnstile + backend verification (6) → improvements (8). Phase 7 (the hosting move) was merged into
+  4–5. Each one ships and is verified separately.
 - Phases 0 (baseline), 1 (Astro setup, layout, `<head>`), 2 (static markup, images, icons, CSS) and
   3 (interactive behaviour, inquiry form, Qwik removed) are done. Check `git log` and the plan to see
   which phase is in progress. The Qwik source is in git history (commit `817c272`); port from there.
@@ -69,15 +71,15 @@ node capture.mjs --base http://localhost:4173 --out candidate/local [--no-screen
 node compare.mjs --baseline baseline/local --candidate candidate/local [--only body,css] [--routes faq]
 ```
 
-`astro preview` doesn't redirect `/faq` → `/faq/` (Vercel does, via `vercel.json`), so redirects are
-checked on a Vercel preview deploy. Screenshot captures are timing-sensitive under heavy machine load;
+`astro preview` doesn't redirect `/faq` → `/faq/` (Cloudflare does, see plan §4.8), so redirects are
+checked on the Cloudflare preview (`*.workers.dev`). Screenshot captures are timing-sensitive under heavy machine load;
 re-run before treating a one-off diff as real.
 
 ## Project facts
 
 - Canonical host is `www.knucklesretreat.com`. URLs have trailing slashes (`/faq` → 301 → `/faq/`).
 - `public/site/sitemap.xml` is hand-maintained; `robots.txt` points to that path.
-- `PUBLIC_API_URL` is inlined at build time (`.env` locally, Vercel env vars in deploys).
+- `PUBLIC_API_URL` is inlined at build time (`.env` locally, Workers Builds build variables in deploys).
 - Images live in `src/media/` (some sources are 2–4 MB; don't replace or resize the source files during
   parity — the build output has to stay what Qwik produced).
 
