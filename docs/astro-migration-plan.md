@@ -606,6 +606,15 @@ Vercel's IPs; `_domainconnect` deleted; Cloudflare added its own CAA entries. Th
 **2026-10-31** — leave the Vercel DNS records untouched until then and do the cut-over (step 8) after
 that date. Steps 5–7 don't touch the domain and can go ahead.
 
+**Build fix 2026-10-30:** the first Workers Builds run on `main` failed at `npm ci`. Cloudflare's
+Node 22.23.4 ships npm 10.9.2, which wanted an extra `@types/node@26` in the lockfile because Vite's
+optional peer range (`^20.19.0 || >=22.12.0`) excluded the pinned `@types/node@20.14.11`; the local
+npm 12 accepted the lockfile as it was. Fixed by pinning `@types/node@22.20.5` (matches the Node 22
+runtime); `npx npm@10.9.2 ci && npm run build` verified on a clean checkout. A clean build also showed
+that five `pattern1` srcset variants differ by ≤ 0.2 % in bytes from builds that reused Astro's local
+image cache (`node_modules/.astro`); same sharp/libvips, clean builds are reproducible. Visually
+identical; covered by the post-cut-over screenshot check.
+
 **Stage B — switch the site to the Worker.**
 
 5. Vercel → Project → Settings → Git: disconnect the repository, so merging can't redeploy Vercel
