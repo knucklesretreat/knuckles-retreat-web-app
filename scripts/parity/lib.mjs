@@ -25,7 +25,10 @@ export function args(options) {
 
 export async function save(path, data) {
   await mkdir(dirname(path), { recursive: true });
-  const body = typeof data === "string" || Buffer.isBuffer(data) ? data : JSON.stringify(data, null, 2) + "\n";
+  const body =
+    typeof data === "string" || Buffer.isBuffer(data)
+      ? data
+      : JSON.stringify(data, null, 2) + "\n";
   await writeFile(path, body);
 }
 

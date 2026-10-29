@@ -1,2 +1,6 @@
+# Same HSTS header as the Vercel-hosted site.
+/*
+  Strict-Transport-Security: max-age=63072000
+
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable

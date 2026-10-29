@@ -47,31 +47,31 @@ node compare.mjs --baseline baseline/local --candidate candidate/local --routes 
 
 Exits 1 on any difference.
 
-| Check | What must match |
-| --- | --- |
-| `head` | Title, `<html>`/`<body>` lang, every non-framework `<head>` element in order, canonical (by path), exact Partytown snippet text. Ignored: assets under `/build/`, `/assets/`, `/_astro/`, `<style>` tags, inline module scripts |
-| `responses` | Status code and content type per route |
-| `body` | Server HTML `<body>` parsed with JS off, one line per node. Normalized: inert `<template>`s dropped, framework attributes (`q:*`, `on:*`, `data-qwikest-icon`, …), comments (adjacent text merged), `<script>`/`<style>`, attribute order, whitespace runs, asset hashes (→ `asset:name.ext`), date-input `min` |
-| `css` | Union of all stylesheets, compared declaration by declaration through Chromium's CSSOM (formatting and rule grouping drop out), plus the raw vendor-prefixed declarations and `@import` URLs (Chromium drops prefixes it doesn't support). Ignored: Qwik City's `:root{view-transition-name:none}` |
-| `screens` | Full-page screenshots per viewport: same size and ≤ 0.1 % differing pixels (pixelmatch threshold 0.1). Diffs are written to `<candidate>/screens-diff/` |
+| Check       | What must match                                                                                                                                                                                                                                                                                                 |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `head`      | Title, `<html>`/`<body>` lang, every non-framework `<head>` element in order, canonical (by path), exact Partytown snippet text. Ignored: assets under `/build/`, `/assets/`, `/_astro/`, `<style>` tags, inline module scripts                                                                                 |
+| `responses` | Status code and content type per route                                                                                                                                                                                                                                                                          |
+| `body`      | Server HTML `<body>` parsed with JS off, one line per node. Normalized: inert `<template>`s dropped, framework attributes (`q:*`, `on:*`, `data-qwikest-icon`, …), comments (adjacent text merged), `<script>`/`<style>`, attribute order, whitespace runs, asset hashes (→ `asset:name.ext`), date-input `min` |
+| `css`       | Union of all stylesheets, compared declaration by declaration through Chromium's CSSOM (formatting and rule grouping drop out), plus the raw vendor-prefixed declarations and `@import` URLs (Chromium drops prefixes it doesn't support). Ignored: Qwik City's `:root{view-transition-name:none}`              |
+| `screens`   | Full-page screenshots per viewport: same size and ≤ 0.1 % differing pixels (pixelmatch threshold 0.1). Diffs are written to `<candidate>/screens-diff/`                                                                                                                                                         |
 
 The `states/` screenshots and the scroll video are compared by eye.
 
 ## Output
 
-| Path | Contents |
-| --- | --- |
-| `html/<route>.html` | Raw server HTML (what crawlers see) |
-| `responses.json` | Status code and key headers per route |
-| `css/` | Every stylesheet the routes load (inline `<style>` blocks as `<route>-inline-<n>.css`); `css/index.json` maps routes to files |
-| `head/<route>.json` | `<html>`/`<body>` lang, title and every `<head>` element in order (framework attributes stripped) |
-| `dom/<route>.json` | Headings, images (`img`/`source`/`svg` attributes), inline styles, links, buttons, form fields, iframes |
-| `screens/<width>/<route>.png` | Full-page screenshots at 375/768/1280/1920 after all scroll reveals have fired (iframes masked, CSS animations finished) |
-| `states/*.png` | Viewport screenshots of animation/interaction states (hero slides, sticky header, mobile menu, each section's reveal, testimonial transition, form validation) |
-| `video/home-scroll-1280.webm` | Slow scroll of the home page — manual reference for parallax |
-| `console.json` | Browser console errors/warnings seen during capture |
-| `redirects.json` | Every hop for each URL variant |
-| `lighthouse.json` | Category scores and core metrics (median of runs) |
+| Path                          | Contents                                                                                                                                                       |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `html/<route>.html`           | Raw server HTML (what crawlers see)                                                                                                                            |
+| `responses.json`              | Status code and key headers per route                                                                                                                          |
+| `css/`                        | Every stylesheet the routes load (inline `<style>` blocks as `<route>-inline-<n>.css`); `css/index.json` maps routes to files                                  |
+| `head/<route>.json`           | `<html>`/`<body>` lang, title and every `<head>` element in order (framework attributes stripped)                                                              |
+| `dom/<route>.json`            | Headings, images (`img`/`source`/`svg` attributes), inline styles, links, buttons, form fields, iframes                                                        |
+| `screens/<width>/<route>.png` | Full-page screenshots at 375/768/1280/1920 after all scroll reveals have fired (iframes masked, CSS animations finished)                                       |
+| `states/*.png`                | Viewport screenshots of animation/interaction states (hero slides, sticky header, mobile menu, each section's reveal, testimonial transition, form validation) |
+| `video/home-scroll-1280.webm` | Slow scroll of the home page — manual reference for parallax                                                                                                   |
+| `console.json`                | Browser console errors/warnings seen during capture                                                                                                            |
+| `redirects.json`              | Every hop for each URL variant                                                                                                                                 |
+| `lighthouse.json`             | Category scores and core metrics (median of runs)                                                                                                              |
 
 Screenshots and the video are large and are not committed (see `.gitignore`); everything else is.
 Re-create them from the commit recorded in `meta.json` when needed.

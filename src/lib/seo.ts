@@ -5,7 +5,8 @@ export const SHARED_META = [
   { property: "og:title", content: "Knuckles Retreat Sri Lanka" },
   {
     property: "og:description",
-    content: "Knuckles Retreat Sri Lanka offers the perfect escape for a calm, cool and utterly relaxing getaway",
+    content:
+      "Knuckles Retreat Sri Lanka offers the perfect escape for a calm, cool and utterly relaxing getaway",
   },
   {
     property: "og:image",

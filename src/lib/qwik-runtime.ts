@@ -19,7 +19,13 @@ export function onIdle(fn: () => void): void {
   (window.requestIdleCallback ?? window.setTimeout).call(window, () => fn());
 }
 
-type ClassValue = string | undefined | null | false | ClassValue[] | Record<string, unknown>;
+type ClassValue =
+  | string
+  | undefined
+  | null
+  | false
+  | ClassValue[]
+  | Record<string, unknown>;
 
 /** Qwik's class serialization: empty entries dropped, objects contribute keys with truthy values. */
 export function cx(...parts: ClassValue[]): string {
@@ -32,7 +38,8 @@ export function cx(...parts: ClassValue[]): string {
       const s = cx(...part);
       if (s) out.push(s);
     } else {
-      for (const [key, value] of Object.entries(part)) if (value) out.push(key.trim());
+      for (const [key, value] of Object.entries(part))
+        if (value) out.push(key.trim());
     }
   }
   return out.join(" ");
@@ -48,15 +55,22 @@ type Prop = "class" | "style" | "disabled" | "value";
  * Tasks that tracked state re-ran after the render, which is what `afterRender` callbacks are for.
  */
 export function createRenderer() {
-  const bindings: { el: HTMLElement; prop: Prop; compute: () => unknown; last: unknown }[] = [];
+  const bindings: {
+    el: HTMLElement;
+    prop: Prop;
+    compute: () => unknown;
+    last: unknown;
+  }[] = [];
   const afterRender: (() => void)[] = [];
   let scheduled = false;
 
   const apply = (el: HTMLElement, prop: Prop, value: unknown) => {
     if (prop === "class") el.className = String(value);
     else if (prop === "style") el.style.cssText = String(value);
-    else if (prop === "disabled") (el as HTMLButtonElement).disabled = Boolean(value);
-    else if ((el as HTMLInputElement).value !== value) (el as HTMLInputElement).value = String(value);
+    else if (prop === "disabled")
+      (el as HTMLButtonElement).disabled = Boolean(value);
+    else if ((el as HTMLInputElement).value !== value)
+      (el as HTMLInputElement).value = String(value);
   };
 
   const flush = () => {
@@ -92,7 +106,10 @@ export function createRenderer() {
  * A task that tracks values: `start()` runs it (at the task's strategy time); afterwards `check()`
  * re-runs it — after the previous run's cleanup — whenever any tracked value changed.
  */
-export function createTask(track: () => unknown[], fn: () => (() => void) | void) {
+export function createTask(
+  track: () => unknown[],
+  fn: () => (() => void) | void,
+) {
   let started = false;
   let last: unknown[] = [];
   let cleanup: (() => void) | void;

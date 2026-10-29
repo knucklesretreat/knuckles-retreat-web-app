@@ -574,27 +574,71 @@ First set up the Cloudflare project (§4.8). Run the Phase 0 capture against
 
 ## 6. Phase 5 — Launch
 
-1. Disconnect Vercel's Git integration (§4.8), then merge `astro-migration` → `main` only after Phase 4
-   sign-off. Workers Builds deploys `main` to the Worker (still only on `*.workers.dev`).
-2. **DNS cut-over:**
-   - Custom domains on a Worker need the zone on Cloudflare. If the domain's DNS isn't on Cloudflare
-     yet, move it first (copy all existing records — MX/TXT for email included — before switching
-     nameservers) and lower TTLs a day in advance.
-   - Attach `www.knucklesretreat.com` and `knucklesretreat.com` as custom domains.
-   - Reproduce the redirects captured in Phase 0: apex → `https://www.knucklesretreat.com/` (Redirect
-     Rule, path and query kept) and `http` → `https` ("Always Use HTTPS"). Vercel answered 308;
-     Cloudflare answers 301 — both permanent, accepted.
-3. Immediately: re-run the parity script and `redirects.mjs` against `https://www.knucklesretreat.com`,
-   and send **one real inquiry** (marked as a test) to check the Firebase function, CORS and reCAPTCHA
-   on the new host.
-4. Google Search Console: resubmit the sitemap, run URL Inspection on the 6 routes, watch the
-   Coverage/Pages report for a week.
-5. Rollback: point DNS back to Vercel (it still serves the last Qwik deployment). Keep the Vercel
-   project for at least 2–4 weeks. Within Cloudflare, earlier Worker versions can be restored from the
-   dashboard or with `wrangler rollback`.
-6. Cleanup once stable: delete the Vercel project.
-7. Update `CLAUDE.md`: Astro commands and structure, remove the Qwik commands and the parity-only
-   rules, and point to Phase 6 as the current work.
+**Status: in progress (started 2026-10-29).**
+
+Facts checked 2026-10-29: the domain is registered at **Namecheap**, DNS is hosted by **Vercel**
+(`ns1/ns2.vercel-dns.com`, no DNSSEC). Records visible from outside: apex and `www` A → Vercel
+(TTL 1800), a wildcard `*` A → Vercel, MX `mx1/mx2.privateemail.com` (Namecheap Private Email),
+TXT `v=spf1 include:spf.privateemail.com ~all` and `google-site-verification=…` (Search Console),
+CAA `sectigo.com`, `letsencrypt.org`, `pki.goog`. The live site sends
+`Strict-Transport-Security: max-age=63072000`; it is reproduced in `public/_headers`.
+
+Two stages, so the site and email never depend on a step that can't be undone quickly:
+
+**Stage A — move DNS to Cloudflare, nothing else changes** (the site keeps being served by Vercel).
+
+1. Export the complete record list from Vercel (Domains → knucklesretreat.com → DNS records, or
+   `npx vercel dns ls knucklesretreat.com`). Outside lookups can't list everything (e.g. DKIM
+   selectors).
+2. Cloudflare dashboard → add the domain (Free plan). Compare the imported records with the export;
+   add anything missing. Keep the apex, `www` and wildcard records pointing at Vercel and set them to
+   **DNS only** (grey cloud), so traffic still goes straight to Vercel. MX/TXT unchanged.
+3. Namecheap → Domain → Nameservers → Custom DNS → the two Cloudflare nameservers.
+4. Wait until Cloudflare shows the zone as **Active**. Check: site loads (still `server: Vercel`),
+   `dig MX` / `dig TXT` unchanged, send and receive a test email.
+
+**Stage A done 2026-10-29.** The `kr-dev` Vercel team's record list also held three Resend records
+(`resend._domainkey` TXT, `send` TXT and MX — outgoing mail, likely the inquiry emails), invisible from
+outside; all were copied. Registry NS = `harvey`/`sue.ns.cloudflare.com`; Cloudflare answers every
+record identically to Vercel (DKIM checked byte for byte); apex/`www`/`*` are DNS-only A records to
+Vercel's IPs; `_domainconnect` deleted; Cloudflare added its own CAA entries. The site still answers
+`server: Vercel`. The `.com` NS TTL is 48 h, so some resolvers keep asking Vercel's nameservers until
+**2026-10-31** — leave the Vercel DNS records untouched until then and do the cut-over (step 8) after
+that date. Steps 5–7 don't touch the domain and can go ahead.
+
+**Stage B — switch the site to the Worker.**
+
+5. Vercel → Project → Settings → Git: disconnect the repository, so merging can't redeploy Vercel
+   production away from the Qwik deployment (the rollback target).
+6. Merge `astro-migration` → `main`.
+7. Cloudflare → Workers → `knuckles-retreat` → Settings → Builds: connect the GitHub repo,
+   production branch `main`, build command `npm run build`, deploy command `npx wrangler deploy`,
+   build variable `PUBLIC_API_URL`. Check the first build deploys and the `*.workers.dev` URL still
+   passes the parity check.
+8. Cut-over (note the current Vercel record values first; they are the rollback):
+   - DNS: delete the `www` A records; Worker → Settings → Domains & Routes → add custom domain
+     `www.knucklesretreat.com`.
+   - Apex: replace its A records with a proxied placeholder (`AAAA @ 100::`, orange cloud) and add a
+     Redirect Rule (Rules → Redirect Rules → "Redirect from root to WWW"): 301 to
+     `https://www.knucklesretreat.com${path}`, query string kept. Vercel answered 308; 301 is
+     accepted.
+   - SSL/TLS → Edge Certificates: **Always Use HTTPS** on.
+   - Then add the custom domain to `wrangler.jsonc` (`routes: [{ "pattern": "www.knucklesretreat.com",
+     "custom_domain": true }]`) so the config matches the dashboard.
+9. Immediately: re-run `capture.mjs`/`compare.mjs` and `redirects.mjs` against
+   `https://www.knucklesretreat.com` (compare with `baseline/live`), send **one real inquiry** (marked
+   as a test) to check the Firebase function, CORS and reCAPTCHA on the new host, and check the old
+   service worker is removed in a browser that still has it.
+10. Google Search Console: resubmit the sitemap, run URL Inspection on the 6 routes, watch the
+    Pages report for a week. Re-run Lighthouse on the real domain (§5).
+
+**Rollback** (stage B): remove the Worker custom domain and the redirect rule, restore the Vercel
+A records for apex and `www` (DNS only). Cloudflare DNS changes apply within minutes. Vercel keeps
+serving the last Qwik deployment; keep the project for at least 2–4 weeks. Within Cloudflare, earlier
+Worker versions can be restored from the dashboard or with `wrangler rollback`.
+
+**After a stable week:** delete the Vercel project, remove the wildcard record if nothing uses it,
+update `CLAUDE.md` (Astro commands and structure, remove the parity-only rules, point to Phase 6).
 
 ---
 

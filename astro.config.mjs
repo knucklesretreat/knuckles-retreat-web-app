@@ -28,6 +28,10 @@ export default defineConfig({
   build: { format: "directory", inlineStylesheets: "never" },
   integrations: [partytownLib],
   vite: {
-    build: { target: QWIK_BROWSER_TARGETS, cssTarget: QWIK_BROWSER_TARGETS, cssMinify: "esbuild" },
+    build: {
+      target: QWIK_BROWSER_TARGETS,
+      cssTarget: QWIK_BROWSER_TARGETS,
+      cssMinify: "esbuild",
+    },
   },
 });

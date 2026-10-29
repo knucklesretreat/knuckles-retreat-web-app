@@ -1,49 +1,25 @@
 # Build
 /dist
-/lib
-/lib-types
-/server
+.astro
 
-# Development
+# Dependencies
 node_modules
+
+# Local env overrides
 *.local
-
-# Cache
-.cache
-.mf
-.rollup.cache
-tsconfig.tsbuildinfo
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Editor
-.vscode/*
-!.vscode/launch.json
-!.vscode/*.code-snippets
-
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Yarn
-.yarn/*
-!.yarn/releases
-
-# Vercel / Cloudflare
-.vercel
-.wrangler
 .dev.vars*
 
-# Astro
-.astro
+# Hosting CLIs
+.vercel
+.wrangler
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.vscode/*
+!.vscode/launch.json
+.idea
+.DS_Store
+*.sw?

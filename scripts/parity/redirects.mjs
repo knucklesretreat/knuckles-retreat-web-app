@@ -53,7 +53,11 @@ for (const url of urls) {
   for (let i = 0; i < 5; i++) {
     const res = await fetch(current, { redirect: "manual" });
     const location = res.headers.get("location");
-    hops.push({ url: current, status: res.status, ...(location ? { location } : {}) });
+    hops.push({
+      url: current,
+      status: res.status,
+      ...(location ? { location } : {}),
+    });
     if (!location || res.status < 300 || res.status >= 400) break;
     current = new URL(location, current).href;
   }

@@ -17,7 +17,9 @@ const opts = args({
   "css-only": { type: "boolean", default: false },
 });
 if (!opts.base || !opts.out) {
-  console.error("usage: node capture.mjs --base <url> --out <dir> [--no-screens | --css-only]");
+  console.error(
+    "usage: node capture.mjs --base <url> --out <dir> [--no-screens | --css-only]",
+  );
   process.exit(1);
 }
 const base = opts.base.replace(/\/$/, "");
@@ -65,7 +67,9 @@ async function captureCss() {
   for (const route of ROUTES) {
     const html = await (await fetch(url(route.path))).text();
     const files = [];
-    for (const m of html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*>|<style\b[^>]*>([\s\S]*?)<\/style>/g)) {
+    for (const m of html.matchAll(
+      /<link\b[^>]*rel="stylesheet"[^>]*>|<style\b[^>]*>([\s\S]*?)<\/style>/g,
+    )) {
       if (m[0].startsWith("<style")) {
         if (!m[1].trim()) continue;
         const name = `${route.slug}-inline-${files.length}.css`;
@@ -76,13 +80,18 @@ async function captureCss() {
       const href = m[0].match(/href="([^"]+)"/)[1];
       const name = href.split("/").pop();
       if (!saved.has(name)) {
-        await save(join(out, "css", name), await (await fetch(new URL(href, url(route.path)))).text());
+        await save(
+          join(out, "css", name),
+          await (await fetch(new URL(href, url(route.path)))).text(),
+        );
         saved.add(name);
       }
       files.push(name);
     }
     index[route.slug] = files;
-    console.log(`css   ${route.path} (${files.length} stylesheet${files.length === 1 ? "" : "s"})`);
+    console.log(
+      `css   ${route.path} (${files.length} stylesheet${files.length === 1 ? "" : "s"})`,
+    );
   }
   await save(join(out, "css", "index.json"), index);
 }
@@ -127,15 +136,22 @@ async function captureDomFacts() {
 function extractFacts() {
   const ignored = (name) => /^(q:|on:|on-|data-qwik)/.test(name);
   const attrs = (el) =>
-    Object.fromEntries([...el.attributes].filter((a) => !ignored(a.name)).map((a) => [a.name, a.value]));
+    Object.fromEntries(
+      [...el.attributes]
+        .filter((a) => !ignored(a.name))
+        .map((a) => [a.name, a.value]),
+    );
 
   const headEntry = (el) => {
     const entry = { tag: el.tagName.toLowerCase(), attrs: attrs(el) };
     if (entry.tag === "title") entry.text = el.textContent;
-    if (entry.tag === "script" && el.type === "application/ld+json") entry.json = JSON.parse(el.textContent);
+    if (entry.tag === "script" && el.type === "application/ld+json")
+      entry.json = JSON.parse(el.textContent);
     else if (entry.tag === "script" && el.textContent.trim()) {
       const text = el.textContent;
-      entry.inline = text.includes("partytown") ? "partytown-snippet" : `${text.length} chars: ${text.slice(0, 80)}`;
+      entry.inline = text.includes("partytown")
+        ? "partytown-snippet"
+        : `${text.length} chars: ${text.slice(0, 80)}`;
     }
     if (entry.tag === "style") entry.inline = `${el.textContent.length} chars`;
     return entry;
@@ -149,17 +165,24 @@ function extractFacts() {
       elements: [...document.head.children].map(headEntry),
     },
     dom: {
-      headings: [...document.querySelectorAll("h1,h2,h3,h4,h5,h6")].map((h) => ({
-        tag: h.tagName.toLowerCase(),
-        text: h.textContent.trim().replace(/\s+/g, " "),
-      })),
-      images: [...document.querySelectorAll("img, picture source, svg")].map((el) => ({
-        tag: el.tagName.toLowerCase(),
-        ...attrs(el),
-      })),
+      headings: [...document.querySelectorAll("h1,h2,h3,h4,h5,h6")].map(
+        (h) => ({
+          tag: h.tagName.toLowerCase(),
+          text: h.textContent.trim().replace(/\s+/g, " "),
+        }),
+      ),
+      images: [...document.querySelectorAll("img, picture source, svg")].map(
+        (el) => ({
+          tag: el.tagName.toLowerCase(),
+          ...attrs(el),
+        }),
+      ),
       backgrounds: [...document.querySelectorAll("[style]")]
         .filter((el) => el.getAttribute("style").includes("url("))
-        .map((el) => ({ tag: el.tagName.toLowerCase(), style: el.getAttribute("style") })),
+        .map((el) => ({
+          tag: el.tagName.toLowerCase(),
+          style: el.getAttribute("style"),
+        })),
       inlineStyles: [...document.querySelectorAll("[style]")].map((el) => ({
         tag: el.tagName.toLowerCase(),
         style: el.getAttribute("style"),
@@ -168,18 +191,22 @@ function extractFacts() {
         href: a.getAttribute("href"),
         text: a.textContent.trim().replace(/\s+/g, " "),
         ...(a.target ? { target: a.target } : {}),
-        ...(a.getAttribute("aria-label") ? { ariaLabel: a.getAttribute("aria-label") } : {}),
+        ...(a.getAttribute("aria-label")
+          ? { ariaLabel: a.getAttribute("aria-label") }
+          : {}),
       })),
       buttons: [...document.querySelectorAll("button")].map((b) => ({
         type: b.getAttribute("type"),
         text: b.textContent.trim().replace(/\s+/g, " "),
         ariaLabel: b.getAttribute("aria-label"),
       })),
-      forms: [...document.querySelectorAll("input, select, textarea")].map((el) => ({
-        tag: el.tagName.toLowerCase(),
-        ...attrs(el),
-        ...(el.tagName === "SELECT" ? { options: el.options.length } : {}),
-      })),
+      forms: [...document.querySelectorAll("input, select, textarea")].map(
+        (el) => ({
+          tag: el.tagName.toLowerCase(),
+          ...attrs(el),
+          ...(el.tagName === "SELECT" ? { options: el.options.length } : {}),
+        }),
+      ),
       iframes: [...document.querySelectorAll("iframe")].map(attrs),
       textLength: document.body.textContent.replace(/\s+/g, " ").trim().length,
     },
@@ -189,15 +216,29 @@ function extractFacts() {
 // ---------------------------------------------------------------------------------------------
 
 async function newPage(viewport, extra = {}) {
-  const context = await browser.newContext({ viewport, deviceScaleFactor: 1, ...extra });
+  const context = await browser.newContext({
+    viewport,
+    deviceScaleFactor: 1,
+    ...extra,
+  });
   const page = await context.newPage();
   const key = `${viewport.width}`;
   page.on("console", (msg) => {
     if (msg.type() === "error" || msg.type() === "warning") {
-      (consoleLog[key] ??= []).push({ url: page.url(), type: msg.type(), text: msg.text() });
+      (consoleLog[key] ??= []).push({
+        url: page.url(),
+        type: msg.type(),
+        text: msg.text(),
+      });
     }
   });
-  page.on("pageerror", (err) => (consoleLog[key] ??= []).push({ url: page.url(), type: "pageerror", text: err.message }));
+  page.on("pageerror", (err) =>
+    (consoleLog[key] ??= []).push({
+      url: page.url(),
+      type: "pageerror",
+      text: err.message,
+    }),
+  );
   return { context, page };
 }
 
@@ -208,7 +249,10 @@ async function load(page, path) {
 
 /** Scrolls like a user would, so IntersectionObserver/scroll-driven reveals fire. */
 async function scrollThrough(page, { step = 0.6, pause = 300 } = {}) {
-  const { height, vh } = await page.evaluate(() => ({ height: document.body.scrollHeight, vh: innerHeight }));
+  const { height, vh } = await page.evaluate(() => ({
+    height: document.body.scrollHeight,
+    vh: innerHeight,
+  }));
   for (let y = 0; y <= height; y += Math.round(vh * step)) {
     await page.evaluate((top) => scrollTo(0, top), y);
     await wait(pause);
@@ -216,7 +260,10 @@ async function scrollThrough(page, { step = 0.6, pause = 300 } = {}) {
 }
 
 async function scrollToElement(page, selector) {
-  const target = await page.locator(selector).first().evaluate((el) => el.getBoundingClientRect().top + scrollY - 80);
+  const target = await page
+    .locator(selector)
+    .first()
+    .evaluate((el) => el.getBoundingClientRect().top + scrollY - 80);
   const vh = await page.evaluate(() => innerHeight);
   for (let y = 0; y < target; y += Math.round(vh * 0.5)) {
     await page.evaluate((top) => scrollTo(0, top), y);
@@ -256,7 +303,11 @@ async function captureStates() {
   const desktop = { width: 1280, height: 800 };
   const mobile = { width: 375, height: 812 };
   const shot = (page, name, extra = {}) =>
-    page.screenshot({ path: join(out, "states", `${name}.png`), mask: masks(page), ...extra });
+    page.screenshot({
+      path: join(out, "states", `${name}.png`),
+      mask: masks(page),
+      ...extra,
+    });
 
   const states = [
     {
@@ -376,7 +427,9 @@ async function captureStates() {
       await shot(page, state.name);
       console.log(`state ${state.name}`);
     } catch (err) {
-      console.error(`state ${state.name} FAILED: ${err.message.split("\n")[0]}`);
+      console.error(
+        `state ${state.name} FAILED: ${err.message.split("\n")[0]}`,
+      );
     } finally {
       await context.close();
     }
@@ -387,7 +440,9 @@ async function captureStates() {
 async function captureScrollVideo() {
   const viewport = { width: 1280, height: 800 };
   const dir = join(out, "video");
-  const { context, page } = await newPage(viewport, { recordVideo: { dir, size: viewport } });
+  const { context, page } = await newPage(viewport, {
+    recordVideo: { dir, size: viewport },
+  });
   await load(page, "/");
   await wait(2000);
   await scrollThrough(page, { step: 0.08, pause: 120 });

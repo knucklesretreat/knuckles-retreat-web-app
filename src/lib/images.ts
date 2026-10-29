@@ -13,6 +13,10 @@ export function metadataOf(src: ImageMetadata): ImageMetadata {
 // served bytes stay identical.
 export async function reencodedUrl(src: ImageMetadata): Promise<string> {
   const { format } = metadataOf(src);
-  const image = await getImage({ src, format: format === "jpg" ? "jpeg" : format, quality: 80 });
+  const image = await getImage({
+    src,
+    format: format === "jpg" ? "jpeg" : format,
+    quality: 80,
+  });
   return image.src;
 }

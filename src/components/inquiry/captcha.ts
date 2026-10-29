@@ -24,7 +24,10 @@ const SITE_KEY = "6LfqVD4pAAAAAByXb5ErD4k81KielZ8Ybz4PRw8K";
 export function ensureRendered(): void {
   const render = () => {
     const recaptchaResElement = document.getElementById("g-recaptcha-response");
-    if (recaptchaResElement && recaptchaResElement.classList.contains("g-recaptcha-response")) {
+    if (
+      recaptchaResElement &&
+      recaptchaResElement.classList.contains("g-recaptcha-response")
+    ) {
       return;
     }
     window.grecaptcha!.render("kr-g-recaptcha", { sitekey: SITE_KEY });
