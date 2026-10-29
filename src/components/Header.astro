@@ -1,0 +1,90 @@
+---
+import Icon from "~/components/Icon.astro";
+import LogoSymbol from "~/components/LogoSymbol.astro";
+import ScriptData from "~/components/ScriptData.astro";
+import { reencodedUrl } from "~/lib/images";
+import BgPatternSrc from "~/media/pattern1.webp";
+import styles from "./header.module.css";
+
+const BgPattern = await reencodedUrl(BgPatternSrc);
+---
+
+<header class={styles.header}>
+  <div class={styles.logo_wrapper}>
+    <LogoSymbol class={styles.logo_symbol} />
+    <h4>Knuckles Retreat</h4>
+    <h5>-RECONNECT WITH NATURE-</h5>
+  </div>
+  <div class={styles.nav_bar}>
+    <div></div>
+    <div class:list={["navigation", styles.navigation]}>
+      <div class={styles.nav_items}>
+        <picture>
+          <source media="(max-width: 460px)" srcset={BgPattern} />
+          <img class={styles.bg_pattern} alt="flower pattern" height={20} width={20} />
+        </picture>
+        <i class={styles.nav_close_btn}><Icon name="MatCloseOutlined" /></i>
+        <a href="/#home"><i><Icon name="MatHomeOutlined" /></i>Home</a>
+        <a href="/accommodation"><i><Icon name="MatKingBedOutlined" /></i>Accommodation</a>
+        <a href="/#gallery"><i><Icon name="MatPhotoLibraryOutlined" /></i>Gallery</a>
+        <a href="/#explore"><i><Icon name="MatExploreOutlined" /></i>Explore</a>
+        <a href="/#contact"><i><Icon name="MatMailOutlined" /></i>Contact</a>
+      </div>
+    </div>
+    <i class={styles.nav_menu_btn}><Icon name="MatBlurOnOutlined" /></i>
+  </div>
+</header>
+
+<ScriptData name="header" data={styles} />
+
+<script>
+  import { createRenderer, cx, navigate, onVisible } from "~/lib/qwik-runtime";
+  import { readScriptData, type Classes } from "~/lib/script-data";
+
+  const styles = readScriptData<Classes>("header");
+  const header = document.querySelector("header")!;
+  const render = createRenderer();
+  let isScrolled = false;
+  render.bind(header, "class", () => cx(styles.header, isScrolled ? styles.sticky : "", isScrolled ? styles.logo_only : ""));
+
+  const handleScroll = () => {
+    isScrolled = window.scrollY > 0;
+    render.invalidate();
+  };
+
+  onVisible(header, () => {
+    // Check initial scroll position
+    isScrolled = window.scrollY > 0;
+    render.invalidate();
+
+    // Throttle scroll event handling
+    let ticking = false;
+    const scrollListener = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", scrollListener);
+  });
+
+  header.querySelector(`.${styles.logo_wrapper}`)!.addEventListener("click", () => navigate("/"));
+
+  header.querySelector(`.${styles.nav_menu_btn}`)!.addEventListener("click", () => {
+    const navigation = document.querySelector(`.${styles.navigation}`);
+    if (navigation) {
+      navigation.classList.add(styles.active);
+    }
+  });
+
+  header.querySelector(`.${styles.nav_close_btn}`)!.addEventListener("click", () => {
+    const navigation = document.querySelector(`.${styles.navigation}`);
+    if (navigation) {
+      navigation.classList.remove(styles.active);
+    }
+  });
+</script>

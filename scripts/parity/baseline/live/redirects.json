@@ -1,0 +1,319 @@
+[
+  {
+    "url": "https://www.knucklesretreat.com/",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/accommodation/",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/accommodation/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/inquiry/",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/inquiry/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/faq/",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/faq/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/privacy-policy/",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/privacy-policy/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/terms-and-conditions/",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/terms-and-conditions/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/this-page-does-not-exist/",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/this-page-does-not-exist/",
+        "status": 404
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/accommodation",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/accommodation",
+        "status": 301,
+        "location": "/accommodation/"
+      },
+      {
+        "url": "https://www.knucklesretreat.com/accommodation/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/inquiry",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/inquiry",
+        "status": 301,
+        "location": "/inquiry/"
+      },
+      {
+        "url": "https://www.knucklesretreat.com/inquiry/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/faq",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/faq",
+        "status": 301,
+        "location": "/faq/"
+      },
+      {
+        "url": "https://www.knucklesretreat.com/faq/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/privacy-policy",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/privacy-policy",
+        "status": 301,
+        "location": "/privacy-policy/"
+      },
+      {
+        "url": "https://www.knucklesretreat.com/privacy-policy/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/terms-and-conditions",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/terms-and-conditions",
+        "status": 301,
+        "location": "/terms-and-conditions/"
+      },
+      {
+        "url": "https://www.knucklesretreat.com/terms-and-conditions/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/this-page-does-not-exist",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/this-page-does-not-exist",
+        "status": 404
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/FAQ/",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/FAQ/",
+        "status": 404
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/faq/?utm_source=test",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/faq/?utm_source=test",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/faq?utm_source=test",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/faq?utm_source=test",
+        "status": 301,
+        "location": "/faq/?utm_source=test"
+      },
+      {
+        "url": "https://www.knucklesretreat.com/faq/?utm_source=test",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/index.html",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/index.html",
+        "status": 404
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/robots.txt",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/robots.txt",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/site/sitemap.xml",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/site/sitemap.xml",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/manifest.json",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/manifest.json",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/manifest.webmanifest",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/manifest.webmanifest",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/favicon.svg",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/favicon.svg",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://www.knucklesretreat.com/service-worker.js",
+    "hops": [
+      {
+        "url": "https://www.knucklesretreat.com/service-worker.js",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://knucklesretreat.com/",
+    "hops": [
+      {
+        "url": "http://knucklesretreat.com/",
+        "status": 308,
+        "location": "https://knucklesretreat.com/"
+      },
+      {
+        "url": "https://knucklesretreat.com/",
+        "status": 308,
+        "location": "https://www.knucklesretreat.com/"
+      },
+      {
+        "url": "https://www.knucklesretreat.com/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://knucklesretreat.com/",
+    "hops": [
+      {
+        "url": "https://knucklesretreat.com/",
+        "status": 308,
+        "location": "https://www.knucklesretreat.com/"
+      },
+      {
+        "url": "https://www.knucklesretreat.com/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://www.knucklesretreat.com/",
+    "hops": [
+      {
+        "url": "http://www.knucklesretreat.com/",
+        "status": 308,
+        "location": "https://www.knucklesretreat.com/"
+      },
+      {
+        "url": "https://www.knucklesretreat.com/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "https://knucklesretreat.com/faq/",
+    "hops": [
+      {
+        "url": "https://knucklesretreat.com/faq/",
+        "status": 308,
+        "location": "https://www.knucklesretreat.com/faq/"
+      },
+      {
+        "url": "https://www.knucklesretreat.com/faq/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://www.knucklesretreat.com/faq",
+    "hops": [
+      {
+        "url": "http://www.knucklesretreat.com/faq",
+        "status": 308,
+        "location": "https://www.knucklesretreat.com/faq"
+      },
+      {
+        "url": "https://www.knucklesretreat.com/faq",
+        "status": 301,
+        "location": "/faq/"
+      },
+      {
+        "url": "https://www.knucklesretreat.com/faq/",
+        "status": 200
+      }
+    ]
+  }
+]

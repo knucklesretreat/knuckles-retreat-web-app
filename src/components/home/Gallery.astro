@@ -1,0 +1,139 @@
+---
+import ResponsiveImage from "~/components/ResponsiveImage.astro";
+import ScriptData from "~/components/ScriptData.astro";
+import { reencodedUrl } from "~/lib/images";
+import ImgOne from "~/media/gallery/img1.webp";
+import ImgTwo from "~/media/gallery/img2.webp";
+import ImgThree from "~/media/gallery/img3.webp";
+import ImgFour from "~/media/gallery/img4.webp";
+import ImgFive from "~/media/gallery/img5.webp";
+import ImgSix from "~/media/gallery/img6.webp";
+import ImgSeven from "~/media/gallery/img7.webp";
+import BgPattern from "~/media/pattern1.webp";
+import styles from "./gallery.module.css";
+
+const images = await Promise.all([ImgOne, ImgTwo, ImgThree, ImgFour, ImgFive, ImgSix, ImgSeven].map(reencodedUrl));
+---
+
+<section id="gallery" class={styles.gallery}>
+  <ResponsiveImage src={BgPattern} loading="lazy" alt="flower pattern" class:list={[styles.bg_img, styles.top_img]} />
+  <ResponsiveImage src={BgPattern} loading="lazy" alt="flower pattern" class:list={[styles.bg_img, styles.bottom_img]} />
+
+  <div class={styles.gallery_grid}>
+    <div class={styles.text_content}>
+      <h2>Gallery</h2>
+      <p>
+        Moments of joy, adventure, and relaxation. A testament to the unforgettable
+        memories created at Knuckles Retreat.
+      </p>
+    </div>
+
+    <div class={styles.grid_container}>
+      {images.map((img) => <div class={styles.grid_item} style={`background-image:url(${img})`}></div>)}
+    </div>
+  </div>
+</section>
+
+<ScriptData name="gallery" data={styles} />
+
+<script>
+  import { createRenderer, createTask, cx, onIdle } from "~/lib/qwik-runtime";
+  import { readScriptData, type Classes } from "~/lib/script-data";
+
+  const styles = readScriptData<Classes>("gallery");
+  const gallerySectionRef = document.getElementById("gallery")!;
+  const textContentRef = gallerySectionRef.querySelector<HTMLElement>(`.${styles.text_content}`)!;
+  const galleryGridRef = gallerySectionRef.querySelector<HTMLElement>(`.${styles.gallery_grid}`)!;
+  const gridContainerRef = gallerySectionRef.querySelector<HTMLElement>(`.${styles.grid_container}`)!;
+  const render = createRenderer();
+
+  let textContentVisible = false;
+  let galleryGridVisible = false;
+  let gallerySectionVisible = false;
+  render.bind(galleryGridRef, "class", () => cx(styles.gallery_grid, { [styles.visible]: galleryGridVisible }));
+  render.bind(textContentRef, "class", () => cx(styles.text_content, { [styles.visible]: textContentVisible }));
+
+  // strategy: 'document-ready'
+  const elementsToObserve: { ref: Element; set: (value: boolean) => void }[] = [
+    { ref: textContentRef, set: (value) => (textContentVisible = value) },
+    { ref: galleryGridRef, set: (value) => (galleryGridVisible = value) },
+    { ref: gallerySectionRef, set: (value) => (gallerySectionVisible = value) },
+  ];
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const elementConfig = elementsToObserve.find((el) => el.ref === entry.target);
+          if (elementConfig) {
+            elementConfig.set(true);
+            render.invalidate();
+            if (elementConfig.ref !== gallerySectionRef) {
+              observer.unobserve(entry.target);
+            }
+          }
+        } else {
+          if (entry.target === gallerySectionRef) {
+            gallerySectionVisible = false;
+            render.invalidate();
+          }
+        }
+      });
+    },
+    {
+      threshold: 0.2, // Lowered threshold for earlier trigger
+    },
+  );
+
+  elementsToObserve.forEach((elementConfig) => observer.observe(elementConfig.ref));
+
+  // Parallax effect on scroll (strategy: 'document-idle', re-runs when the section's visibility changes)
+  const parallax = createTask(
+    () => [gallerySectionVisible],
+    () => {
+      const isVisible = gallerySectionVisible;
+      if (!isVisible) {
+        gridContainerRef.style.transform = "translateY(0px)";
+        textContentRef.style.transform = "translateY(0px)";
+        return;
+      }
+
+      const handleScroll = () => {
+        const rect = gallerySectionRef.getBoundingClientRect();
+        const sectionTop = rect.top + window.scrollY;
+        const sectionHeight = rect.height;
+        const viewportHeight = window.innerHeight;
+        const scrollY = window.scrollY;
+
+        const sectionCenter = sectionTop + sectionHeight / 2;
+        const viewportCenter = scrollY + viewportHeight / 2;
+        const diff = sectionCenter - viewportCenter;
+
+        const parallaxFactor = -0.08;
+        const maxTranslate = viewportHeight * 0.03;
+        let translateY = diff * parallaxFactor;
+        translateY = Math.max(-maxTranslate, Math.min(maxTranslate, translateY));
+
+        window.requestAnimationFrame(() => {
+          textContentRef.style.transform = `translateY(${translateY}px)`;
+          textContentRef.style.transition = "transform 0.2s ease-out";
+          gridContainerRef.style.transform = `translateY(${translateY}px)`;
+          gridContainerRef.style.transition = "transform 0.2s ease-out";
+        });
+      };
+
+      handleScroll();
+      window.addEventListener("scroll", handleScroll, { passive: true });
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+        textContentRef.style.transform = "translateY(0px)";
+        textContentRef.style.transition = "";
+        gridContainerRef.style.transform = "translateY(0px)";
+        gridContainerRef.style.transition = "";
+      };
+    },
+  );
+  render.afterRender(parallax.check);
+  onIdle(parallax.start);
+</script>

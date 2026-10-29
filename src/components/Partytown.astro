@@ -1,0 +1,5 @@
+---
+import { partytownSnippet } from "@qwik.dev/partytown/integration";
+---
+
+<script is:inline set:html={partytownSnippet({ forward: ["dataLayer.push"] })} />

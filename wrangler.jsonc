@@ -1,0 +1,15 @@
+// Cloudflare Workers with static assets: serves dist/ as-is, no Worker script.
+// See docs/astro-migration-plan.md §4.8.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "knuckles-retreat",
+  "compatibility_date": "2026-10-28",
+  "assets": {
+    "directory": "./dist",
+    // dist/faq/index.html is served at /faq/. Its own /faq → /faq/ redirect is a 307, so
+    // public/_redirects adds permanent ones for the routes.
+    "html_handling": "auto-trailing-slash",
+    // Unknown paths get dist/404.html with HTTP 404.
+    "not_found_handling": "404-page",
+  },
+}

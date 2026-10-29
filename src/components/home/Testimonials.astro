@@ -1,0 +1,397 @@
+---
+import Icon from "~/components/Icon.astro";
+import ResponsiveImage from "~/components/ResponsiveImage.astro";
+import ScriptData from "~/components/ScriptData.astro";
+import testimonials from "~/data/testimonials.json";
+import BgBranch from "~/media/explore/branch.webp";
+import TestimonialCard from "./TestimonialCard.astro";
+import styles from "./testimonial.module.css";
+---
+
+<section id="testimonials" class:list={[styles.testimonials_section]}>
+  <div>
+    <ResponsiveImage src={BgBranch} alt="background branch image" class:list={[styles.bg_branch]} />
+  </div>
+
+  <div class={styles.main_content_testimonials}>
+    <div class={styles.title_container}>
+      <h2>What Our Guests Say</h2>
+      <p>Real experiences from valued visitors.</p>
+    </div>
+
+    <div class={styles.carousel_container} style="height:290px">
+      {
+        testimonials.length > 0 ? (
+          <TestimonialCard testimonial={testimonials[0]} class={styles.slideInInitial} />
+        ) : (
+          <p class={styles.no_testimonials}>No testimonials yet. Be the first to share your experience!</p>
+        )
+      }
+    </div>
+
+    {
+      testimonials.length > 1 && (
+        <div class={styles.carousel_navigation}>
+          <button aria-label="Previous testimonial" class={styles.nav_button}>
+            <Icon name="IoChevronBackOutline" />
+          </button>
+          <button aria-label="Next testimonial" class={styles.nav_button}>
+            <Icon name="IoChevronForwardOutline" />
+          </button>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+{/* Cards the carousel clones when it changes testimonial. Outside the carousel container so they don't
+    count as siblings for `.testimonial_card + .testimonial_card`. */}
+{testimonials.map((t) => (
+  <template data-testimonial-id={t.id}>
+    <TestimonialCard testimonial={t} />
+  </template>
+))}
+
+<ScriptData name="testimonials" data={{ styles, ids: testimonials.map((t) => t.id), ratings: testimonials.map((t) => t.rating) }} />
+
+<script>
+  import { createRenderer, createTask, cx, onIdle } from "~/lib/qwik-runtime";
+  import { readScriptData, type Classes } from "~/lib/script-data";
+
+  const { styles, ids, ratings } = readScriptData<{ styles: Classes; ids: string[]; ratings: number[] }>("testimonials");
+  const testimonialsSectionRef = document.getElementById("testimonials")!;
+  const titleRef = testimonialsSectionRef.querySelector<HTMLElement>(`.${styles.title_container}`)!;
+  const carouselContainerRef = testimonialsSectionRef.querySelector<HTMLElement>(`.${styles.carousel_container}`)!;
+  const render = createRenderer();
+
+  const testimonialsStore: {
+    currentIndex: number;
+    direction: "next" | "prev" | "none";
+    transitioningTo: { index: number; direction: "next" | "prev" } | null;
+  } = {
+    currentIndex: 0,
+    direction: "none",
+    transitioningTo: null,
+  };
+  let sectionVisible = false;
+  let titleVisible = false;
+  let carouselVisible = false;
+  let isTransitioning = false;
+  let isInitialMount = true;
+  let carouselHeight = "290px"; // Dynamic height
+
+  render.bind(titleRef, "class", () => cx(styles.title_container, { [styles.visible]: titleVisible }));
+  render.bind(carouselContainerRef, "class", () => cx(styles.carousel_container, { [styles.visible]: carouselVisible }));
+  render.bind(carouselContainerRef, "style", () => `height:${carouselHeight}`);
+  testimonialsSectionRef
+    .querySelectorAll<HTMLButtonElement>(`.${styles.nav_button}`)
+    .forEach((button) => render.bind(button, "disabled", () => isTransitioning));
+
+  // The carousel's children, keyed by testimonial id like the Qwik markup: the current card, plus the
+  // incoming one while transitioning. A kept card is reused (its animation isn't restarted).
+  // Two quirks of the Qwik carousel are reproduced (docs/astro-migration-plan.md, Phase 8):
+  // - Star icons render in qwikest's server form (class "ionicon", 1em size). Qwik re-rendered the
+  //   server-rendered card's stars on the component's first client render, and a client-created card's
+  //   stars when it became the outgoing card; qwikest then applied width/height and the star classes.
+  // - A card created on the client stayed bound to `transitioningTo.index`, so when the next transition
+  //   starts the outgoing card switches to the incoming testimonial's text (its avatar stays).
+  const PLACEHOLDER_AVATAR = "https://placehold.co/80x80/cccccc/FFFFFF?text=?";
+  const handleAvatarError = (img: HTMLImageElement | null) => {
+    img?.addEventListener("error", () => (img.src = PLACEHOLDER_AVATAR));
+  };
+  const cloneCard = (id: string) => {
+    const template = document.querySelector<HTMLTemplateElement>(`template[data-testimonial-id="${id}"]`)!;
+    return document.importNode(template.content.firstElementChild!, true) as HTMLElement;
+  };
+  const createCard = (id: string) => {
+    const card = cloneCard(id);
+    handleAvatarError(card.querySelector("img"));
+    return card;
+  };
+  const showContentOf = (card: HTMLElement, id: string) => {
+    const fresh = cloneCard(id);
+    const texts = (root: Node) => {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const nodes: Node[] = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      return nodes;
+    };
+    const [from, to] = [texts(fresh), texts(card)];
+    // Same card markup for every testimonial (all have an avatar), so the text nodes line up.
+    from.forEach((node, i) => {
+      if (to[i] && to[i].nodeValue !== node.nodeValue) to[i].nodeValue = node.nodeValue;
+    });
+  };
+  const renderStars = (card: HTMLElement, rating: number) => {
+    card.querySelectorAll<SVGElement>(`.${styles.star_wrapper} > svg`).forEach((svg, i) => {
+      svg.setAttribute("width", "20");
+      svg.setAttribute("height", "20");
+      svg.setAttribute(
+        "class",
+        cx(
+          styles.star_icon,
+          i < Math.floor(rating) ? styles.filled_star : i < rating ? styles.half_filled_star : styles.empty_star,
+        ),
+      );
+    });
+  };
+
+  const currentCardClass = () =>
+    cx(
+      styles.testimonial_card,
+      testimonialsStore.transitioningTo
+        ? testimonialsStore.transitioningTo.direction === "next"
+          ? styles.slideOutLeft
+          : styles.slideOutRight
+        : isInitialMount && testimonialsStore.currentIndex === 0 && testimonialsStore.direction === "none"
+          ? styles.slideInInitial
+          : testimonialsStore.direction === "next"
+            ? styles.slideInRight
+            : testimonialsStore.direction === "prev"
+              ? styles.slideInLeft
+              : styles.slideInRight,
+    );
+
+  type Card = { id: string; el: HTMLElement; cls: string; created: boolean; starsRendered: boolean };
+  const firstCard = carouselContainerRef.querySelector<HTMLElement>(`.${styles.testimonial_card}`);
+  let renderedCards: Card[] = firstCard
+    ? [{ id: ids[0], el: firstCard, cls: currentCardClass(), created: false, starsRendered: false }]
+    : [];
+  const firstAvatar = firstCard?.querySelector("img");
+  if (firstAvatar) {
+    handleAvatarError(firstAvatar);
+    // It may have failed before this script ran.
+    if (firstAvatar.complete && firstAvatar.naturalWidth === 0) firstAvatar.src = PLACEHOLDER_AVATAR;
+  }
+
+  // Qwik re-rendered the component only when state read by its JSX changed (not e.g. `sectionVisible`).
+  const jsxState = () => [
+    titleVisible,
+    carouselVisible,
+    carouselHeight,
+    isTransitioning,
+    isInitialMount,
+    testimonialsStore.currentIndex,
+    testimonialsStore.direction,
+    testimonialsStore.transitioningTo,
+  ];
+  let lastJsxState = jsxState();
+
+  render.afterRender(() => {
+    const now = jsxState();
+    const rerendered = now.some((v, i) => !Object.is(v, lastJsxState[i]));
+    lastJsxState = now;
+    if (!rerendered || ids.length === 0) return;
+    const { transitioningTo } = testimonialsStore;
+    const wanted = [{ id: ids[testimonialsStore.currentIndex], cls: currentCardClass() }];
+    if (transitioningTo) {
+      wanted.push({
+        id: ids[transitioningTo.index],
+        cls: cx(styles.testimonial_card, transitioningTo.direction === "next" ? styles.slideInRight : styles.slideInLeft),
+      });
+    }
+    const next = wanted.map(({ id, cls }, position) => {
+      let card = renderedCards.find((c) => c.id === id);
+      if (!card) {
+        card = { id, el: createCard(id), cls: "", created: true, starsRendered: false };
+      } else if (position === 0) {
+        if (card.created && transitioningTo && !card.starsRendered) {
+          showContentOf(card.el, ids[transitioningTo.index]);
+          card.starsRendered = true;
+          renderStars(card.el, ratings[testimonialsStore.currentIndex]);
+        } else if (!card.created && !card.starsRendered) {
+          card.starsRendered = true;
+          renderStars(card.el, ratings[testimonialsStore.currentIndex]);
+        }
+      }
+      if (card.cls !== cls) {
+        card.cls = cls;
+        card.el.className = cls;
+      }
+      return card;
+    });
+    renderedCards.filter((c) => !next.includes(c)).forEach((c) => c.el.remove());
+    next.forEach((card, i) => {
+      const at = carouselContainerRef.children[i];
+      if (at !== card.el) carouselContainerRef.insertBefore(card.el, at ?? null);
+    });
+    renderedCards = next;
+  });
+
+  // strategy: 'document-ready'
+  const elementsToObserve: { ref: Element; set: (value: boolean) => void }[] = [
+    { ref: titleRef, set: (value) => (titleVisible = value) },
+    { ref: carouselContainerRef, set: (value) => (carouselVisible = value) },
+    { ref: testimonialsSectionRef, set: (value) => (sectionVisible = value) },
+  ];
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const elementConfig = elementsToObserve.find((el) => el.ref === entry.target);
+        if (elementConfig) {
+          if (entry.isIntersecting) {
+            elementConfig.set(true);
+            render.invalidate();
+          } else {
+            if (entry.target === testimonialsSectionRef) {
+              sectionVisible = false;
+              render.invalidate();
+            }
+          }
+        }
+      });
+    },
+    { threshold: 0.15 },
+  );
+
+  elementsToObserve.forEach((elementConfig) => observer.observe(elementConfig.ref));
+
+  // strategy: 'document-idle'
+  const parallax = createTask(
+    () => [sectionVisible],
+    () => {
+      const isVisible = sectionVisible;
+      const handleScroll = () => {
+        if (!isVisible) {
+          titleRef.style.transform = "translateY(0px)";
+          carouselContainerRef.style.transform = "translateY(0px)";
+          return;
+        }
+
+        const rect = testimonialsSectionRef.getBoundingClientRect();
+        const scrollY = window.scrollY;
+        const viewportHeight = window.innerHeight;
+        const sectionTop = rect.top + scrollY;
+        const sectionHeight = rect.height;
+        const sectionCenter = sectionTop + sectionHeight / 2;
+        const viewportCenter = scrollY + viewportHeight / 2;
+        const diff = sectionCenter - viewportCenter;
+
+        const contentParallaxFactor = -0.08;
+        const maxContentTranslate = viewportHeight * 0.03;
+        let contentTranslateY = diff * contentParallaxFactor;
+        contentTranslateY = Math.max(-maxContentTranslate, Math.min(maxContentTranslate, contentTranslateY));
+
+        window.requestAnimationFrame(() => {
+          titleRef.style.transform = `translateY(${contentTranslateY}px)`;
+          titleRef.style.transition = "transform 0.2s ease-out";
+          carouselContainerRef.style.transform = `translateY(${contentTranslateY}px)`;
+          carouselContainerRef.style.transition = "transform 0.2s ease-out";
+        });
+      };
+
+      if (isVisible) {
+        handleScroll();
+      }
+      window.addEventListener("scroll", handleScroll, { passive: true });
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+        titleRef.style.transform = "translateY(0px)";
+        carouselContainerRef.style.transform = "translateY(0px)";
+      };
+    },
+  );
+
+  // strategy: 'document-ready'
+  const initialMount = createTask(
+    () => [carouselVisible],
+    () => {
+      if (carouselVisible) {
+        setTimeout(() => {
+          isInitialMount = false;
+          render.invalidate();
+        }, 700);
+      }
+      return () => {
+        isInitialMount = true;
+        render.invalidate();
+      };
+    },
+  );
+
+  // Dynamic height adjustment (strategy: 'document-idle')
+  const height = createTask(
+    () => [testimonialsStore.currentIndex, testimonialsStore.transitioningTo, carouselVisible],
+    () => {
+      if (!carouselVisible) return;
+
+      const updateHeight = () => {
+        const container = carouselContainerRef;
+        const cards = container.querySelectorAll(`.${styles.testimonial_card}`);
+
+        let maxHeight = 290; // Fallback height in pixels
+
+        cards.forEach((card) => {
+          const htmlCard = card as HTMLElement;
+          const originalPosition = htmlCard.style.position;
+          const originalTop = htmlCard.style.top;
+          const originalLeft = htmlCard.style.left;
+          const originalWidth = htmlCard.style.width;
+
+          htmlCard.style.position = "static";
+          htmlCard.style.top = "";
+          htmlCard.style.left = "";
+          htmlCard.style.width = "100%";
+
+          const cardHeight = htmlCard.offsetHeight;
+          maxHeight = Math.max(maxHeight, cardHeight);
+
+          htmlCard.style.position = originalPosition;
+          htmlCard.style.top = originalTop;
+          htmlCard.style.left = originalLeft;
+          htmlCard.style.width = originalWidth;
+        });
+
+        carouselHeight = `${maxHeight}px`;
+        render.invalidate();
+      };
+
+      updateHeight();
+      window.addEventListener("resize", updateHeight);
+
+      return () => {
+        window.removeEventListener("resize", updateHeight);
+      };
+    },
+  );
+
+  render.afterRender(parallax.check);
+  render.afterRender(initialMount.check);
+  render.afterRender(height.check);
+  initialMount.start();
+  onIdle(parallax.start);
+  onIdle(height.start);
+
+  const showTestimonial = (index: number, direction: "next" | "prev") => {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
+    testimonialsStore.transitioningTo = {
+      index: (index + ids.length) % ids.length,
+      direction,
+    };
+    render.invalidate();
+
+    setTimeout(() => {
+      testimonialsStore.currentIndex = testimonialsStore.transitioningTo!.index;
+      testimonialsStore.direction = direction;
+      testimonialsStore.transitioningTo = null;
+      isTransitioning = false;
+      render.invalidate();
+    }, 500);
+  };
+
+  const nextTestimonial = () => {
+    showTestimonial(testimonialsStore.currentIndex + 1, "next");
+  };
+
+  const prevTestimonial = () => {
+    showTestimonial(testimonialsStore.currentIndex - 1, "prev");
+  };
+
+  const [prevButton, nextButton] = testimonialsSectionRef.querySelectorAll(`.${styles.nav_button}`);
+  prevButton?.addEventListener("click", prevTestimonial);
+  nextButton?.addEventListener("click", nextTestimonial);
+</script>

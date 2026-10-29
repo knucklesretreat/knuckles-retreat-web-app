@@ -1,0 +1,6 @@
+# Permanent redirects to the trailing-slash URLs (Cloudflare's own trailing-slash redirect is a 307).
+/accommodation /accommodation/ 301
+/inquiry /inquiry/ 301
+/faq /faq/ 301
+/privacy-policy /privacy-policy/ 301
+/terms-and-conditions /terms-and-conditions/ 301

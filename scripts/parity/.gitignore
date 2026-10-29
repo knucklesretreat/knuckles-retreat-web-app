@@ -1,0 +1,5 @@
+# Large binary captures stay local; regenerate from the commit in meta.json.
+*/*/screens/
+*/*/states/
+*/*/video/
+candidate/

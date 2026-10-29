@@ -1,0 +1,139 @@
+{
+  "base": "https://www.knucklesretreat.com",
+  "runAt": "2026-10-27T16:59:46.309Z",
+  "runsPerRoute": 3,
+  "results": {
+    "/": {
+      "mobile": {
+        "scores": {
+          "performance": 79,
+          "accessibility": 100,
+          "best-practices": 81,
+          "seo": 100,
+          "agentic-browsing": 100
+        },
+        "metrics": {
+          "first-contentful-paint": 1851.2289500000002,
+          "largest-contentful-paint": 5400.340400000001,
+          "total-blocking-time": 32,
+          "cumulative-layout-shift": 0.0021112511687828,
+          "speed-index": 1851.2289500000002
+        },
+        "allPerformanceScores": [
+          64,
+          79,
+          79
+        ]
+      },
+      "desktop": {
+        "scores": {
+          "performance": 95,
+          "accessibility": 100,
+          "best-practices": 81,
+          "seo": 100,
+          "agentic-browsing": 100
+        },
+        "metrics": {
+          "first-contentful-paint": 805.02925,
+          "largest-contentful-paint": 1482.0165500000003,
+          "total-blocking-time": 0,
+          "cumulative-layout-shift": 0.0030296513829743124,
+          "speed-index": 805.02925
+        },
+        "allPerformanceScores": [
+          91,
+          95,
+          97
+        ]
+      }
+    },
+    "/accommodation/": {
+      "mobile": {
+        "scores": {
+          "performance": 75,
+          "accessibility": 100,
+          "best-practices": 81,
+          "seo": 100,
+          "agentic-browsing": 100
+        },
+        "metrics": {
+          "first-contentful-paint": 1874.61795,
+          "largest-contentful-paint": 6818.53035,
+          "total-blocking-time": 27.5,
+          "cumulative-layout-shift": 0.000420771752271311,
+          "speed-index": 2184.883188080482
+        },
+        "allPerformanceScores": [
+          67,
+          75,
+          98
+        ]
+      },
+      "desktop": {
+        "scores": {
+          "performance": 98,
+          "accessibility": 100,
+          "best-practices": 81,
+          "seo": 100,
+          "agentic-browsing": 100
+        },
+        "metrics": {
+          "first-contentful-paint": 623.0632499999999,
+          "largest-contentful-paint": 1124.86845,
+          "total-blocking-time": 0,
+          "cumulative-layout-shift": 0.00021016245159097405,
+          "speed-index": 701.3607627307412
+        },
+        "allPerformanceScores": [
+          97,
+          98,
+          100
+        ]
+      }
+    },
+    "/inquiry/": {
+      "mobile": {
+        "scores": {
+          "performance": 82,
+          "accessibility": 96,
+          "best-practices": 81,
+          "seo": 100,
+          "agentic-browsing": 100
+        },
+        "metrics": {
+          "first-contentful-paint": 1839.22215,
+          "largest-contentful-paint": 4744.5392249999995,
+          "total-blocking-time": 0,
+          "cumulative-layout-shift": 0.04807984566792174,
+          "speed-index": 1839.22215
+        },
+        "allPerformanceScores": [
+          60,
+          82,
+          82
+        ]
+      },
+      "desktop": {
+        "scores": {
+          "performance": 98,
+          "accessibility": 96,
+          "best-practices": 81,
+          "seo": 100,
+          "agentic-browsing": 100
+        },
+        "metrics": {
+          "first-contentful-paint": 627.8922,
+          "largest-contentful-paint": 1086.1556999999998,
+          "total-blocking-time": 0,
+          "cumulative-layout-shift": 0.01724949236864104,
+          "speed-index": 627.8922
+        },
+        "allPerformanceScores": [
+          98,
+          98,
+          99
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "375": [
+    {
+      "url": "http://localhost:4173/inquiry/",
+      "type": "pageerror",
+      "text": "window.grecaptcha.render is not a function"
+    },
+    {
+      "url": "http://localhost:4173/this-page-does-not-exist/",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "url": "http://localhost:4173/inquiry/",
+      "type": "pageerror",
+      "text": "window.grecaptcha.render is not a function"
+    }
+  ],
+  "768": [
+    {
+      "url": "http://localhost:4173/inquiry/",
+      "type": "pageerror",
+      "text": "window.grecaptcha.render is not a function"
+    },
+    {
+      "url": "http://localhost:4173/this-page-does-not-exist/",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "1280": [
+    {
+      "url": "http://localhost:4173/inquiry/",
+      "type": "pageerror",
+      "text": "window.grecaptcha.render is not a function"
+    },
+    {
+      "url": "http://localhost:4173/this-page-does-not-exist/",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "url": "http://localhost:4173/inquiry/",
+      "type": "pageerror",
+      "text": "window.grecaptcha.render is not a function"
+    }
+  ],
+  "1920": [
+    {
+      "url": "http://localhost:4173/inquiry/",
+      "type": "pageerror",
+      "text": "window.grecaptcha.render is not a function"
+    },
+    {
+      "url": "http://localhost:4173/this-page-does-not-exist/",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ]
+}

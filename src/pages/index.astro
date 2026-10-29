@@ -1,0 +1,25 @@
+---
+import FloatingButton from "~/components/FloatingButton.astro";
+import AccommodationTeaser from "~/components/home/AccommodationTeaser.astro";
+import Contact from "~/components/home/Contact.astro";
+import Explore from "~/components/home/Explore.astro";
+import Gallery from "~/components/home/Gallery.astro";
+import Hero from "~/components/home/Hero.astro";
+import Intro from "~/components/home/Intro.astro";
+import Testimonials from "~/components/home/Testimonials.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Knuckles Retreat | Sri Lanka Resorts"
+  description="Explore serenity at Knuckles Retreat, nestled in Knuckles Mountain Range, Sri Lanka. Your escape to majestic mountains for perfect relaxation."
+>
+  <Hero />
+  <Intro />
+  <AccommodationTeaser />
+  <Gallery />
+  <Explore />
+  <Testimonials />
+  <Contact />
+  <FloatingButton />
+</BaseLayout>

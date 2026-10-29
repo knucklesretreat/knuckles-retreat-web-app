@@ -1,0 +1,102 @@
+---
+import LogoSymbol from "~/components/LogoSymbol.astro";
+import ScriptData from "~/components/ScriptData.astro";
+import { reencodedUrl } from "~/lib/images";
+import BgImgSrc from "~/media/contact/bg_tea.webp";
+import styles from "./contact.module.css";
+
+const BgImg = await reencodedUrl(BgImgSrc);
+---
+
+<section id="contact" class={styles.contact} style={`background-image:url(${BgImg})`}>
+  <div class={styles.overlay}></div>
+  <div class={styles.content}>
+    <h2>Contact Us</h2>
+    <div class={styles.main_content}>
+      <div class={styles.map}>
+        <iframe
+          title="Knuckles Retreat Sri Lanka Google maps location"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.5787463638703!2d80.77979431144067!3d7.40100621231185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae35f038d4d7721%3A0x73186daaad420c8!2sKnuckles%20Retreat!5e0!3m2!1sen!2slk!4v1703453496693!5m2!1sen!2slk"
+          width="100"
+          height="100"
+          style="border:0;"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class={styles.info}>
+        <div class={styles.logo}>
+          <LogoSymbol class={styles.logo_symbol} />
+          <h3>Knuckles Retreat</h3>
+          <h4>-RECONNECT WITH NATURE-</h4>
+        </div>
+        <h5>Knuckles Mountain Range, Knuckles Peak Road, Gomara, Sri Lanka</h5>
+        <h6><span>Telephone:</span><a href="tel:+94774410767">+94 77 441 0767</a></h6>
+        <h6><span>Email:</span>inquiries@knucklesretreat.com</h6>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ScriptData name="contact" data={styles} />
+
+<script>
+  import { createRenderer, cx } from "~/lib/qwik-runtime";
+  import { readScriptData, type Classes } from "~/lib/script-data";
+
+  const styles = readScriptData<Classes>("contact");
+  const element = document.getElementById("contact")!;
+  const render = createRenderer();
+  let isVisible = false;
+  render.bind(element.querySelector(`.${styles.content}`)!, "class", () => cx(styles.content, isVisible ? styles.animate : ""));
+
+  // strategy: 'document-ready'
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          isVisible = true;
+          render.invalidate();
+        }
+      });
+    },
+    {
+      threshold: 0.3, // Trigger when 30% of the element is visible
+    },
+  );
+
+  observer.observe(element);
+
+  // Parallax Effect on Scroll
+  const handleScroll = () => {
+    const explore = document.getElementById("explore");
+    const testimonials = document.getElementById("testimonials");
+    const offset = 60; // header offset height
+
+    // Get their positions relative to the document top
+    const testimonialsBottom = testimonials
+      ? testimonials.getBoundingClientRect().bottom + window.scrollY
+      : explore!.getBoundingClientRect().bottom + window.scrollY || 0;
+
+    const scrollY = window.scrollY - testimonialsBottom + offset;
+
+    // Adjust the speed factor (0.3 here) for more/less parallax effect
+    const parallaxOffset = scrollY * 0.3;
+    element.style.backgroundPositionY = `${parallaxOffset}px`;
+  };
+
+  // Throttle scroll events using requestAnimationFrame
+  let ticking = false;
+  const scrollListener = () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        handleScroll();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+
+  // Check initial position in case element is already in view on load
+  handleScroll();
+  window.addEventListener("scroll", scrollListener, { passive: true });
+</script>

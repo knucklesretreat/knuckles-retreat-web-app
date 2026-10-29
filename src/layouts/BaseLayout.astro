@@ -1,0 +1,42 @@
+---
+// Replaces Qwik's root.tsx + RouterHead + routes/layout.tsx. The <head> order matches the Qwik site
+// exactly (see scripts/parity/baseline/*/head/*.json); keep it that way.
+import Footer from "~/components/Footer.astro";
+import Header from "~/components/Header.astro";
+import Partytown from "~/components/Partytown.astro";
+import Schema from "~/components/Schema.astro";
+import { SHARED_META } from "~/lib/seo";
+import "~/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const meta = [{ name: "description", content: description }, ...SHARED_META];
+---
+
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+    <Partytown />
+    <Schema />
+    <script is:inline src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <link rel="manifest" href="/manifest.json" />
+    <title>{title}</title>
+    <link rel="canonical" href={canonical} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {meta.map((m) => <meta {...m} />)}
+  </head>
+  <body lang="en">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

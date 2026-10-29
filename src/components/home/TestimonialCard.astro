@@ -1,0 +1,62 @@
+---
+// One testimonial card. Used for the server-rendered first card and for the <template>s the
+// carousel clones, so the markup can't drift between the two.
+import Icon from "~/components/Icon.astro";
+import ImgQuote from "~/media/testimonial/quote.svg?url";
+import styles from "./testimonial.module.css";
+
+interface Props {
+  testimonial: {
+    id: string;
+    author: string;
+    avatarUrl?: string;
+    rating: number;
+    text: string;
+    date: string;
+    source: string;
+  };
+  class?: string;
+}
+
+const { testimonial: t, class: animation } = Astro.props;
+const initials = t.author
+  .split(" ")
+  .map((n) => n[0])
+  .join("")
+  .substring(0, 2)
+  .toUpperCase();
+---
+
+<div class:list={[styles.testimonial_card, animation]} style={`background-image:url(${ImgQuote})`}>
+  <div class={styles.testimonial_header}>
+    {
+      t.avatarUrl ? (
+        <img src={t.avatarUrl} alt={`${t.author}'s avatar`} class={styles.avatar} width="80" height="80" />
+      ) : (
+        <div class:list={[styles.avatar, styles.avatar_initials]}>{initials}</div>
+      )
+    }
+    <div class={styles.author_info}>
+      <h3>{t.author}</h3>
+      <div class={styles.rating}>
+        {/* The star classes (filled/half/empty) never reached the DOM in Qwik: qwikest's own class wins. */}
+        {
+          Array.from({ length: 5 }).map(() => (
+            <div class={styles.star_wrapper}>
+              <Icon name="IoStarSolid" style="width:20px;height:20px" />
+            </div>
+          ))
+        }
+        <span>({t.rating.toFixed(1)})</span>
+      </div>
+    </div>
+  </div>
+  <blockquote class={styles.testimonial_text}>
+    <p>"{t.text}"</p>
+  </blockquote>
+  <div class={styles.testimonial_footer}>
+    <span>{t.date}</span>
+    <span>•</span>
+    <span>{t.source}</span>
+  </div>
+</div>

@@ -1,0 +1,114 @@
+---
+import ScriptData from "~/components/ScriptData.astro";
+import { reencodedUrl } from "~/lib/images";
+import BgImgSmSrc from "~/media/accommodation/img1-sm.webp";
+import BgImgSrc from "~/media/accommodation/img1.webp";
+import styles from "./accommodation.module.css";
+
+const BgImg = await reencodedUrl(BgImgSrc);
+const BgImgSm = await reencodedUrl(BgImgSmSrc);
+---
+
+<section class={styles.accommodation} style={`background-image:url(${BgImg})`}>
+  <div class={styles.overlay}></div>
+  <div class={styles.content}>
+    <h2>Your Private Sanctuary</h2>
+    <p>
+      Discover unparalleled comfort in our thoughtfully designed rooms.
+      Each space blends rustic charm with modern amenities, offering
+      stunning views of the Knuckles mountain range. Wake up to the sounds of nature
+      and unwind in tranquility after a day of exploration. Perfect for
+      couples, families, and solo adventurers seeking peace and relaxation.
+    </p>
+    <button class={styles.explore_btn}>
+      Explore
+    </button>
+  </div>
+</section>
+
+<ScriptData name="accommodation-teaser" data={{ styles, BgImg, BgImgSm }} />
+
+<script>
+  import { createRenderer, cx, navigate } from "~/lib/qwik-runtime";
+  import { readScriptData, type Classes } from "~/lib/script-data";
+
+  const { styles, BgImg, BgImgSm } = readScriptData<{ styles: Classes; BgImg: string; BgImgSm: string }>("accommodation-teaser");
+  const element = document.querySelector<HTMLElement>(`.${styles.accommodation}`)!;
+  const render = createRenderer();
+  let isVisible = false;
+  let crntBgImg = BgImg;
+  // The section's style prop: when crntBgImg changes, the re-render replaces the whole inline style,
+  // so the scroll-driven background-position-y is lost until the next scroll (as on the Qwik site).
+  render.bind(element, "style", () => `background-image:url(${crntBgImg})`);
+  render.bind(element.querySelector(`.${styles.content}`)!, "class", () => cx(styles.content, isVisible ? styles.animate : ""));
+
+  // strategy: 'document-ready'
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          isVisible = true;
+          render.invalidate();
+        }
+      });
+    },
+    {
+      threshold: 0.3, // Trigger when 30% of the element is visible
+    },
+  );
+
+  observer.observe(element);
+
+  // Handle responsive background image
+  const handleResize = () => {
+    if (window.innerWidth <= 876) {
+      crntBgImg = BgImgSm;
+    } else {
+      crntBgImg = BgImg;
+    }
+    render.invalidate();
+    element.style.backgroundImage = `url(${crntBgImg})`;
+  };
+
+  // Initial check on load
+  handleResize();
+
+  // Add resize listener
+  window.addEventListener("resize", handleResize, { passive: true });
+
+  // Parallax Effect on Scroll
+  const handleScroll = () => {
+    const home = document.getElementById("home");
+    const intro = document.getElementById("intro");
+    const offset = 60; // header offset height
+
+    // Get their positions relative to the document top
+    const introBottom = intro
+      ? intro.getBoundingClientRect().bottom + window.scrollY
+      : home!.getBoundingClientRect().bottom + window.scrollY || 0;
+
+    const scrollY = window.scrollY - introBottom + offset;
+
+    // Adjust the speed factor (0.3 here) for more/less parallax effect
+    const parallaxOffset = scrollY * 0.3;
+    element.style.backgroundPositionY = `${parallaxOffset}px`;
+  };
+
+  // Throttle scroll events using requestAnimationFrame
+  let ticking = false;
+  const scrollListener = () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        handleScroll();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+
+  // Check initial position in case element is already in view on load
+  handleScroll();
+  window.addEventListener("scroll", scrollListener, { passive: true });
+
+  element.querySelector(`.${styles.explore_btn}`)!.addEventListener("click", () => navigate("/accommodation/"));
+</script>

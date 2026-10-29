@@ -1,0 +1,29 @@
+{
+  "404": [
+    "404-inline-0.css"
+  ],
+  "home": [
+    "sHOefXpa-style.css",
+    "home-inline-1.css"
+  ],
+  "accommodation": [
+    "sHOefXpa-style.css",
+    "accommodation-inline-1.css"
+  ],
+  "inquiry": [
+    "sHOefXpa-style.css",
+    "inquiry-inline-1.css"
+  ],
+  "faq": [
+    "sHOefXpa-style.css",
+    "faq-inline-1.css"
+  ],
+  "privacy-policy": [
+    "sHOefXpa-style.css",
+    "privacy-policy-inline-1.css"
+  ],
+  "terms-and-conditions": [
+    "sHOefXpa-style.css",
+    "terms-and-conditions-inline-1.css"
+  ]
+}

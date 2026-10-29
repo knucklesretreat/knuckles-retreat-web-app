@@ -1,0 +1,239 @@
+[
+  {
+    "url": "http://localhost:4173/",
+    "hops": [
+      {
+        "url": "http://localhost:4173/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/accommodation/",
+    "hops": [
+      {
+        "url": "http://localhost:4173/accommodation/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/inquiry/",
+    "hops": [
+      {
+        "url": "http://localhost:4173/inquiry/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/faq/",
+    "hops": [
+      {
+        "url": "http://localhost:4173/faq/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/privacy-policy/",
+    "hops": [
+      {
+        "url": "http://localhost:4173/privacy-policy/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/terms-and-conditions/",
+    "hops": [
+      {
+        "url": "http://localhost:4173/terms-and-conditions/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/this-page-does-not-exist/",
+    "hops": [
+      {
+        "url": "http://localhost:4173/this-page-does-not-exist/",
+        "status": 404
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/accommodation",
+    "hops": [
+      {
+        "url": "http://localhost:4173/accommodation",
+        "status": 301,
+        "location": "/accommodation/"
+      },
+      {
+        "url": "http://localhost:4173/accommodation/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/inquiry",
+    "hops": [
+      {
+        "url": "http://localhost:4173/inquiry",
+        "status": 301,
+        "location": "/inquiry/"
+      },
+      {
+        "url": "http://localhost:4173/inquiry/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/faq",
+    "hops": [
+      {
+        "url": "http://localhost:4173/faq",
+        "status": 301,
+        "location": "/faq/"
+      },
+      {
+        "url": "http://localhost:4173/faq/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/privacy-policy",
+    "hops": [
+      {
+        "url": "http://localhost:4173/privacy-policy",
+        "status": 301,
+        "location": "/privacy-policy/"
+      },
+      {
+        "url": "http://localhost:4173/privacy-policy/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/terms-and-conditions",
+    "hops": [
+      {
+        "url": "http://localhost:4173/terms-and-conditions",
+        "status": 301,
+        "location": "/terms-and-conditions/"
+      },
+      {
+        "url": "http://localhost:4173/terms-and-conditions/",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/this-page-does-not-exist",
+    "hops": [
+      {
+        "url": "http://localhost:4173/this-page-does-not-exist",
+        "status": 404
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/FAQ/",
+    "hops": [
+      {
+        "url": "http://localhost:4173/FAQ/",
+        "status": 404
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/faq/?utm_source=test",
+    "hops": [
+      {
+        "url": "http://localhost:4173/faq/?utm_source=test",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/faq?utm_source=test",
+    "hops": [
+      {
+        "url": "http://localhost:4173/faq?utm_source=test",
+        "status": 301,
+        "location": "/faq/?utm_source=test"
+      },
+      {
+        "url": "http://localhost:4173/faq/?utm_source=test",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/index.html",
+    "hops": [
+      {
+        "url": "http://localhost:4173/index.html",
+        "status": 404
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/robots.txt",
+    "hops": [
+      {
+        "url": "http://localhost:4173/robots.txt",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/site/sitemap.xml",
+    "hops": [
+      {
+        "url": "http://localhost:4173/site/sitemap.xml",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/manifest.json",
+    "hops": [
+      {
+        "url": "http://localhost:4173/manifest.json",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/manifest.webmanifest",
+    "hops": [
+      {
+        "url": "http://localhost:4173/manifest.webmanifest",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/favicon.svg",
+    "hops": [
+      {
+        "url": "http://localhost:4173/favicon.svg",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "url": "http://localhost:4173/service-worker.js",
+    "hops": [
+      {
+        "url": "http://localhost:4173/service-worker.js",
+        "status": 200
+      }
+    ]
+  }
+]

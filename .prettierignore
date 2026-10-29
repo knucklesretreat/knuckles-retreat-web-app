@@ -1,37 +1,25 @@
-**/*.log
-**/.DS_Store
-*.
-.vscode/settings.json
-.history
-.yarn
-bazel-*
-bazel-bin
-bazel-out
-bazel-qwik
-bazel-testlogs
-dist
-dist-dev
-lib
-lib-types
-etc
-external
+# Generated / installed
 node_modules
-temp
-tsc-out
-tsdoc-metadata.json
-target
-output
-rollup.config.js
-build
-.cache
-.vscode
-.rollup.cache
-tsconfig.tsbuildinfo
-vite.config.ts
-*.spec.tsx
-*.spec.ts
-.netlify
-pnpm-lock.yaml
+dist
+.astro
+.wrangler
+.vercel
 package-lock.json
-yarn.lock
-server
+scripts/parity/package-lock.json
+
+# Served byte-for-byte as on the Qwik site (docs/astro-migration-plan.md)
+public
+
+# Parity captures: must stay exactly as recorded
+scripts/parity/baseline
+scripts/parity/candidate
+
+# Generated from @qwikest/icons
+src/lib/icons.ts
+
+# Hand-wrapped docs
+docs
+
+# Copied byte-for-byte from the Qwik site during the migration (CSS) / data kept as authored
+*.css
+src/data

@@ -1,0 +1,14 @@
+---
+// Hands build-time values (CSS-module class names, image URLs) to a component's client script as
+// inert JSON. Importing a .module.css into a client script would make Astro ship that CSS a second
+// time, and data-* attributes would change the server HTML.
+interface Props {
+  name: string;
+  data: unknown;
+}
+
+const { name, data } = Astro.props;
+const json = JSON.stringify(data).replace(/</g, "\\u003c");
+---
+
+<script type="application/json" data-script-data={name} set:html={json} />

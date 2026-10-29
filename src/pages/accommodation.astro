@@ -1,0 +1,107 @@
+---
+import ResponsiveImage from "~/components/ResponsiveImage.astro";
+import ScriptData from "~/components/ScriptData.astro";
+import roomData from "~/data/rooms.json";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { reencodedUrl } from "~/lib/images";
+import HeroImage from "~/media/accommodation/dining_out.webp";
+import ImgThree from "~/media/accommodation/img1.webp";
+import ImgOne from "~/media/accommodation/room1.webp";
+import ImgTwo from "~/media/accommodation/room3.webp";
+import ImgFour from "~/media/accommodation/room4.webp";
+import BgBranch from "~/media/explore/branch.webp";
+import LinePatternSrc from "~/media/line-pattern.webp";
+import BgPattern from "~/media/pattern1.webp";
+import styles from "~/styles/accommodation.module.css";
+
+const imageMap: Record<string, string> = {
+  room1: await reencodedUrl(ImgOne),
+  room2: await reencodedUrl(ImgThree),
+  room3: await reencodedUrl(ImgTwo),
+  room4: await reencodedUrl(ImgFour),
+};
+const LinePattern = await reencodedUrl(LinePatternSrc);
+const rooms = roomData.rooms;
+---
+
+<BaseLayout
+  title="Knuckles Retreat | Accommodation | Rooms"
+  description="Explore our curated room packages designed to enhance your stay at Knuckles Retreat, Sri Lanka. Each package offers unique benifits and experiences, tailored for an unforgettable escape."
+>
+  <section class={styles.accommodation_sec} style={`background-image:url(${LinePattern})`}>
+    <ResponsiveImage src={BgBranch} class:list={[styles.bg_branch]} alt="Background Image" />
+    <div class={styles.hero}>
+      <ResponsiveImage src={HeroImage} alt="Panoramic view of Knuckles Mountain Range" />
+      <div class={styles.heroOverlay}>
+        <h1>Discover Our Room Packages</h1>
+        <p>Explore our curated room packages designed to enhance your stay at Knuckles Retreat.
+          Each package offers unique benifits and experiences, tailored for an unforgettable escape.</p>
+      </div>
+    </div>
+    <div class={styles.container}>
+      <div class={styles.roomGrid}>
+        {
+          rooms.map((room) => (
+            <article class={styles.roomCard}>
+              <ResponsiveImage src={BgPattern} loading="lazy" alt="flower pattern" class:list={[styles.bg_img, styles.top_img]} />
+              <div class={styles.roomImageWrapper}>
+                <img
+                  src={imageMap[room.imageUrl]}
+                  alt={room.altText}
+                  width="400"
+                  height="300"
+                  loading="lazy"
+                  class={styles.roomImage}
+                />
+              </div>
+              <div class={styles.roomInfo}>
+                <h2>{room.name}</h2>
+                <div class={styles.roomDetails}>
+                  <p>{room.capacity}</p>
+                </div>
+                <div class={styles.types}>
+                  <ul>
+                    <li>Please contact us for pricing.</li>
+                  </ul>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+      <section class={styles.bookingInquiry}>
+        <h2>Ready to Experience Knuckles Retreat?</h2>
+        <p>Contact us today to plan your unforgettable stay or to inquire about specific room availability and custom packages.</p>
+        <a href="https://wa.me/+94774410767" target="_blank" class={styles.ctaButtonLarge}>Contact Now</a>
+      </section>
+    </div>
+  </section>
+  <ScriptData name="accommodation" data={styles} />
+
+  <script>
+    import { onVisible } from "~/lib/qwik-runtime";
+    import { readScriptData, type Classes } from "~/lib/script-data";
+
+    const styles = readScriptData<Classes>("accommodation");
+
+    onVisible(document.querySelector(`.${styles.accommodation_sec}`)!, () => {
+      const hero = document.querySelector(`.${styles.hero}`);
+      const roomCards = document.querySelectorAll(`.${styles.roomCard}`);
+      const bookingSection = document.querySelector(`.${styles.bookingInquiry}`);
+
+      if (hero) {
+        hero.classList.add(styles.animateHero);
+      }
+
+      roomCards.forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.add(styles.animateRoomCard);
+        }, index * 150); // Staggered animation for each card
+      });
+
+      if (bookingSection) {
+        bookingSection.classList.add(styles.animateBooking);
+      }
+    });
+  </script>
+</BaseLayout>
